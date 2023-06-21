@@ -1,5 +1,5 @@
 import os
-import Modules.Modelo as material
+import Modules.Modelo 
 
 def new_model():
     os.system("cls")
@@ -108,12 +108,12 @@ def main():
         print("\t2. Cargar Modelo.")
         print("\t3. Finalizar el programa")
         
-        match int(input("\nIngrese una opción: ")):
-            case 1:
+        match input("\nIngrese una opción: "):
+            case "1":
                 new_model()
-            case 2:        
+            case "2":        
                 load_model()
-            case 3:
+            case "3":
                 break
             case _:
                 print("Error: no se reconoce la opcion ingresada.\n\n")

@@ -1,5 +1,5 @@
 import os
-import Modules.materiales as material
+import Modules.Modelo as material
 
 def new_model():
     os.system("cls")

@@ -35,32 +35,32 @@ def model_settings():
         
         print("\n9. Volver.")
         
-        match int(input("\nIngrese una opción: ")):
-            case 1:
+        match input("\nIngrese una opción: "):
+            case "1":
                 #TODO Punto de entrada Nodos.
                 pass
-            case 2:        
+            case "2":        
                 #TODO Punto de entrada Elementos.
                 pass
-            case 3:
+            case "3":
                 #TODO Punto de entrada Secciones.
                 pass
-            case 4:
+            case "4":
                 #TODO Punto de entrada Materiales.
                 pass
-            case 5:
+            case "5":
                 #TODO Punto de entrada Cargas Puntuales.
                 pass
-            case 6:
+            case "6":
                 #TODO Punto de entrada Cargas Distribuidas.
                 pass
-            case 7:
+            case "7":
                 #TODO Punto de entrada Cargas Momentos.
                 pass
-            case 8:
+            case "8":
                 #TODO Punto de entrada Unidades del modelo.
                 pass
-            case 9:
+            case "9":
                 os.system("cls")
                 break
             case _:
@@ -79,19 +79,19 @@ def model_system():
         print("\t4. Resultados.")
         print("\t5. Volver.")
         
-        match int(input("\nIngrese una opción: ")):
-            case 1:
+        match input("\nIngrese una opción: "):
+            case "1":
                 model_settings()
-            case 2: 
+            case "2": 
                 #TODO Punto de entrada Información estructura.
                 pass
-            case 3: 
+            case "3": 
                 #TODO Punto de entrada Computar estructura.
                 pass
-            case 4: 
+            case "4": 
                 #TODO Punto de entrada Resultados.
                 pass
-            case 5:
+            case "5":
                 os.system("cls")
                 break
             case _:

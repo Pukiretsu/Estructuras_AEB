@@ -1,6 +1,8 @@
 import os
 import Modules.Modelo as mod
 
+# Miscelaneos
+
 def new_model():
     os.system("cls")
     modelo = mod.model()
@@ -12,6 +14,20 @@ def load_model():
     modelo = mod.model()
     modelo.load_model()
     model_system(modelo)
+
+def save_model(model):
+    #TODO Rutina de guardado del modelo
+    pass
+
+# Configuracion del modelo
+
+def nodos_settings(modelo):
+    #TODO: Menu de nodos
+    pass
+
+def elementos_settings(modelo):
+    #TODO: Menu de Elementos
+    pass
 
 def secciones_settings(modelo):
     os.system("cls")
@@ -118,6 +134,18 @@ def materiales_settings(modelo):
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")                
 
+def cargas_puntuales_settings(modelo):
+    #TODO: Menu de Cargas Puntuales
+    pass
+
+def cargas_distribuidas_settings(modelo):
+    #TODO: Menu de Cargas distribuidas
+    pass
+
+def momentos_settings(modelo):
+    #TODO: Menu de momentos
+    pass
+
 def units_settings(modelo):
     os.system("cls")
     while True:
@@ -162,10 +190,11 @@ def model_settings(modelo):
         
         match input("\nIngrese una opción: "):
             case "1":
-                #TODO Punto de entrada Nodos.
-                pass
+                modelo = nodos_settings(modelo)
+                os.system("cls")
             case "2":        
-                #TODO Punto de entrada Elementos.
+                modelo = elementos_settings(modelo)
+                os.system("cls")
                 pass
             case "3":
                 modelo = secciones_settings(modelo)
@@ -175,14 +204,14 @@ def model_settings(modelo):
                 os.system("cls")
                 pass
             case "5":
-                #TODO Punto de entrada Cargas Puntuales.
-                pass
+                modelo = cargas_puntuales_settings(modelo)
+                os.system("cls")
             case "6":
-                #TODO Punto de entrada Cargas Distribuidas.
-                pass
+                modelo = cargas_distribuidas_settings(modelo)
+                os.system("cls")
             case "7":
-                #TODO Punto de entrada Cargas Momentos.
-                pass
+                modelo = momentos_settings(modelo)
+                os.system("cls")
             case "8":
                 modelo = units_settings(modelo)
                 os.system("cls")
@@ -192,6 +221,8 @@ def model_settings(modelo):
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")
 
+# Menú del modelo
+
 def model_system(modelo):
     while True:
         print("¿Qué desea hacer?:\n")
@@ -200,7 +231,8 @@ def model_system(modelo):
         print("\t2. Información de la estructura.")
         print("\t3. Computar estructura.")
         print("\t4. Resultados.")
-        print("\t5. Volver.")
+        print("\t5. Guardar estructura.")
+        print("\t6. Volver.")
         
         match input("\nIngrese una opción: "):
             case "1":
@@ -214,7 +246,9 @@ def model_system(modelo):
             case "4": 
                 #TODO Punto de entrada Resultados.
                 pass
-            case "5":
+            case "5": 
+                save_model(modelo)
+            case "6":
                 os.system("cls")
                 break
             case _:

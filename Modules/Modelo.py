@@ -87,7 +87,7 @@ class model():
         self.Cargas_Distribuidas = CARGAS_DISTRIBUIDAS
         self.Momentos = MOMENTOS
         
-    def convert_Longitud(self, factor_conversion):        
+    def convert_Longitud(self, factor_conversion) -> None:
         # Area
         for idx in self.secciones.index:
             self.secciones.loc[idx,"Area"] = self.secciones.loc[idx,"Area"]*(factor_conversion**2)
@@ -95,15 +95,15 @@ class model():
         for idx in self.secciones.index:
             self.secciones.loc[idx,"Inercia"] = self.secciones.loc[idx,"Inercia"]*(factor_conversion**4)
     
-    def convert_Fuerza(self, factor_conversion):
+    def convert_Fuerza(self, factor_conversion) -> None:
         pass
     
-    def convert_Esfuerzo(self, factor_conversion):
+    def convert_Esfuerzo(self, factor_conversion) -> None:
         # Modulo young
         for idx in self.materiales.index:
             self.materiales.loc[idx,"Modulo Young"] = self.materiales.loc[idx,"Modulo Young"]*factor_conversion
     
-    def convert_Angulo(self, factor_conversion):
+    def convert_Angulo(self, factor_conversion) -> None:
         pass
         
     def set_units(self) -> None:
@@ -167,70 +167,10 @@ class model():
         self.materiales = pd.concat([self.materiales, pd.json_normalize(data, record_path = ["MATERIALES"])])
         self.secciones = pd.concat([self.secciones, pd.json_normalize(data, record_path = ["SECCIONES"])]) 
     
-    #Materiales
-    def add_material(self) -> None:
-        material = {"Nombre": [], "Modulo Young": []}
-        
-        print("\nNuevo Material.")
-        
-        nombre = input("\nIngrese un nombre para el material (En blanco nombre por defecto): ")
-        moduloY = input(f"\nIngresar el modulo de Young ({self.unidades.loc[0,'Esfuerzo']}): ")
-      
-        try:
-            index = max(self.materiales.index)+1
-        except:
-            index = len(self.materiales.index)
-        
-        if not (nombre):
-            nombre = f"Material {index}"
-            
-        # Consolidación de entrada
-        
-        material["Nombre"].append(nombre)
-        material["Modulo Young"].append(moduloY)
-        
-        new_Mate = pd.DataFrame(material, index=[index])
-        
-        self.materiales = pd.concat([self.materiales,new_Mate])
-        
-    def edit_material(self) -> None:
-        print("\nMateriales actuales:\n")
-        print(self.materiales)
-    
-        material = {"Nombre": [], "Modulo Young": []}
-        indexes = self.materiales.index.values.tolist()
-        index = get_index(indexes)
-        
-        print(f"\nMaterial seleccionada id:{index}")
-        print(self.materiales.loc[[index]])
-        
-        nombre = input(f"\nNombre ({self.materiales.loc[index,'Nombre']}): ") or self.materiales.loc[index,'Nombre']
-        moduloY = input(f"\nModulo Young ({self.materiales.loc[index,'Modulo Young']} {self.unidades.loc[0,'Esfuerzo']}): ") or self.materiales.loc[index,'Modulo Young']
-        
-        material["Nombre"].append(nombre)
-        material["Modulo Young"].append(moduloY)
-        
-        self.materiales = self.materiales.drop(self.materiales.index[index])
-        new_Mate = pd.DataFrame(material, index=[index])
-        
-        self.materiales = pd.concat([self.materiales,new_Mate])
-        self.materiales = self.materiales.sort_index()
-        
-    def delete_material(self) -> None:
-        print("\nMateriales actuales:\n")
-        print(self.materiales)
-        
-        indexes = self.materiales.index.values.tolist()
-        index = get_index(indexes)
+    def save_model(self) -> None:
+        pass
                 
-        print(f"\nMaterial seleccionado id:{index}")
-        print(self.materiales.loc[[index]])
-        
-        confirmacion = confirmation(f"Confirmar eliminación {self.materiales.loc[index,'Nombre']} id:{index}")
-        if confirmacion:
-            self.materiales = self.materiales.drop(self.materiales.index[index])
-            
-    # Añadir secciones
+    # Secciones
     def add_section(self) -> None:
         section = {"Nombre": [], "Area": [], "Inercia": []}
         
@@ -296,6 +236,70 @@ class model():
         confirmacion = confirmation(f"Confirmar eliminación {self.secciones.loc[index,'Nombre']} id:{index}")
         if confirmacion:
             self.secciones = self.secciones.drop(self.secciones.index[index])
+
+    # Materiales
+    def add_material(self) -> None:
+        material = {"Nombre": [], "Modulo Young": []}
+        
+        print("\nNuevo Material.")
+        
+        nombre = input("\nIngrese un nombre para el material (En blanco nombre por defecto): ")
+        moduloY = input(f"\nIngresar el modulo de Young ({self.unidades.loc[0,'Esfuerzo']}): ")
+      
+        try:
+            index = max(self.materiales.index)+1
+        except:
+            index = len(self.materiales.index)
+        
+        if not (nombre):
+            nombre = f"Material {index}"
+            
+        # Consolidación de entrada
+        
+        material["Nombre"].append(nombre)
+        material["Modulo Young"].append(moduloY)
+        
+        new_Mate = pd.DataFrame(material, index=[index])
+        
+        self.materiales = pd.concat([self.materiales,new_Mate])
+        
+    def edit_material(self) -> None:
+        print("\nMateriales actuales:\n")
+        print(self.materiales)
+    
+        material = {"Nombre": [], "Modulo Young": []}
+        indexes = self.materiales.index.values.tolist()
+        index = get_index(indexes)
+        
+        print(f"\nMaterial seleccionada id:{index}")
+        print(self.materiales.loc[[index]])
+        
+        nombre = input(f"\nNombre ({self.materiales.loc[index,'Nombre']}): ") or self.materiales.loc[index,'Nombre']
+        moduloY = input(f"\nModulo Young ({self.materiales.loc[index,'Modulo Young']} {self.unidades.loc[0,'Esfuerzo']}): ") or self.materiales.loc[index,'Modulo Young']
+        
+        material["Nombre"].append(nombre)
+        material["Modulo Young"].append(moduloY)
+        
+        self.materiales = self.materiales.drop(self.materiales.index[index])
+        new_Mate = pd.DataFrame(material, index=[index])
+        
+        self.materiales = pd.concat([self.materiales,new_Mate])
+        self.materiales = self.materiales.sort_index()
+        
+    def delete_material(self) -> None:
+        print("\nMateriales actuales:\n")
+        print(self.materiales)
+        
+        indexes = self.materiales.index.values.tolist()
+        index = get_index(indexes)
+                
+        print(f"\nMaterial seleccionado id:{index}")
+        print(self.materiales.loc[[index]])
+        
+        confirmacion = confirmation(f"Confirmar eliminación {self.materiales.loc[index,'Nombre']} id:{index}")
+        if confirmacion:
+            self.materiales = self.materiales.drop(self.materiales.index[index])
+
 
 if __name__ == "__main__":
     model = model()

@@ -4,10 +4,10 @@ import Modules.Calculos as calc
 
 # Definicion de dataframes en el contexto
 
-UNIDADES = pd.DataFrame({"Longitud": pd.Series(dtype="str"),
-                         "Esfuerzo": pd.Series(dtype="str"),
-                         "Angulo": pd.Series(dtype="str"),
-                         "Fuerza": pd.Series(dtype="str")})
+UNIDADES = pd.DataFrame({"Longitud": ["m"],
+                         "Fuerza": ["kn"],
+                         "Esfuerzo": ["mpa"],
+                         "Angulo": ["°"]}) # Se añaden las unidades del SI por defecto
 
 MATERIALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                            "Modulo Young": pd.Series(dtype="float")})
@@ -88,11 +88,43 @@ class model():
         self.Momentos = MOMENTOS
         
     def set_units(self) -> None:
-        units = {"Longitud": [], "Esfuerzo": [], "Angulo": [], "Fuerza": []}
+        units = {"Longitud": [], "Fuerza": [], "Esfuerzo": [], "Angulo": [], }
         
-        print("Unidades a trabajar")
+        print("Unidades actuales:\n")
+        print(self.unidades)
         
-    
+        units["Longitud"].append(self.unidades.loc[0,'Longitud'])
+        units["Fuerza"].append(self.unidades.loc[0,'Fuerza'])
+        units["Esfuerzo"].append(self.unidades.loc[0,'Esfuerzo'])
+        units["Angulo"].append(self.unidades.loc[0,'Angulo'])
+        
+        unidades = calc.get_units()
+        
+        if not (unidades[1]):
+            pass
+        else:    
+            match unidades[0]:
+                case "L":
+                    units["Longitud"].pop(0)
+                    units["Longitud"].append(unidades[1])
+                case "F":
+                    units["Fuerza"].pop(0)
+                    units["Fuerza"].append(unidades[1])
+                case "E":
+                    units["Esfuerzo"].pop(0)
+                    units["Esfuerzo"].append(unidades[1])
+                case "G":
+                    units["Angulo"].pop(0)
+                    units["Angulo"].append(unidades[1])
+                case _:
+                    pass
+        
+        self.unidades = self.unidades.drop(self.unidades.index[0])
+        new_units = pd.DataFrame(units)
+        self.unidades = pd.concat([self.unidades, new_units])
+        
+            
+        
     
     #TODO Carga y descarga de modelos
     

@@ -67,11 +67,11 @@ def materiales_settings(modelo):
             print("No hay materiales en la base de datos.\n")
             print("\n¿Qué desea hacer?.\n")
         
-        print("\t1. Nueva Sección.")
+        print("\t1. Nuevo Material.")
         
         if not modelo.materiales.empty:
-            print("\t2. Modificar sección existente.")
-            print("\t3. Eliminar sección existente.")
+            print("\t2. Modificar material existente.")
+            print("\t3. Eliminar material existente.")
         
         print("\t4. volver.")
         

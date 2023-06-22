@@ -13,16 +13,24 @@ def unit_Longitud():
     while True:
         print("\n\tLongitud.")
         print("\t1. Metros. (m)")
-        print("\t2. Milimetros. (mm)")
-        #TODO Agregar todas las unidades posibles
-        print("\t3. Volver.") # Siempre es la ultima
+        print("\t2. Centimetros. (cm)")
+        print("\t3. Milimetros. (mm)")
+        print("\t4. Pulgadas. (in)")
+        print("\t5. Pies. (ft)")
+        print("\t6. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):
                 case "1": 
                     return "m"
                 case "2": 
+                    return "cm"
+                case "3": 
                     return "mm"
-                case "3":
+                case "4": 
+                    return "in"
+                case "5": 
+                    return "ft"
+                case "6":
                     return False
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
@@ -30,17 +38,19 @@ def unit_Longitud():
 def unit_Fuerza():
     while True:
         print("\n\tFuerza.")
-        print("\t1. Kilonewton. (kn)")
-        print("\t2. Newton. (n)")
-        #TODO Agregar todas las unidades posibles
-        print("\t3. Volver.") # Siempre es la ultima
+        print("\t1. Kilonewton. (kN)")
+        print("\t2. Newton. (N)")
+        print("\t3. Libras. (lb)")
+        print("\t4. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):
                 case "1": 
-                    return "kn"
+                    return "kN"
                 case "2": 
-                    return "n"
-                case "3":
+                    return "N"
+                case "3": 
+                    return "lb"
+                case "4":
                     return False
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
@@ -48,17 +58,28 @@ def unit_Fuerza():
 def unit_Esfuerzo():
     while True:
         print("\n\tEsfuerzo.")
-        print("\t1. Megapascal. (mpa)")
-        print("\t2. Kilopascal. (kpa)")
-        #TODO Agregar todas las unidades posibles
-        print("\t3. Volver.") # Siempre es la ultima
+        print("\t1. Gigapascales. (Gpa)")
+        print("\t2. Megapascales. (Mpa)")
+        print("\t3. Kilopascales. (Kpa)")
+        print("\t4. Pascales. (pa)")
+        print("\t5. Kilolibra por pulgada cuadrada. (Kpsi)")
+        print("\t6. Megalibra por pulgada cuadrada. (Mpsi)")
+        print("\t7. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):
                 case "1": 
-                    return "mpa"
+                    return "Gpa"
                 case "2": 
-                    return "kpa"
-                case "3":
+                    return "Mpa"
+                case "3": 
+                    return "Kpa"
+                case "4": 
+                    return "pa"
+                case "5": 
+                    return "Kpsi"
+                case "6": 
+                    return "Mpsi"
+                case "7":
                     return False
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
@@ -68,7 +89,6 @@ def unit_Grados():
         print("\n\tGrados.")
         print("\t1. Sexagesimal. (°)")
         print("\t2. Radianes. (rad)")
-        #TODO Agregar todas las unidades posibles
         print("\t3. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):

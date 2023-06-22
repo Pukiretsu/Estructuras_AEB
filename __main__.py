@@ -29,7 +29,7 @@ def secciones_settings(modelo):
             print("\t2. Modificar sección existente.")
             print("\t3. Eliminar sección existente.")
         
-        print("\t4. volver.")
+        print("\t4. Volver.")
         
         match input("\nIngrese una opción: "):
             case "1":
@@ -59,7 +59,7 @@ def materiales_settings(modelo):
     os.system("cls")
     while True:
         if not modelo.materiales.empty:
-            print("materiales actuales:\n")
+            print("Materiales actuales:\n")
             print(modelo.materiales)
         else:
             print("No hay materiales en la base de datos.\n")
@@ -71,7 +71,7 @@ def materiales_settings(modelo):
             print("\t2. Modificar material existente.")
             print("\t3. Eliminar material existente.")
         
-        print("\t4. volver.")
+        print("\t4. Volver.")
         
         match input("\nIngrese una opción: "):
             case "1":
@@ -84,18 +84,18 @@ def materiales_settings(modelo):
                     modelo.edit_material()
                     os.system("cls")
                 else:
-                    print("Error: no se reconoce la opcion ingresada.\n\n")
+                    print("Error: no se reconoce la opción ingresada.\n\n")
             case "3":
                 if not modelo.materiales.empty:
                     os.system("cls")
                     modelo.delete_material()
                     os.system("cls")
                 else:
-                    print("Error: no se reconoce la opcion ingresada.\n\n")
+                    print("Error: no se reconoce la opción ingresada.\n\n")
             case "4":
                 return modelo
             case _:
-                print("Error: no se reconoce la opcion ingresada.\n\n")                
+                print("Error: no se reconoce la opción ingresada.\n\n")                
 
 def units_settings(modelo):
     os.system("cls")
@@ -105,7 +105,7 @@ def units_settings(modelo):
         print("\n¿Qué desea hacer?.\n")
         
         print("\t1. Editar Unidades.")
-        print("\t2. volver.")
+        print("\t2. Volver.")
         
         match input("\nIngrese una opción: "):
             case "1":
@@ -115,7 +115,7 @@ def units_settings(modelo):
             case "2":
                 return modelo
             case _:
-                print("Error: no se reconoce la opcion ingresada.\n\n")
+                print("Error: no se reconoce la opción ingresada.\n\n")
 
 def model_settings(modelo):
     os.system("cls")
@@ -169,7 +169,7 @@ def model_settings(modelo):
                 os.system("cls")
                 return modelo
             case _:
-                print("Error: no se reconoce la opcion ingresada.\n\n")
+                print("Error: no se reconoce la opción ingresada.\n\n")
 
 def model_system(modelo):
     while True:
@@ -197,7 +197,7 @@ def model_system(modelo):
                 os.system("cls")
                 break
             case _:
-                print("Error: no se reconoce la opcion ingresada.\n\n")
+                print("Error: no se reconoce la opción ingresada.\n\n")
                 pass 
 
 def main():
@@ -217,7 +217,7 @@ def main():
             case "3":
                 break
             case _:
-                print("Error: no se reconoce la opcion ingresada.\n\n")
+                print("Error: no se reconoce la opción ingresada.\n\n")
                 pass 
 
 if __name__ == "__main__":

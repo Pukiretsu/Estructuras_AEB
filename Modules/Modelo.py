@@ -90,9 +90,8 @@ class model():
         while True:
             try:
                 index = int(input("\nIngrese el id del elemento: "))
-                if indexes.count(index) < 0:
+                if indexes.count(index) == 0:
                     raise Exception() 
-                    #BUG cuando se coloca una condicion de false se despilotea esta mierda
                 break
             except:
                 print("Error: id inválido.\n")

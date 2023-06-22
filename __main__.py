@@ -55,7 +55,49 @@ def secciones_settings(modelo):
                 return modelo
             case _:
                 print("Error: no se reconoce la opcion ingresada.\n\n")
-                
+
+def materiales_settings(modelo):
+    os.system("cls")
+    while True:
+        if not modelo.materiales.empty:
+            print("materiales actuales:\n")
+            print(modelo.materiales)
+            print("\n¿Qué desea hacer?\n")
+        else:
+            print("No hay materiales en la base de datos.\n")
+            print("\n¿Qué desea hacer?.\n")
+        
+        print("\t1. Nueva Sección.")
+        
+        if not modelo.materiales.empty:
+            print("\t2. Modificar sección existente.")
+            print("\t3. Eliminar sección existente.")
+        
+        print("\t4. volver.")
+        
+        match input("\nIngrese una opción: "):
+            case "1":
+                os.system("cls")
+                modelo.add_material()
+                os.system("cls")
+            case "2":
+                if not modelo.materiales.empty:
+                    os.system("cls")
+                    modelo.edit_material()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opcion ingresada.\n\n")
+            case "3":
+                if not modelo.materiales.empty:
+                    os.system("cls")
+                    modelo.delete_material()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opcion ingresada.\n\n")
+            case "4":
+                return modelo
+            case _:
+                print("Error: no se reconoce la opcion ingresada.\n\n")                
 
 def model_settings(modelo):
     os.system("cls")
@@ -90,7 +132,8 @@ def model_settings(modelo):
                 modelo = secciones_settings(modelo)
                 os.system("cls")
             case "4":
-                #TODO Punto de entrada Materiales.
+                modelo = materiales_settings(modelo)
+                os.system("cls")
                 pass
             case "5":
                 #TODO Punto de entrada Cargas Puntuales.

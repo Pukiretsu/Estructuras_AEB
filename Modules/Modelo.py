@@ -130,11 +130,42 @@ class model():
         self.materiales = pd.concat([self.materiales,new_Mate])
         
     def edit_material(self) -> None:
-        pass
+        print("Materiales actuales:\n")
+        print(self.materiales)
     
+        material = {"Nombre": [], "Modulo Young": []}
+        indexes = self.materiales.index.values.tolist()
+        index = get_index(indexes)
         
-    def delet_material(self) -> None:
-        pass
+        print(f"\nMaterial seleccionada id:{index}")
+        print(self.materiales.loc[[index]])
+        
+        nombre = input(f"\nNombre ({self.materiales.loc[index,'Nombre']}): ") or self.materiales.loc[index,'Nombre']
+        moduloY = input(f"\nModulo Young ({self.materiales.loc[index,'Modulo Young']}): ") or self.materiales.loc[index,'Modulo Young']
+        
+        material["Nombre"].append(nombre)
+        material["Modulo Young"].append(moduloY)
+        
+        self.materiales = self.materiales.drop(self.materiales.index[index])
+        new_Mate = pd.DataFrame(material, index=[index])
+        
+        self.materiales = pd.concat([self.materiales,new_Mate])
+        self.materiales = self.materiales.sort_index()
+        
+    def delete_material(self) -> None:
+        #TODO Hacer la eliminacion de entradas
+        print("Materiales actuales:\n")
+        print(self.materiales)
+        
+        indexes = self.materiales.index.values.tolist()
+        index = get_index(indexes)
+                
+        print(f"\nMaterial seleccionado id:{index}")
+        print(self.materiales.loc[[index]])
+        
+        confirmacion = confirmation(f"Confirmar eliminación {self.materiales.loc[index,'Nombre']} id:{index}")
+        if confirmacion:
+            self.materiales = self.materiales.drop(self.materiales.index[index])
             
     # Añadir secciones
     def add_section(self) -> None: #TODO añadir sistema de unidades

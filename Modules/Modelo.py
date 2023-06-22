@@ -237,7 +237,7 @@ class model():
         print("\nNueva sección.")
         
         nombre = input("\nIngrese un nombre para la sección (En blanco nombre por defecto): ")
-        sectionCalcs = calc.get_section_calcs() #TODO agregar unidades a inputs
+        sectionCalcs = calc.get_section_calcs(self.unidades.loc[0,"Longitud"])
         
         try:
             index = max(self.secciones.index)+1
@@ -271,7 +271,7 @@ class model():
         print(self.secciones.loc[[index]])
         
         nombre = input(f"\nNombre ({self.secciones.loc[index,'Nombre']}): ") or self.secciones.loc[index,'Nombre']
-        sectionCalcs = calc.get_section_calcs(True) or (self.secciones.loc[index,'Area'],self.secciones.loc[index,'Inercia'])
+        sectionCalcs = calc.get_section_calcs(self.unidades.loc[0,"Longitud"],True) or (self.secciones.loc[index,'Area'],self.secciones.loc[index,'Inercia'])
         
         section["Nombre"].append(nombre)
         section["Area"].append(sectionCalcs[0])

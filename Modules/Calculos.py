@@ -130,7 +130,7 @@ def get_units():
 
 # Calculos de sección
 
-def get_section_calcs(edit=False):
+def get_section_calcs(units,edit=False):
         while True:
             print("\n\tSecciones.")
             print("\t1. Rectangular.")
@@ -141,11 +141,11 @@ def get_section_calcs(edit=False):
             
             match input("\nIngrese el tipo de seccion: "):
                 case "1": 
-                    return section_Rectangular()
+                    return section_Rectangular(units)
                 case "2": 
-                    return section_TubularRectangular()
+                    return section_TubularRectangular(units)
                 case "3":
-                    return (area_custom(), inercia_custom())
+                    return (area_custom(units), inercia_custom(units))
                 case "4":
                     if edit:
                         return False
@@ -154,21 +154,23 @@ def get_section_calcs(edit=False):
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
 
-def section_Rectangular() -> float: 
-    base = floatInput("Ingrese el valor de la base: ")
-    altura = floatInput("Ingrese el valor de la altura: ")
+def section_Rectangular(units) -> float: 
+    base = floatInput(f"Ingrese el valor de la base ({units}): ")
+    altura = floatInput(f"Ingrese el valor de la altura ({units}): ")
     
     return (base*altura, # Area
             (base*altura**3)/12) # Inercia
 
-def section_TubularRectangular() -> float: 
-    base = floatInput("Ingrese el valor de la base: ")
-    altura = floatInput("Ingrese el valor de la altura: ")
-    espesor = floatInput("Ingrese el valor del espesor: ")
+def section_TubularRectangular(units) -> float: 
+    base = floatInput(f"Ingrese el valor de la base ({units}): ")
+    altura = floatInput(f"Ingrese el valor de la altura ({units}): ")
+    espesor = floatInput(f"Ingrese el valor del espesor ({units}): ")
     
     return ((base*altura)-((base-espesor*2)*(altura-espesor*2)), # Area
             ((base*altura**3)/12)-(((base-espesor*2)*(altura-espesor*2)**3)/12)) # Inercia
 
-def area_custom() -> float: return floatInput("Ingrese el valor del area:")
+def area_custom(units) -> float: 
+    return float(input(f"Ingrese el valor del area ({units}^2):"))
 
-def inercia_custom() -> float: return floatInput("Ingrese el valor de la inercia: ")
+def inercia_custom(units) -> float: 
+    return float(input(f"Ingrese el valor de la inercia ({units}^4): "))

@@ -3,6 +3,12 @@ import json
 import Modules.Calculos as calc
 
 # Definicion de dataframes en el contexto
+
+UNIDADES = pd.DataFrame({"Longitud": pd.Series(dtype="str"),
+                         "Esfuerzo": pd.Series(dtype="str"),
+                         "Angulo": pd.Series(dtype="str"),
+                         "Fuerza": pd.Series(dtype="str")})
+
 MATERIALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                            "Modulo Young": pd.Series(dtype="float")})
 
@@ -72,6 +78,7 @@ def get_index(Index_list) -> bool:
 
 class model():
     def __init__(self) -> None:
+        self.unidades = UNIDADES 
         self.materiales = MATERIALES
         self.secciones = SECCIONES
         self.Nodos = NODOS
@@ -79,6 +86,13 @@ class model():
         self.Cargas_Puntuales = CARGAS_PUNTUALES
         self.Cargas_Distribuidas = CARGAS_DISTRIBUIDAS
         self.Momentos = MOMENTOS
+        
+    def set_units(self) -> None:
+        units = {"Longitud": [], "Esfuerzo": [], "Angulo": [], "Fuerza": []}
+        
+        print("Unidades a trabajar")
+        
+    
     
     #TODO Carga y descarga de modelos
     

@@ -8,7 +8,7 @@ def floatInput (message) -> float:
         except:
             print("Error: No es número.\n")
 
-#TODO: Añadir sistema de unidades
+#TODO Añadir sistema de unidades
 
 # Calculos de sección
 
@@ -19,7 +19,7 @@ def get_section_calcs(edit=False):
             print("\t2. Tubular Rectangular.")
             print("\t3. Añadir valor de area y inercia manualmente.")
             if edit:
-                print("\t4. Dejar valores por defecto")
+                print("\t4. No modificar valores")
             
             match input("\nIngrese el tipo de seccion: "):
                 case "1": 

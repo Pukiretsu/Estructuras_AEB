@@ -8,7 +8,7 @@ def new_model():
 
 def load_model():
     os.system("cls")
-    #TODO
+    #TODO Implementar sistema de cargado
     modelo = mod.model()
     modelo.load_model()
     model_system(modelo)
@@ -20,10 +20,16 @@ def secciones_settings(modelo):
             print("Secciones actuales:\n")
             print(modelo.secciones)
             print("\n¿Qué desea hacer?\n")
+        else:
+            print("No hay secciones en la base de datos.\n")
+            print("\n¿Qué desea hacer?.\n")
         
-        print("\t1. Nueva Seccion.")
-        print("\t2. Modificar seccion existente.")
-        print("\t3. Eliminar seccion existente.")
+        print("\t1. Nueva Sección.")
+        
+        if not modelo.secciones.empty:
+            print("\t2. Modificar sección existente.")
+            print("\t3. Eliminar sección existente.")
+        
         print("\t4. volver.")
         
         match input("\nIngrese una opción: "):
@@ -31,13 +37,16 @@ def secciones_settings(modelo):
                 modelo.add_section()
                 os.system("cls")
             case "2":
-                os.system("cls")
-                modelo.edit_section()
-                os.system("cls")
+                if not modelo.secciones.empty:
+                    os.system("cls")
+                    modelo.edit_section()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opcion ingresada.\n\n")
             case "3":
                 pass
             case "4":
-                break
+                return modelo
             case _:
                 print("Error: no se reconoce la opcion ingresada.\n\n")
                 
@@ -91,7 +100,7 @@ def model_settings(modelo):
                 pass
             case "9":
                 os.system("cls")
-                break
+                return modelo
             case _:
                 print("Error: no se reconoce la opcion ingresada.\n\n")
 
@@ -107,7 +116,7 @@ def model_system(modelo):
         
         match input("\nIngrese una opción: "):
             case "1":
-                model_settings(modelo)
+                modelo = model_settings(modelo)
             case "2": 
                 #TODO Punto de entrada Información estructura.
                 pass
@@ -126,7 +135,6 @@ def model_system(modelo):
 
 def main():
     os.system("cls")
-    #TODO loop con menu
     while True:
         print("Solucionador de estructuras:\n")
         

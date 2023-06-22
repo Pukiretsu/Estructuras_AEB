@@ -66,20 +66,31 @@ class model():
         self.materiales = pd.concat([self.materiales, pd.json_normalize(data, record_path = ["MATERIALES"])])
         self.secciones = pd.concat([self.secciones, pd.json_normalize(data, record_path = ["SECCIONES"])]) 
     
-    
+    # Añadir secciones
     def add_section(self) -> None: #TODO añadir sistema de unidades
         section = {"Nombre": [], "Area": [], "Inercia": []}
         
         print("Nueva sección.")
         
-        section["Nombre"].append(input("\nIngrese un nombre para la sección: "))
-        
+        nombre = input("\nIngrese un nombre para la sección (En blanco nombre por defecto): ")
         sectionCalcs = calc.get_section_calcs()
         
+        index = len(self.secciones.index)
+        
+        if not (nombre):
+            nombre = f"Seccion {index}"
+        
+        # Consolidación de entrada
+        
+        section["Nombre"].append(nombre)
         section["Area"].append(sectionCalcs[0])
         section["Inercia"].append(sectionCalcs[1])
+        
+        new_Sect = pd.DataFrame(section, index=[index])
 
-        self.secciones = pd.concat([self.secciones,pd.DataFrame(section)])
+        # Ingreso a Dataframe de nueva entrada
+        
+        self.secciones = pd.concat([self.secciones,new_Sect])
         
     def edit_section(self) -> None:
         print("Secciones actuales:\n")
@@ -99,9 +110,10 @@ class model():
         print(f"\nSeccion seleccionada id:{index}")
         print(self.secciones.loc[[index]])
         
-        section["Nombre"].append(input(f"\nNombre ({self.secciones.loc[index,'Nombre']}): ") or self.secciones.loc[index,'Nombre'])
-        
+        nombre = input(f"\nNombre ({self.secciones.loc[index,'Nombre']}): ") or self.secciones.loc[index,'Nombre']
         sectionCalcs = calc.get_section_calcs(True) or (self.secciones.loc[index,'Area'],self.secciones.loc[index,'Inercia'])
+        
+        section["Nombre"].append(nombre)
         section["Area"].append(sectionCalcs[0])
         section["Inercia"].append(sectionCalcs[1])
         
@@ -109,6 +121,10 @@ class model():
         new_Sect = pd.DataFrame(section, index=[index])
         self.secciones = pd.concat([self.secciones,new_Sect])
         self.secciones = self.secciones.sort_index()
+    
+    def delete_section(self) -> None:
+        #TODO Hacer la eliminacion de entradas
+        pass
 
 if __name__ == "__main__":
     model = model()

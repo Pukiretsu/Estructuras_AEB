@@ -40,9 +40,31 @@ def set_structure_type():
 
 # Sistema de nodos
 
-def set_coords():
-    coord_x = floatInput("Coordenada x del nodo: ")
-    coord_y = floatInput("Coordenada y del nodo: ")
+def set_coords(previousCoords=None,edit=False):
+    if not edit:
+        coord_x = floatInput("Coordenada x del nodo: ")
+        coord_y = floatInput("Coordenada y del nodo: ")
+    else:
+        while True:
+            print("Coordenada a editar.")
+            print("\t1. Coordenada x.")
+            print("\t2. Coordenada y.")
+            print("\t3. Ambas.")
+            print("\n4. Mantener coordenadas")
+            match input("\nIngrese el tipo de seccion: "):
+                case "1": 
+                    coord_x = floatInput("Coordenada x del nodo: ")
+                    coord_y = previousCoords[1]
+                case "2": 
+                    coord_x = previousCoords[0]
+                    coord_y = floatInput("Coordenada y del nodo: ")
+                case "3":
+                    coord_x = floatInput("Coordenada x del nodo: ")
+                    coord_y = floatInput("Coordenada y del nodo: ")
+                case "4":
+                    return False
+                case _:
+                    print("Error: No se reconoce la opcion ingresada.\n\n")
     return(coord_x,coord_y)
 
 def get_grados_Libertad(structureType):
@@ -338,8 +360,6 @@ def unit_Grados():
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
 
-
-#TODO Añadir sistema de unidades
 def get_units():
     print("\n¿Qué unidad desea cambiar?: ")
     while True:
@@ -363,7 +383,6 @@ def get_units():
                     return "N"
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
-    
 
 # Calculos de sección
 

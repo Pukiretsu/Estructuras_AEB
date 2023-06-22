@@ -181,9 +181,9 @@ class model():
         print("\nNuevo nodo.")
         
         try:
-            index = max(self.secciones.index) + 1
+            index = max(self.nodos.index) + 1
         except:
-            index = len(self.secciones.index)
+            index = len(self.nodos.index)
         
         nombre = input("\nIngrese un nombre para el nodo (En blanco nombre por defecto): ")
         if not (nombre):
@@ -212,7 +212,61 @@ class model():
         
         new_node = pd.DataFrame(node, index=[index])
         self.nodos = pd.concat([self.nodos,new_node]) 
+     
+    def edit_node(self) -> None:
+        print("\nSecciones actuales:\n")
+        print(self.nodos)
         
+        node = {"Nombre": [], "Coordenada x": [], "Coordenada y": [], "U": [], "V": [], "Phi": []}
+    
+        indexes = self.nodos.index.values.tolist()
+        index = get_index(indexes)
+        
+        print(f"\nNodo seleccionado id: [{index}]")
+        print(self.nodos.loc[[index]])
+        
+        nombre = input(f"\nNombre ({self.nodos.loc[index,'Nombre']}): ") or self.nodos.loc[index,'Nombre']
+        coordenadas = calc.set_coords((self.nodos.loc[index,'Coordenada x'],self.nodos.loc[index,'Coordenada y']),True) 
+        gdl = calc.get_grados_Libertad(self.tipo_estructura)       
+        
+        node["Nombre"].append(nombre)
+        node["Coordenada x"].append(coordenadas[0])
+        node["Coordenada y"].append(coordenadas[1])
+        
+        match self.tipo_estructura:
+            case "Cercha":
+                node["U"].append(gdl[0])
+                node["V"].append(gdl[1])
+                node["Phi"].append(None)
+            case "Viga":
+                node["U"].append(gdl[0])
+                node["V"].append(None)
+                node["Phi"].append(gdl[1])
+            case "Portico":
+                node["U"].append(gdl[0])
+                node["V"].append(gdl[1])
+                node["Phi"].append(gdl[2])
+        
+        self.nodos = self.nodos.drop(self.nodos.index[index])
+        new_node = pd.DataFrame(node, index=[index])
+        
+        self.nodos = pd.concat([self.nodos,new_node])
+        self.nodos = self.nodos.sort_index()
+        
+        
+    def delete_node(self) -> None:
+        print("\nSecciones actuales:\n")
+        print(self.nodos)
+        
+        indexes = self.nodos.index.values.tolist()
+        index = get_index(indexes)
+        
+        print(f"\nNodo seleccionado id: [{index}]")
+        print(self.nodos.loc[[index]])
+        
+        confirmacion = confirmation(f"Confirmar eliminación {self.nodos.loc[index,'Nombre']} id:{index}")
+        if confirmacion:
+            self.nodos = self.nodos.drop(self.nodos.index[index])
         
     # Secciones
     def add_section(self) -> None:
@@ -251,7 +305,7 @@ class model():
         indexes = self.secciones.index.values.tolist()
         index = get_index(indexes)
                 
-        print(f"\nSeccion seleccionada id:{index}")
+        print(f"\nSeccion seleccionada id: [{index}]")
         print(self.secciones.loc[[index]])
         
         nombre = input(f"\nNombre ({self.secciones.loc[index,'Nombre']}): ") or self.secciones.loc[index,'Nombre']
@@ -315,7 +369,7 @@ class model():
         indexes = self.materiales.index.values.tolist()
         index = get_index(indexes)
         
-        print(f"\nMaterial seleccionada id:{index}")
+        print(f"\nMaterial seleccionada id: [{index}]")
         print(self.materiales.loc[[index]])
         
         nombre = input(f"\nNombre ({self.materiales.loc[index,'Nombre']}): ") or self.materiales.loc[index,'Nombre']

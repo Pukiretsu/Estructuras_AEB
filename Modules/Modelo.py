@@ -87,6 +87,25 @@ class model():
         self.Cargas_Distribuidas = CARGAS_DISTRIBUIDAS
         self.Momentos = MOMENTOS
         
+    def convert_Longitud(self, factor_conversion):        
+        # Area
+        for idx in self.secciones.index:
+            self.secciones.loc[idx,"Area"] = self.secciones.loc[idx,"Area"]*(factor_conversion**2)
+        # Inercia
+        for idx in self.secciones.index:
+            self.secciones.loc[idx,"Inercia"] = self.secciones.loc[idx,"Inercia"]*(factor_conversion**4)
+    
+    def convert_Fuerza(self, factor_conversion):
+        pass
+    
+    def convert_Esfuerzo(self, factor_conversion):
+        # Modulo young
+        for idx in self.materiales.index:
+            self.materiales.loc[idx,"Modulo Young"] = self.materiales.loc[idx,"Modulo Young"]*factor_conversion
+    
+    def convert_Angulo(self, factor_conversion):
+        pass
+        
     def set_units(self) -> None:
         units = {"Longitud": [], "Fuerza": [], "Esfuerzo": [], "Angulo": [], }
         
@@ -107,15 +126,31 @@ class model():
                 case "L":
                     units["Longitud"].pop(0)
                     units["Longitud"].append(unidades[1])
+                    
+                    fact_conversion = calc.get_conversion_longitud(self.unidades.loc[0,'Longitud'],unidades[1])
+                    self.convert_Longitud(fact_conversion) 
+                
                 case "F":
                     units["Fuerza"].pop(0)
                     units["Fuerza"].append(unidades[1])
+                    
+                    fact_conversion = calc.get_conversion_fuerza(self.unidades.loc[0,'Fuerza'],unidades[1])
+                    self.convert_Fuerza(fact_conversion) 
+                
                 case "E":
                     units["Esfuerzo"].pop(0)
                     units["Esfuerzo"].append(unidades[1])
+                    
+                    fact_conversion = calc.get_conversion_esfuerzo(self.unidades.loc[0,'Esfuerzo'],unidades[1])
+                    self.convert_Esfuerzo(fact_conversion) 
+                
                 case "G":
                     units["Angulo"].pop(0)
                     units["Angulo"].append(unidades[1])
+                    
+                    fact_conversion = calc.get_conversion_angulo(self.unidades.loc[0,'Angulo'],unidades[1])
+                    self.convert_Angulo(fact_conversion) 
+                
                 case _:
                     pass
         

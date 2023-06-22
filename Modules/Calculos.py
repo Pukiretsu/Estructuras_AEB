@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import math as mt 
 
 def floatInput (message) -> float:
     while True:
@@ -133,11 +134,63 @@ def get_conversion_esfuerzo(unit_in, unit_out):
                     return 1
                         
 def get_conversion_fuerza(unit_in, unit_out):
-    pass
+    match unit_in:
+        case "kN":
+            match unit_out:
+                case "N":
+                    return 1000
+                case "lbf":
+                    return 0.2248/1000
+                case "kipf":
+                    return 0.2248/1000000
+                case _:
+                    return 1
+        case "N": 
+            match unit_out:
+                case "kN": 
+                    return 1/1000
+                case "lbf":
+                    return 0.2248
+                case "kipf":
+                    return 0.2248/1000
+                case _:
+                    return 1
+        case "lbf":
+            match unit_out:
+                case "kN":
+                    return 0.00448
+                case "N":
+                    return 4.482
+                case "kipf":
+                    return 1/1000
+                case _:
+                    return 1
+        case "kipf":
+            match unit_out:
+                case "kN":
+                    return 4.44822
+                case "N": 
+                    return 4448.22
+                case "lbf":
+                    return 1000
+                case _:
+                    return 1
     
 def get_conversion_angulo(unit_in, unit_out):
-    pass
-    
+    match unit_in:
+        case "°":
+            match unit_out:
+                case "rad":
+                    return (mt.pi)/180
+                case _:
+                    return 1
+        case "rad":
+            match unit_out:
+                case "°":
+                    return 180/(mt.pi)
+                case _:
+                    return 1
+                
 def unit_Longitud():
     while True:
         print("\n\tLongitud.")
@@ -169,8 +222,9 @@ def unit_Fuerza():
         print("\n\tFuerza.")
         print("\t1. Kilonewton. (kN)")
         print("\t2. Newton. (N)")
-        print("\t3. Libras. (lb)")
-        print("\t4. Volver.") # Siempre es la ultima
+        print("\t3. Libra fuerza. (lbf)")
+        print("\t4. KiloLibra fuerza. (kipf)")
+        print("\t5. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):
                 case "1": 
@@ -178,8 +232,10 @@ def unit_Fuerza():
                 case "2": 
                     return "N"
                 case "3": 
-                    return "lb"
-                case "4":
+                    return "lbf"
+                case "4": 
+                    return "kipf"
+                case "5":
                     return False
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")

@@ -47,6 +47,29 @@ MOMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                          "Elemento": pd.Series(dtype="str"),
                          "Distancia": pd.Series(dtype="float")})
 
+def confirmation(message) -> bool:
+    while True:
+        print(f"\n{message}")
+        response = input("(s/N): ") or "N"
+        if response == "s" or response == "S":
+            return True
+        elif response == "N" or response == "n":
+            return False
+        else:
+            pass
+            
+
+def get_index(Index_list) -> bool:
+    while True:
+            try:
+                index = int(input("\nIngrese el id del elemento: "))
+                if Index_list.count(index) == 0:
+                    raise Exception() 
+                break
+            except:
+                print("Error: id inválido.\n")
+    return index
+
 class model():
     def __init__(self) -> None:
         self.materiales = MATERIALES
@@ -75,7 +98,7 @@ class model():
         nombre = input("\nIngrese un nombre para la sección (En blanco nombre por defecto): ")
         sectionCalcs = calc.get_section_calcs()
         
-        index = len(self.secciones.index)
+        index = max(self.secciones.index)+1
         
         if not (nombre):
             nombre = f"Seccion {index}"
@@ -95,17 +118,10 @@ class model():
     def edit_section(self) -> None:
         print("Secciones actuales:\n")
         print(self.secciones)
-        section = {"Nombre": [], "Area": [], "Inercia": []}
         
+        section = {"Nombre": [], "Area": [], "Inercia": []}
         indexes = self.secciones.index.values.tolist()
-        while True:
-            try:
-                index = int(input("\nIngrese el id del elemento: "))
-                if indexes.count(index) == 0:
-                    raise Exception() 
-                break
-            except:
-                print("Error: id inválido.\n")
+        index = get_index(indexes)
                 
         print(f"\nSeccion seleccionada id:{index}")
         print(self.secciones.loc[[index]])
@@ -119,12 +135,24 @@ class model():
         
         self.secciones = self.secciones.drop(self.secciones.index[index])
         new_Sect = pd.DataFrame(section, index=[index])
+        
         self.secciones = pd.concat([self.secciones,new_Sect])
         self.secciones = self.secciones.sort_index()
     
     def delete_section(self) -> None:
         #TODO Hacer la eliminacion de entradas
-        pass
+        print("Secciones actuales:\n")
+        print(self.secciones)
+        
+        indexes = self.secciones.index.values.tolist()
+        index = get_index(indexes)
+                
+        print(f"\nSeccion seleccionada id:{index}")
+        print(self.secciones.loc[[index]])
+        
+        confirmacion = confirmation(f"Confirmar eliminación {self.secciones.loc[index,'Nombre']} id:{index}")
+        if confirmacion:
+            self.secciones = self.secciones.drop(self.secciones.index[index])
 
 if __name__ == "__main__":
     model = model()

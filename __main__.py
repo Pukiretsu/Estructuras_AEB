@@ -34,6 +34,7 @@ def secciones_settings(modelo):
         
         match input("\nIngrese una opción: "):
             case "1":
+                os.system("cls")
                 modelo.add_section()
                 os.system("cls")
             case "2":
@@ -44,7 +45,12 @@ def secciones_settings(modelo):
                 else:
                     print("Error: no se reconoce la opcion ingresada.\n\n")
             case "3":
-                pass
+                if not modelo.secciones.empty:
+                    os.system("cls")
+                    modelo.delete_section()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opcion ingresada.\n\n")
             case "4":
                 return modelo
             case _:

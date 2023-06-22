@@ -10,7 +10,7 @@ def floatInput (message) -> float:
             
 # Sistema de unidades:
 
-def conv_unitLongitud(unit_in, unit_out):
+def get_conversion_longitud(unit_in, unit_out):
     match unit_in: 
         case "m":
             match unit_out:
@@ -22,6 +22,8 @@ def conv_unitLongitud(unit_in, unit_out):
                     return 39.27
                 case "ft":
                     return 3.28
+                case _:
+                    return 1
         case "cm":
             match unit_out:
                 case "m":
@@ -32,6 +34,8 @@ def conv_unitLongitud(unit_in, unit_out):
                     return 0.3927
                 case "ft":
                     return 0.0328
+                case _:
+                    return 1
         case "mm":
             match unit_out:
                 case "m":
@@ -42,6 +46,8 @@ def conv_unitLongitud(unit_in, unit_out):
                     return 0.03927
                 case "ft":
                     return 0.00328
+                case _:
+                    return 1
         case "in":
             match unit_out:
                 case "m": 
@@ -52,6 +58,8 @@ def conv_unitLongitud(unit_in, unit_out):
                     return 25.4
                 case "ft":
                     return 1/12
+                case _:
+                    return 1
         case "ft":
             match unit_out:
                 case "m":
@@ -62,8 +70,10 @@ def conv_unitLongitud(unit_in, unit_out):
                     return 304.8
                 case "in":
                     return 12  
+                case _:
+                    return 1
         
-def conv_unitEsfuerzo(unit_in, unit_out):
+def get_conversion_esfuerzo(unit_in, unit_out):
     match unit_in:
         case "Gpa":
             match unit_out:
@@ -77,6 +87,8 @@ def conv_unitEsfuerzo(unit_in, unit_out):
                     return 145038
                 case "Kpsi":
                     return 145.038
+                case _:
+                    return 1
         case "Mpa":
             match unit_out:
                 case "Gpa": 
@@ -89,6 +101,8 @@ def conv_unitEsfuerzo(unit_in, unit_out):
                     return 145.038
                 case "Kpsi":
                     return 0.145038
+                case _:
+                    return 1
         case "Kpa":
             match unit_out:
                 case "Gpa":
@@ -101,6 +115,8 @@ def conv_unitEsfuerzo(unit_in, unit_out):
                     return 0.145038
                 case "Kpsi":
                     return 0.145038/1000
+                case _:
+                    return 1
         case "pa":
             match unit_out:
                 case "Gpa":
@@ -113,11 +129,13 @@ def conv_unitEsfuerzo(unit_in, unit_out):
                     return 0.145038/1000
                 case "Kpsi":
                     return 0.145038/1000000
+                case _:
+                    return 1
                         
-def conv_unitFuerza(unit_in, unit_out):
+def get_conversion_fuerza(unit_in, unit_out):
     pass
     
-def conv_unitgrados(unit_in, unit_out):
+def get_conversion_angulo(unit_in, unit_out):
     pass
     
 def unit_Longitud():

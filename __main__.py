@@ -19,11 +19,10 @@ def secciones_settings(modelo):
         if not modelo.secciones.empty:
             print("Secciones actuales:\n")
             print(modelo.secciones)
-            print("\n¿Qué desea hacer?\n")
         else:
             print("No hay secciones en la base de datos.\n")
-            print("\n¿Qué desea hacer?.\n")
         
+        print("\n¿Qué desea hacer?\n")
         print("\t1. Nueva Sección.")
         
         if not modelo.secciones.empty:
@@ -62,11 +61,10 @@ def materiales_settings(modelo):
         if not modelo.materiales.empty:
             print("materiales actuales:\n")
             print(modelo.materiales)
-            print("\n¿Qué desea hacer?\n")
         else:
             print("No hay materiales en la base de datos.\n")
-            print("\n¿Qué desea hacer?.\n")
         
+        print("\n¿Qué desea hacer?\n")
         print("\t1. Nuevo Material.")
         
         if not modelo.materiales.empty:
@@ -98,6 +96,26 @@ def materiales_settings(modelo):
                 return modelo
             case _:
                 print("Error: no se reconoce la opcion ingresada.\n\n")                
+
+def units_settings(modelo):
+    os.system("cls")
+    while True:
+        print("Unidades actuales:\n")
+        print(modelo.unidades)
+        print("\n¿Qué desea hacer?.\n")
+        
+        print("\t1. Editar Unidades.")
+        print("\t2. volver.")
+        
+        match input("\nIngrese una opción: "):
+            case "1":
+                os.system("cls")
+                modelo.set_units()
+                os.system("cls")
+            case "2":
+                return modelo
+            case _:
+                print("Error: no se reconoce la opcion ingresada.\n\n")
 
 def model_settings(modelo):
     os.system("cls")
@@ -145,8 +163,8 @@ def model_settings(modelo):
                 #TODO Punto de entrada Cargas Momentos.
                 pass
             case "8":
-                #TODO Punto de entrada Unidades del modelo.
-                pass
+                modelo = units_settings(modelo)
+                os.system("cls")
             case "9":
                 os.system("cls")
                 return modelo

@@ -98,7 +98,10 @@ class model():
         nombre = input("\nIngrese un nombre para la sección (En blanco nombre por defecto): ")
         sectionCalcs = calc.get_section_calcs()
         
-        index = max(self.secciones.index)+1
+        try:
+            index = max(self.secciones.index)+1
+        except:
+            index = len(self.secciones.index)
         
         if not (nombre):
             nombre = f"Seccion {index}"

@@ -7,8 +7,119 @@ def floatInput (message) -> float:
             return float(input(message))
         except:
             print("Error: No es número.\n")
-
+            
 # Sistema de unidades:
+
+def conv_unitLongitud(unit_in, unit_out):
+    match unit_in: 
+        case "m":
+            match unit_out:
+                case "cm":
+                    return 100
+                case "mm":
+                    return 1000
+                case "in":
+                    return 39.27
+                case "ft":
+                    return 3.28
+        case "cm":
+            match unit_out:
+                case "m":
+                    return 1/100
+                case "mm":
+                    return 10
+                case "in":
+                    return 0.3927
+                case "ft":
+                    return 0.0328
+        case "mm":
+            match unit_out:
+                case "m":
+                    return 1/1000
+                case "cm":
+                    return 1/10
+                case "in":
+                    return 0.03927
+                case "ft":
+                    return 0.00328
+        case "in":
+            match unit_out:
+                case "m": 
+                    return 0.0254
+                case "cm":
+                    return 2.54
+                case "mm":
+                    return 25.4
+                case "ft":
+                    return 1/12
+        case "ft":
+            match unit_out:
+                case "m":
+                    return 0.3048
+                case "cm":
+                    return 30.48
+                case "mm":
+                    return 304.8
+                case "in":
+                    return 12  
+        
+def conv_unitEsfuerzo(unit_in, unit_out):
+    match unit_in:
+        case "Gpa":
+            match unit_out:
+                case "Mpa":
+                    return 1*10**3
+                case "Kpa":
+                    return 1*10**6
+                case "pa":
+                    return 1*10**9
+                case "psi":
+                    return 145038
+                case "Kpsi":
+                    return 145.038
+        case "Mpa":
+            match unit_out:
+                case "Gpa": 
+                    return 1/1000
+                case "Kpa": 
+                    return 1*10**3
+                case "pa":
+                    return 1*10*6
+                case "psi":
+                    return 145.038
+                case "Kpsi":
+                    return 0.145038
+        case "Kpa":
+            match unit_out:
+                case "Gpa":
+                    return 1/(1*10**6)
+                case "Mpa": 
+                    return 1/1000
+                case "pa":
+                    return 1000
+                case "psi":
+                    return 0.145038
+                case "Kpsi":
+                    return 0.145038/1000
+        case "pa":
+            match unit_out:
+                case "Gpa":
+                    return 1/(1*10**9)
+                case "Mpa":
+                    return 1/(1*10**6)
+                case "Kpa":
+                    return 1/1000
+                case "psi":
+                    return 0.145038/1000
+                case "Kpsi":
+                    return 0.145038/1000000
+                        
+def conv_unitFuerza(unit_in, unit_out):
+    pass
+    
+def conv_unitgrados(unit_in, unit_out):
+    pass
+    
 def unit_Longitud():
     while True:
         print("\n\tLongitud.")
@@ -62,8 +173,8 @@ def unit_Esfuerzo():
         print("\t2. Megapascales. (Mpa)")
         print("\t3. Kilopascales. (Kpa)")
         print("\t4. Pascales. (pa)")
-        print("\t5. Kilolibra por pulgada cuadrada. (Kpsi)")
-        print("\t6. Megalibra por pulgada cuadrada. (Mpsi)")
+        print("\t5. Libra por pulgada cuadrada. (psi)")
+        print("\t6. Kilolibra por pulgada cuadrada. (Kpsi)")
         print("\t7. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):
@@ -76,9 +187,9 @@ def unit_Esfuerzo():
                 case "4": 
                     return "pa"
                 case "5": 
-                    return "Kpsi"
+                    return "psi"
                 case "6": 
-                    return "Mpsi"
+                    return "Kpsi"
                 case "7":
                     return False
                 case _:

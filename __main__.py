@@ -15,12 +15,20 @@ def load_model():
 
 def secciones_settings(modelo):
     os.system("cls")
+    
+    def show_units():
+        print("Unidades.")
+        print("---------------------")
+        print(f"Area: {modelo.unidades.loc[0,'Longitud']}^2")
+        print(f"Inercia: {modelo.unidades.loc[0,'Longitud']}^4")
+           
     while True:
+        show_units()
         if not modelo.secciones.empty:
-            print("Secciones actuales:\n")
+            print("\nSecciones actuales:\n")
             print(modelo.secciones)
         else:
-            print("No hay secciones en la base de datos.\n")
+            print("\nNo hay secciones en la base de datos.")
         
         print("\n¿Qué desea hacer?\n")
         print("\t1. Nueva Sección.")
@@ -34,11 +42,13 @@ def secciones_settings(modelo):
         match input("\nIngrese una opción: "):
             case "1":
                 os.system("cls")
+                show_units()
                 modelo.add_section()
                 os.system("cls")
             case "2":
                 if not modelo.secciones.empty:
                     os.system("cls")
+                    show_units()
                     modelo.edit_section()
                     os.system("cls")
                 else:
@@ -46,6 +56,7 @@ def secciones_settings(modelo):
             case "3":
                 if not modelo.secciones.empty:
                     os.system("cls")
+                    show_units()
                     modelo.delete_section()
                     os.system("cls")
                 else:
@@ -57,12 +68,19 @@ def secciones_settings(modelo):
 
 def materiales_settings(modelo):
     os.system("cls")
+    
+    def show_units():
+        print("Unidades.")
+        print("---------------------")
+        print(f"Modulo de Young: {modelo.unidades.loc[0,'Esfuerzo']}")
+    
     while True:
+        show_units()
         if not modelo.materiales.empty:
-            print("Materiales actuales:\n")
+            print("\nMateriales actuales:\n")
             print(modelo.materiales)
         else:
-            print("No hay materiales en la base de datos.\n")
+            print("\nNo hay materiales en la base de datos.")
         
         print("\n¿Qué desea hacer?\n")
         print("\t1. Nuevo Material.")
@@ -76,11 +94,13 @@ def materiales_settings(modelo):
         match input("\nIngrese una opción: "):
             case "1":
                 os.system("cls")
+                show_units()
                 modelo.add_material()
                 os.system("cls")
             case "2":
                 if not modelo.materiales.empty:
                     os.system("cls")
+                    show_units()
                     modelo.edit_material()
                     os.system("cls")
                 else:
@@ -88,6 +108,7 @@ def materiales_settings(modelo):
             case "3":
                 if not modelo.materiales.empty:
                     os.system("cls")
+                    show_units()
                     modelo.delete_material()
                     os.system("cls")
                 else:

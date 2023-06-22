@@ -122,10 +122,7 @@ class model():
         self.unidades = self.unidades.drop(self.unidades.index[0])
         new_units = pd.DataFrame(units)
         self.unidades = pd.concat([self.unidades, new_units])
-        
-            
-        
-    
+
     #TODO Carga y descarga de modelos
     
     def load_model(self) -> None:
@@ -139,10 +136,10 @@ class model():
     def add_material(self) -> None:
         material = {"Nombre": [], "Modulo Young": []}
         
-        print("Nuevo Material.")
+        print("\nNuevo Material.")
         
-        nombre = input("\nIngrese un nombre para el material(En blanco nombre por defecto): ")
-        moduloY = input("\nIngresar el modulo de Young: ")
+        nombre = input("\nIngrese un nombre para el material (En blanco nombre por defecto): ")
+        moduloY = input(f"\nIngresar el modulo de Young ({self.unidades.loc[0,'Esfuerzo']}): ")
       
         try:
             index = max(self.materiales.index)+1
@@ -162,7 +159,7 @@ class model():
         self.materiales = pd.concat([self.materiales,new_Mate])
         
     def edit_material(self) -> None:
-        print("Materiales actuales:\n")
+        print("\nMateriales actuales:\n")
         print(self.materiales)
     
         material = {"Nombre": [], "Modulo Young": []}
@@ -173,7 +170,7 @@ class model():
         print(self.materiales.loc[[index]])
         
         nombre = input(f"\nNombre ({self.materiales.loc[index,'Nombre']}): ") or self.materiales.loc[index,'Nombre']
-        moduloY = input(f"\nModulo Young ({self.materiales.loc[index,'Modulo Young']}): ") or self.materiales.loc[index,'Modulo Young']
+        moduloY = input(f"\nModulo Young ({self.materiales.loc[index,'Modulo Young']} {self.unidades.loc[0,'Esfuerzo']}): ") or self.materiales.loc[index,'Modulo Young']
         
         material["Nombre"].append(nombre)
         material["Modulo Young"].append(moduloY)
@@ -185,8 +182,7 @@ class model():
         self.materiales = self.materiales.sort_index()
         
     def delete_material(self) -> None:
-        #TODO Hacer la eliminacion de entradas
-        print("Materiales actuales:\n")
+        print("\nMateriales actuales:\n")
         print(self.materiales)
         
         indexes = self.materiales.index.values.tolist()
@@ -200,13 +196,13 @@ class model():
             self.materiales = self.materiales.drop(self.materiales.index[index])
             
     # Añadir secciones
-    def add_section(self) -> None: #TODO añadir sistema de unidades
+    def add_section(self) -> None:
         section = {"Nombre": [], "Area": [], "Inercia": []}
         
-        print("Nueva sección.")
+        print("\nNueva sección.")
         
         nombre = input("\nIngrese un nombre para la sección (En blanco nombre por defecto): ")
-        sectionCalcs = calc.get_section_calcs()
+        sectionCalcs = calc.get_section_calcs() #TODO agregar unidades a inputs
         
         try:
             index = max(self.secciones.index)+1
@@ -229,7 +225,7 @@ class model():
         self.secciones = pd.concat([self.secciones,new_Sect])
         
     def edit_section(self) -> None:
-        print("Secciones actuales:\n")
+        print("\nSecciones actuales:\n")
         print(self.secciones)
         
         section = {"Nombre": [], "Area": [], "Inercia": []}
@@ -253,8 +249,7 @@ class model():
         self.secciones = self.secciones.sort_index()
     
     def delete_section(self) -> None:
-        #TODO Hacer la eliminacion de entradas
-        print("Secciones actuales:\n")
+        print("\nSecciones actuales:\n")
         print(self.secciones)
         
         indexes = self.secciones.index.values.tolist()

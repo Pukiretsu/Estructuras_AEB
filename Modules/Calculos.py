@@ -2,12 +2,64 @@ import pandas as pd
 import numpy as np
 import math as mt 
 
+def intInput (message) -> int:
+    while True:
+        try:
+            return int(input(message))
+        except:
+            print("Error: No es número.\n")
+
 def floatInput (message) -> float:
     while True:
         try:
             return float(input(message))
         except:
             print("Error: No es número.\n")
+
+# Tipo de estructura
+
+def set_structure_type():
+    while True:
+        print("Tipo de estructura.\n")
+        print("\t1. Cercha.")
+        print("\t2. Viga.")
+        print("\t3. Portico.")
+        print("\n4. Volver")
+        
+        match input("\nIngrese el tipo de seccion: "):
+            case "1": 
+                return "Cercha"
+            case "2": 
+                return "Viga"
+            case "3":
+                return "Portico"
+            case "4":
+                return False
+            case _:
+                print("Error: No se reconoce la opcion ingresada.\n\n")
+
+# Sistema de nodos
+
+def set_coords():
+    coord_x = floatInput("Coordenada x del nodo: ")
+    coord_y = floatInput("Coordenada y del nodo: ")
+    return(coord_x,coord_y)
+
+def get_grados_Libertad(structureType):
+    match structureType:
+        case "Cercha":
+            u = intInput("Ingrese el grado de libertad u del nodo: ")
+            v = intInput("Ingrese el grado de libertad v del nodo: ")
+            return (u,v)
+        case "Viga":
+            u = intInput("Ingrese el grado de libertad u del nodo: ")
+            phi = intInput("Ingrese el grado de libertad phi del nodo: ")
+            return (u,phi)
+        case "Portico":
+            u = intInput("Ingrese el grado de libertad u del nodo: ")
+            v = intInput("Ingrese el grado de libertad v del nodo: ")
+            phi = intInput("Ingrese el grado de libertad phi del nodo: ")
+            return (u,v,phi)
             
 # Sistema de unidades:
 
@@ -316,28 +368,28 @@ def get_units():
 # Calculos de sección
 
 def get_section_calcs(units,edit=False):
-        while True:
-            print("\n\tSecciones.")
-            print("\t1. Rectangular.")
-            print("\t2. Tubular Rectangular.")
-            print("\t3. Añadir valor de area y inercia manualmente.")
-            if edit:
-                print("\t4. No modificar valores")
-            
-            match input("\nIngrese el tipo de seccion: "):
-                case "1": 
-                    return section_Rectangular(units)
-                case "2": 
-                    return section_TubularRectangular(units)
-                case "3":
-                    return (area_custom(units), inercia_custom(units))
-                case "4":
-                    if edit:
-                        return False
-                    else:
-                        print("Error: No se reconoce la opcion ingresada.\n\n")
-                case _:
+    while True:
+        print("\n\tSecciones.")
+        print("\t1. Rectangular.")
+        print("\t2. Tubular Rectangular.")
+        print("\t3. Añadir valor de area y inercia manualmente.")
+        if edit:
+            print("\t4. No modificar valores")
+        
+        match input("\nIngrese el tipo de seccion: "):
+            case "1": 
+                return section_Rectangular(units)
+            case "2": 
+                return section_TubularRectangular(units)
+            case "3":
+                return (area_custom(units), inercia_custom(units))
+            case "4":
+                if edit:
+                    return False
+                else:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
+            case _:
+                print("Error: No se reconoce la opcion ingresada.\n\n")
 
 def section_Rectangular(units) -> float: 
     base = floatInput(f"Ingrese el valor de la base ({units}): ")
@@ -355,7 +407,7 @@ def section_TubularRectangular(units) -> float:
             ((base*altura**3)/12)-(((base-espesor*2)*(altura-espesor*2)**3)/12)) # Inercia
 
 def area_custom(units) -> float: 
-    return float(input(f"Ingrese el valor del area ({units}^2):"))
+    return floatInput(f"Ingrese el valor del area ({units}^2): ")
 
 def inercia_custom(units) -> float: 
-    return float(input(f"Ingrese el valor de la inercia ({units}^4): "))
+    return floatInput(f"Ingrese el valor de la inercia ({units}^4): ")

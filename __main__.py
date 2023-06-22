@@ -6,7 +6,10 @@ import Modules.Modelo as mod
 def new_model():
     os.system("cls")
     modelo = mod.model()
-    model_system(modelo)
+    modelo.set_structureType()
+    if modelo.tipo_estructura:
+        os.system("cls")
+        model_system(modelo)    
 
 def load_model():
     os.system("cls")
@@ -22,7 +25,47 @@ def save_model(model):
 # Configuracion del modelo
 
 def nodos_settings(modelo):
-    #TODO: Menu de nodos
+    os.system("cls")
+           
+    while True:
+        if not modelo.nodos.empty:
+            print("\nNodos actuales:\n")
+            print(modelo.nodos)
+        else:
+            print("\nNo hay Nodos en la base de datos.")
+        
+        print("\n¿Qué desea hacer?\n")
+        print("\t1. Nuevo Nodo.")
+        
+        if not modelo.nodos.empty:
+            print("\t2. Modificar Nodo existente.")
+            print("\t3. Eliminar Nodo existente.")
+        
+        print("\t4. Volver.")
+        
+        match input("\nIngrese una opción: "):
+            case "1":
+                os.system("cls")
+                modelo.add_node()
+                os.system("cls")
+            case "2":
+                if not modelo.Nodos.empty:
+                    os.system("cls")
+                    modelo.edit_section()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opcion ingresada.\n\n")
+            case "3":
+                if not modelo.Nodos.empty:
+                    os.system("cls")
+                    modelo.delete_section()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opcion ingresada.\n\n")
+            case "4":
+                return modelo
+            case _:
+                print("Error: no se reconoce la opcion ingresada.\n\n")
     pass
 
 def elementos_settings(modelo):
@@ -256,8 +299,8 @@ def model_system(modelo):
                 pass 
 
 def main():
-    os.system("cls")
     while True:
+        os.system("cls")
         print("Solucionador de estructuras:\n")
         
         print("\t1. Nuevo modelo.")

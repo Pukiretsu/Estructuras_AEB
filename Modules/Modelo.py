@@ -17,10 +17,10 @@ SECCIONES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                           "Inercia": pd.Series(dtype="float")})
 
 NODOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
-                     "Coordenada X": pd.Series(dtype="float"),
+                     "Coordenada x": pd.Series(dtype="float"),
                      "Coordenada y": pd.Series(dtype="float"),
-                     "V": pd.Series(dtype="int"), 
                      "U": pd.Series(dtype="int"),
+                     "V": pd.Series(dtype="int"), 
                      "Phi": pd.Series(dtype="int")})
 
 ELEMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
@@ -78,10 +78,11 @@ def get_index(Index_list) -> bool:
 
 class model():
     def __init__(self) -> None:
+        self.tipo_estructura = None
         self.unidades = UNIDADES 
         self.materiales = MATERIALES
         self.secciones = SECCIONES
-        self.Nodos = NODOS
+        self.nodos = NODOS
         self.Elementos = ELEMENTOS
         self.Cargas_Puntuales = CARGAS_PUNTUALES
         self.Cargas_Distribuidas = CARGAS_DISTRIBUIDAS
@@ -94,6 +95,9 @@ class model():
         # Inercia
         for idx in self.secciones.index:
             self.secciones.loc[idx,"Inercia"] = self.secciones.loc[idx,"Inercia"]*(factor_conversion**4)
+    
+    def set_structureType(self) -> None:
+        self.tipo_estructura = calc.set_structure_type()
     
     def convert_Fuerza(self, factor_conversion) -> None:
         pass
@@ -169,23 +173,63 @@ class model():
     
     def save_model(self) -> None:
         pass
-                
+    
+    # Nodos
+    def add_node(self) -> None:
+        node = {"Nombre": [], "Coordenada x": [], "Coordenada y": [], "U": [], "V": [], "Phi": []}
+        
+        print("\nNuevo nodo.")
+        
+        try:
+            index = max(self.secciones.index) + 1
+        except:
+            index = len(self.secciones.index)
+        
+        nombre = input("\nIngrese un nombre para el nodo (En blanco nombre por defecto): ")
+        if not (nombre):
+            nombre = f"Seccion {index}"
+
+        coordenadas = calc.set_coords()
+        gdl = calc.get_grados_Libertad(self.tipo_estructura)
+        
+        node["Nombre"].append(nombre)
+        node["Coordenada x"].append(coordenadas[0])
+        node["Coordenada y"].append(coordenadas[1])
+        
+        match self.tipo_estructura:
+            case "Cercha":
+                node["U"].append(gdl[0])
+                node["V"].append(gdl[1])
+                node["Phi"].append(None)
+            case "Viga":
+                node["U"].append(gdl[0])
+                node["V"].append(None)
+                node["Phi"].append(gdl[1])
+            case "Portico":
+                node["U"].append(gdl[0])
+                node["V"].append(gdl[1])
+                node["Phi"].append(gdl[2])
+        
+        new_node = pd.DataFrame(node, index=[index])
+        self.nodos = pd.concat([self.nodos,new_node]) 
+        
+        
     # Secciones
     def add_section(self) -> None:
         section = {"Nombre": [], "Area": [], "Inercia": []}
         
         print("\nNueva sección.")
         
-        nombre = input("\nIngrese un nombre para la sección (En blanco nombre por defecto): ")
-        sectionCalcs = calc.get_section_calcs(self.unidades.loc[0,"Longitud"])
-        
         try:
-            index = max(self.secciones.index)+1
+            index = max(self.secciones.index) + 1
         except:
             index = len(self.secciones.index)
         
+        nombre = input("\nIngrese un nombre para la sección (En blanco nombre por defecto): ")
         if not (nombre):
             nombre = f"Seccion {index}"
+            
+        sectionCalcs = calc.get_section_calcs(self.unidades.loc[0,"Longitud"])
         
         # Consolidación de entrada
         
@@ -243,17 +287,17 @@ class model():
         
         print("\nNuevo Material.")
         
-        nombre = input("\nIngrese un nombre para el material (En blanco nombre por defecto): ")
-        moduloY = input(f"\nIngresar el modulo de Young ({self.unidades.loc[0,'Esfuerzo']}): ")
-      
         try:
-            index = max(self.materiales.index)+1
+            index = max(self.materiales.index) + 1
         except:
             index = len(self.materiales.index)
         
+        nombre = input("\nIngrese un nombre para el material (En blanco nombre por defecto): ")
         if not (nombre):
             nombre = f"Material {index}"
-            
+
+        moduloY = input(f"\nIngresar el modulo de Young ({self.unidades.loc[0,'Esfuerzo']}): ")
+        
         # Consolidación de entrada
         
         material["Nombre"].append(nombre)

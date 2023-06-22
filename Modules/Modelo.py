@@ -5,7 +5,7 @@ import Modules.Calculos as calc
 # Definicion de dataframes en el contexto
 
 UNIDADES = pd.DataFrame({"Longitud": ["m"],
-                         "Fuerza": ["kn"],
+                         "Fuerza": ["kN"],
                          "Esfuerzo": ["mpa"],
                          "Angulo": ["°"]}) # Se añaden las unidades del SI por defecto
 

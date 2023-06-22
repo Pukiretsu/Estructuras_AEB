@@ -1,19 +1,48 @@
 import os
-import Modules.Modelo 
+import Modules.Modelo as mod
 
 def new_model():
     os.system("cls")
-    #TODO
-    model_system()
-    pass
+    modelo = mod.model()
+    model_system(modelo)
 
 def load_model():
     os.system("cls")
     #TODO
-    model_system()
-    pass
+    modelo = mod.model()
+    modelo.load_model()
+    model_system(modelo)
 
-def model_settings():
+def secciones_settings(modelo):
+    os.system("cls")
+    while True:
+        if not modelo.secciones.empty:
+            print("Secciones actuales:\n")
+            print(modelo.secciones)
+            print("\n¿Qué desea hacer?\n")
+        
+        print("\t1. Nueva Seccion.")
+        print("\t2. Modificar seccion existente.")
+        print("\t3. Eliminar seccion existente.")
+        print("\t4. volver.")
+        
+        match input("\nIngrese una opción: "):
+            case "1":
+                modelo.add_section()
+                os.system("cls")
+            case "2":
+                os.system("cls")
+                modelo.edit_section()
+                os.system("cls")
+            case "3":
+                pass
+            case "4":
+                break
+            case _:
+                print("Error: no se reconoce la opcion ingresada.\n\n")
+                
+
+def model_settings(modelo):
     os.system("cls")
     while True:
         print("Estructura:")
@@ -43,8 +72,8 @@ def model_settings():
                 #TODO Punto de entrada Elementos.
                 pass
             case "3":
-                #TODO Punto de entrada Secciones.
-                pass
+                modelo = secciones_settings(modelo)
+                os.system("cls")
             case "4":
                 #TODO Punto de entrada Materiales.
                 pass
@@ -65,13 +94,10 @@ def model_settings():
                 break
             case _:
                 print("Error: no se reconoce la opcion ingresada.\n\n")
-                pass 
 
-
-
-def model_system():
+def model_system(modelo):
     while True:
-        print("Que desea hacer:\n")
+        print("¿Qué desea hacer?:\n")
         
         print("\t1. Configurar estructura.")
         print("\t2. Información de la estructura.")
@@ -81,7 +107,7 @@ def model_system():
         
         match input("\nIngrese una opción: "):
             case "1":
-                model_settings()
+                model_settings(modelo)
             case "2": 
                 #TODO Punto de entrada Información estructura.
                 pass

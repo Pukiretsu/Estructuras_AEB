@@ -89,6 +89,39 @@ class model():
         self.materiales = pd.concat([self.materiales, pd.json_normalize(data, record_path = ["MATERIALES"])])
         self.secciones = pd.concat([self.secciones, pd.json_normalize(data, record_path = ["SECCIONES"])]) 
     
+    #Materiales
+    def add_material(self) -> None:
+        material = {"Nombre": [], "Modulo Young": []}
+        
+        print("Nuevo Material.")
+        
+        nombre = input("\nIngrese un nombre para el material(En blanco nombre por defecto): ")
+        moduloY = input("\nIngresar el modulo de Young: ")
+      
+        try:
+            index = max(self.materiales.index)+1
+        except:
+            index = len(self.materiales.index)
+        
+        if not (nombre):
+            nombre = f"Material {index}"
+            
+        # Consolidación de entrada
+        
+        material["Nombre"].append(nombre)
+        material["Modulo Young"].append(moduloY)
+        
+        new_Mate = pd.DataFrame(material, index=[index])
+        
+        self.materiales = pd.concat([self.materiales,new_Mate])
+        
+    def edit_material(self) -> None:
+        pass
+    
+        
+    def delet_material(self) -> None:
+        pass
+            
     # Añadir secciones
     def add_section(self) -> None: #TODO añadir sistema de unidades
         section = {"Nombre": [], "Area": [], "Inercia": []}

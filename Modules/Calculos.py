@@ -38,6 +38,111 @@ def set_structure_type():
             case _:
                 print("Error: No se reconoce la opcion ingresada.\n\n")
 
+#Sistema de elementos
+
+def index(index_list,message):
+    while True:
+        try:
+            index = int(input(message))
+            if index_list.count(index) == 0:
+                raise Exception() 
+            break
+        except:
+            print("Error: id inválido.\n")
+    return index
+
+def set_nodos(nodos):
+    if not nodos.empty:  
+        print("\nNodos actuales:\n")
+        print(nodos)
+        index_list = nodos.index.values.tolist()
+        
+        index_i = index(index_list,"Seleccione el id del nodo i: ")
+        print(f"\nNodo i selecionado id [{index_i}]: ") 
+        print(nodos.loc[[index_i]])
+        
+        while True: 
+            index_j = index(index_list,"Seleccione el ide del nodo j: ")
+            if index_i != index_j:
+                print(f"\nNodo j selecionado id [{index_j}]: ") 
+                print(nodos.loc[[index_j]])
+                break
+            else: 
+                print("\nEste nodo ya ha sido asignado al elemento.")
+                
+        return ((index_i,nodos.loc[index_i,'Nombre']),(index_j,nodos.loc[index_j,'Nombre']))
+    else: 
+        print("\nNo se encuentran nodos en la base de datos.\n")
+        print("\t0. Volver")
+        input("Seleciona una opción: ")
+        return False
+
+def get_longitud(nodos,nodoi,nodoj,units):
+    delta_x = nodos.loc[nodoj,'Coordenada x'] - nodos.loc[nodoi,'Coordenada x']
+    delta_y = nodos.loc[nodoj,'Coordenada y'] - nodos.loc[nodoi,'Coordenada y']
+
+    longitud = (delta_x**2 + delta_y**2)**(1/2)
+    
+    print(f"\nLa longitud del elemento es: {longitud:.2f} {units}")
+    
+    return (longitud, (delta_x, delta_y))
+
+def get_angulo(longitud,delta_x,delta_y):
+    if delta_x < 0 :
+        seno = -delta_y/longitud
+    else:
+        seno = delta_y/longitud
+        
+    if delta_x > 0:
+        if delta_y >= 0:
+            return np.arcsin(seno)
+        elif delta_y < 0:
+            return  (3/2 * np.pi) - np.arcsin(seno)
+    if delta_x < 0:
+        if delta_y > 0:
+            return (np.pi/2) -  np.arcsin(seno)
+        elif delta_y <= 0:
+            return  (np.pi) + np.arcsin(seno)
+    else: 
+        if delta_y >= 0:
+            return np.arcsin(seno)
+        elif delta_y < 0:
+            return  (np.pi/2) - np.arcsin(seno)
+          
+def set_material(material):
+    if not material.empty:  
+        print("\nMateriales actuales:\n")
+        print(material)
+        index_list = material.index.values.tolist()
+        
+        index= index(index_list,"Seleccione el id del material: ")
+        print(f"\nMaterial selecionado id [{index}]: ") 
+        print(material.loc[[index]])
+                
+        return index
+    else: 
+        print("\nNo se encuentran materiales en la base de datos.\n")
+        print("\t0. Volver")
+        input("Seleciona una opción: ")
+        return False
+
+def set_seccion(seccion):
+    if not seccion.empty:  
+        print("\nSecciones actuales:\n")
+        print(seccion)
+        index_list = seccion.index.values.tolist()
+        
+        index= index(index_list,"Seleccione el id de la sección: ")
+        print(f"\nSección selecionada id [{index}]: ") 
+        print(seccion.loc[[index]])
+                
+        return index
+    else: 
+        print("\nNo se encuentran elementos en la base de datos.\n")
+        print("\t0. Volver")
+        input("Seleciona una opción: ")
+        return False
+    
 # Sistema de nodos
 
 def set_coords(previousCoords=None,edit=False):
@@ -430,3 +535,21 @@ def area_custom(units) -> float:
 
 def inercia_custom(units) -> float: 
     return floatInput(f"Ingrese el valor de la inercia ({units}^4): ")
+
+if __name__ == "__main__":
+    casos = ((5,4,3),
+             (5,0,5),
+             (5,-4,3),
+             (5,-5,0),
+             (5,-4,-3),
+             (5,0,-5),
+             (5,4,-3),
+             (5,5,0))
+    
+    print("Rad\t\tan")
+    
+    for caso in casos:
+        radianes = get_angulo(caso[0],caso[1],caso[2])
+        Angulo = get_conversion_angulo("rad","°")
+    
+    print(f"{radianes:.2f}\t\t{Angulo:.0f}")

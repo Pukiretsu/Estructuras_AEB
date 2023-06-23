@@ -18,12 +18,14 @@ NODOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                      "Phi": pd.Series(dtype="int")})
 
 ELEMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
+                          "ID ni": pd.Series(dtype="int"),
                           "Nodo i": pd.Series(dtype="str"),
+                          "ID nj": pd.Series(dtype="int"), 
                           "Nodo j": pd.Series(dtype="str"), 
                           "longitud": pd.Series(dtype="float"),
                           "Angulo": pd.Series(dtype="float"), 
                           "Material": pd.Series(dtype="str"),
-                          "Secciones": pd.Series(dtype="str")}) 
+                          "Seccion": pd.Series(dtype="str")}) 
 
 MATERIALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                            "Modulo Young": pd.Series(dtype="float")})
@@ -53,6 +55,8 @@ MOMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                          "Nodo" : pd.Series(dtype="str"),
                          "Elemento": pd.Series(dtype="str"),
                          "Distancia": pd.Series(dtype="float")})
+
+# Funciones de soporte
 
 def confirmation(message) -> bool:
     while True:
@@ -240,7 +244,7 @@ class model():
         self.nodos = pd.concat([self.nodos,new_node]) 
      
     def edit_node(self) -> None:
-        print("\nSecciones actuales:\n")
+        print("\nNodos actuales:\n")
         print(self.nodos)
         
         node = {"Nombre": [], "Coordenada x": [], "Coordenada y": [], "U": [], "V": [], "Phi": []}
@@ -280,7 +284,7 @@ class model():
         self.nodos = self.nodos.sort_index()
         
     def delete_node(self) -> None:
-        print("\nSecciones actuales:\n")
+        print("\nNodos actuales:\n")
         print(self.nodos)
         
         indexes = self.nodos.index.values.tolist()
@@ -295,7 +299,29 @@ class model():
      
     # Elementos
     def add_element(self) -> None:
-        pass
+        elemet = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "Material": [], "Seccion": []}
+        
+        print("\nNuevo elemento.")
+        
+        try:
+            index = max(self.elementos.index) + 1
+        except:
+            index = len(self.elementos.index)   
+        
+        nombre = input("\nIngrese un nombre para el elemento (En blanco nombre por defecto): ")
+        if not (nombre):
+            nombre = f"Elemento {index}"
+            
+        nodos = calc.set_nodos(self.nodos) 
+        
+        if nodos: 
+            longitud = calc.get_longitud(self.nodos, nodos[0][0],nodos[1][0], self.unidades.loc[0,'Longitud'])
+            angulo = calc.get_angulo(longitud[0],longitud[1][0],longitud[1][1])
+              
+        material = calc.set_material(self.materiales)
+        
+        seccion = calc.set_seccion(self.secciones) 
+        
     
     def edit_element(self) -> None:
         pass

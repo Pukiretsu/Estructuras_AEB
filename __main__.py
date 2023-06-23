@@ -65,14 +65,14 @@ def nodos_settings(modelo):
             case "2":
                 if not modelo.nodos.empty:
                     os.system("cls")
-                    modelo.edit_section()
+                    modelo.edit_node()
                     os.system("cls")
                 else:
                     print("Error: no se reconoce la opcion ingresada.\n\n")
             case "3":
                 if not modelo.nodos.empty:
                     os.system("cls")
-                    modelo.delete_section()
+                    modelo.delete_node()
                     os.system("cls")
                 else:
                     print("Error: no se reconoce la opcion ingresada.\n\n")

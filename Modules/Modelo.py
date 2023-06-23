@@ -226,7 +226,7 @@ class model():
         
         confirm = confirmation("¿El Nodo es apoyo?.")
         if confirm:
-            soporte = calc.get_support()
+            soporte = calc.get_support(self.tipo_estructura)
         else:
             soporte = (False,"")
         

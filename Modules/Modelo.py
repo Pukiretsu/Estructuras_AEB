@@ -139,10 +139,7 @@ class model():
         # Inercia
         for idx in self.secciones.index:
             self.secciones.loc[idx,"Inercia"] = self.secciones.loc[idx,"Inercia"]*(factor_conversion**4)
-    
-    def set_structureType(self) -> None:
-        self.tipo_estructura = calc.set_structure_type()
-    
+
     def convert_Fuerza(self, factor_conversion) -> None:
         pass
     
@@ -205,6 +202,10 @@ class model():
         self.unidades = self.unidades.drop(self.unidades.index[0])
         new_units = pd.DataFrame(units)
         self.unidades = pd.concat([self.unidades, new_units])
+
+    # Miscelaneos
+    def set_structureType(self) -> None:
+        self.tipo_estructura = calc.set_structure_type()
 
     # Nodos
     def add_node(self) -> None:

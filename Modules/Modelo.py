@@ -15,7 +15,9 @@ NODOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                      "Coordenada y": pd.Series(dtype="float"),
                      "U": pd.Series(dtype="int"),
                      "V": pd.Series(dtype="int"), 
-                     "Phi": pd.Series(dtype="int")})
+                     "Phi": pd.Series(dtype="int"),
+                     "Soporte": pd.Series(dtype="bool"),
+                     "Restriccion": pd.Series(dtype="int")})
 
 ELEMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                           "ID ni": pd.Series(dtype="int"),
@@ -64,7 +66,7 @@ def confirmation(message) -> bool:
         response = input("(s/N): ") or "N"
         if response == "s" or response == "S":
             return True
-        elif response == "N" or response == "n":
+        elif response == "n" or response == "N":
             return False
         else:
             pass
@@ -206,7 +208,7 @@ class model():
 
     # Nodos
     def add_node(self) -> None:
-        node = {"Nombre": [], "Coordenada x": [], "Coordenada y": [], "U": [], "V": [], "Phi": []}
+        node = {"Nombre": [], "Coordenada x": [], "Coordenada y": [], "U": [], "V": [], "Phi": [], "Soporte": [], "Restriccion": []}
         
         print("\nNuevo nodo.")
         
@@ -221,6 +223,12 @@ class model():
 
         coordenadas = calc.set_coords()
         gdl = calc.get_grados_Libertad(self.tipo_estructura)
+        
+        confirmation = confirmation("Print")
+        if confirmation:
+            soporte = calc.get_support()
+        else:
+            soporte = (False,"")
         
         node["Nombre"].append(nombre)
         node["Coordenada x"].append(coordenadas[0])
@@ -239,6 +247,9 @@ class model():
                 node["U"].append(gdl[0])
                 node["V"].append(gdl[1])
                 node["Phi"].append(gdl[2])
+        
+        node["Soporte"] = soporte[0]
+        node["Restriccion"] = soporte[1]
         
         new_node = pd.DataFrame(node, index=[index])
         self.nodos = pd.concat([self.nodos,new_node]) 

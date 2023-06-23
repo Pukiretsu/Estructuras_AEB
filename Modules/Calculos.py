@@ -107,7 +107,7 @@ def get_angulo(longitud,delta_x,delta_y):
         if delta_y >= 0:
             return np.arcsin(seno)
         elif delta_y < 0:
-            return  (np.pi/2) - np.arcsin(seno)
+            return  (np.pi) - np.arcsin(seno)
           
 def set_material(material):
     if not material.empty:  
@@ -187,6 +187,56 @@ def get_grados_Libertad(structureType):
             v = intInput("Ingrese el grado de libertad v del nodo: ")
             phi = intInput("Ingrese el grado de libertad phi del nodo: ")
             return (u,v,phi)
+
+def get_support(structureType):
+    while True:
+        print("\nTipos de apoyo:")  
+        match structureType:
+            case "Cercha":
+                print("\n\t 1. Primer Grado restriccion en Y (Apoyo simple)")
+                print("\n\t 2. Primer Grado restriccion en X (Apoyo simple)")
+                print("\n\t 3. Segundo Grado (Apoyo articulado)")
+                support = intInput("\nElija una opción: ")
+                match support:
+                    case 1:
+                        return (True,"Y")
+                    case 2:
+                        return (True,"X")
+                    case 3:
+                        return (True,"XY")
+                    case _:
+                        print("\nApoyo no válido.")
+            case "Viga":
+                print("\n\t 1. Primer Grado restriccion en Y (Apoyo simple)")
+                print("\n\t 2. Segundo Grado (Apoyo articulado)")
+                print("\n\t 3. Tercer Grado (Empotrado)")
+                support = intInput("\nElija una opción: ")
+                match support:
+                    case 1:
+                        return (True,"Y")
+                    case 3:
+                        return (True,"XY")
+                    case 4:
+                        return (True,"XYM")
+                    case _:
+                        print("\nApoyo no válido.")
+            case "Portico":
+                print("\n\t 1. Primer Grado restriccion en Y (Apoyo simple)")
+                print("\n\t 2. Primer Grado restriccion en X (Apoyo simple)")
+                print("\n\t 3. Segundo Grado (Apoyo articulado)")
+                print("\n\t 4. Tercer Grado (Empotrado)")
+                support = intInput("\nElija una opción: ")
+                match support:
+                    case 1:
+                        return (True,"Y")
+                    case 2:
+                        return (True,"X")
+                    case 3:
+                        return (True,"XY")
+                    case 4:
+                        return (True,"XYM")
+                    case _:
+                        print("\nApoyo no válido.")
             
 # Sistema de unidades:
 
@@ -535,21 +585,3 @@ def area_custom(units) -> float:
 
 def inercia_custom(units) -> float: 
     return floatInput(f"Ingrese el valor de la inercia ({units}^4): ")
-
-if __name__ == "__main__":
-    casos = ((5,4,3),
-             (5,0,5),
-             (5,-4,3),
-             (5,-5,0),
-             (5,-4,-3),
-             (5,0,-5),
-             (5,4,-3),
-             (5,5,0))
-    
-    print("Rad\t\tan")
-    
-    for caso in casos:
-        radianes = get_angulo(caso[0],caso[1],caso[2])
-        Angulo = get_conversion_angulo("rad","°")
-    
-    print(f"{radianes:.2f}\t\t{Angulo:.0f}")

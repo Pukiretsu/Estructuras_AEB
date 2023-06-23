@@ -68,7 +68,7 @@ def confirmation(message) -> bool:
 def get_index(Index_list) -> bool:
     while True:
             try:
-                index = int(input("\nIngrese el id del elemento: "))
+                index = int(input("\nIngrese el id a seleccionar: "))
                 if Index_list.count(index) == 0:
                     raise Exception() 
                 break

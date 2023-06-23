@@ -224,8 +224,8 @@ class model():
         coordenadas = calc.set_coords()
         gdl = calc.get_grados_Libertad(self.tipo_estructura)
         
-        confirmation = confirmation("Print")
-        if confirmation:
+        confirm = confirmation("¿El Nodo es apoyo?.")
+        if confirm:
             soporte = calc.get_support()
         else:
             soporte = (False,"")

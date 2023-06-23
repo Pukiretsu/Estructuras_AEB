@@ -87,7 +87,7 @@ def get_longitud(nodos,nodoi,nodoj,units):
     
     return (longitud, (delta_x, delta_y))
 
-def get_angulo(longitud,delta_x,delta_y):
+def get_angulo(longitud,delta_x,delta_y,units):
     if delta_x < 0 :
         seno = -delta_y/longitud
     else:
@@ -95,19 +95,21 @@ def get_angulo(longitud,delta_x,delta_y):
         
     if delta_x > 0:
         if delta_y >= 0:
-            return np.arcsin(seno)
+            angulo = np.arcsin(seno)
         elif delta_y < 0:
-            return  (3/2 * np.pi) - np.arcsin(seno)
+            angulo = (3/2 * np.pi) - np.arcsin(seno)
     if delta_x < 0:
         if delta_y > 0:
-            return (np.pi/2) -  np.arcsin(seno)
+            angulo = (np.pi/2) -  np.arcsin(seno)
         elif delta_y <= 0:
-            return  (np.pi) + np.arcsin(seno)
+            angulo = (np.pi) + np.arcsin(seno)
     else: 
         if delta_y >= 0:
-            return np.arcsin(seno)
+            angulo = np.arcsin(seno)
         elif delta_y < 0:
-            return  (np.pi) - np.arcsin(seno)
+            angulo = (np.pi) - np.arcsin(seno)
+    
+    return angulo * get_conversion_angulo("rad",units)
           
 def set_material(material):
     if not material.empty:  

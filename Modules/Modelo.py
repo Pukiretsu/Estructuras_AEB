@@ -149,7 +149,7 @@ class model():
     def convert_Esfuerzo(self, factor_conversion) -> None:
         # Modulo young
         for idx in self.materiales.index:
-            self.materiales.loc[idx,"Modulo Young"] = self.materiales.loc[idx,"Modulo Young"]*factor_conversion
+            self.materiales.loc[idx,"Modulo Young"] = self.materiales.loc[idx,"Modulo Young"]*factor_conversion #BUG HAY PROBLEMA CON LA CONVERSION
     
     def convert_Angulo(self, factor_conversion) -> None:
         pass
@@ -310,7 +310,7 @@ class model():
      
     # Elementos
     def add_element(self) -> None:
-        elemet = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "Material": [], "Seccion": []}
+        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "Material": [], "Seccion": []}
         
         print("\nNuevo elemento.")
         
@@ -327,13 +327,26 @@ class model():
         
         if nodos: 
             longitud = calc.get_longitud(self.nodos, nodos[0][0],nodos[1][0], self.unidades.loc[0,'Longitud'])
-            angulo = calc.get_angulo(longitud[0],longitud[1][0],longitud[1][1])
+            angulo = calc.get_angulo(longitud[0],longitud[1][0],longitud[1][1], self.unidades.loc[0,'Angulo'])
               
         material = calc.set_material(self.materiales)
         
         seccion = calc.set_seccion(self.secciones) 
         
-    
+        elemento["Nombre"].append(nombre)
+        elemento["ID ni"].append(nodos[0][0])
+        elemento["Nodo i"].append(nodos[0][1])
+        elemento["ID nj"].append(nodos[1][0])
+        elemento["Nodo j"].append(nodos[1][1])
+        elemento["longitud"].append(longitud[0])
+        elemento["Angulo"].append(angulo)
+        elemento["Material"].append(material)
+        elemento["Seccion"].append(seccion)
+        
+        new_element = pd.DataFrame(elemento, index=[index])
+        
+        self.elementos = pd.concat([self.elementos,new_element])
+        
     def edit_element(self) -> None:
         pass
     

@@ -105,7 +105,6 @@ class model():
         self.cargas_Distribuidas    = pd.concat([self.cargas_Distribuidas, pd.json_normalize(data, record_path = ["CARGAS_DISTRIBUIDAS"])]) 
         self.momentos               = pd.concat([self.momentos, pd.json_normalize(data, record_path = ["MOMENTOS"])]) 
 
-        
     def save_model(self, path, date) -> None:
         file = os.path.basename(path)
         self.nombre = os.path.splitext(file)[0]
@@ -293,6 +292,16 @@ class model():
         confirmacion = confirmation(f"Confirmar eliminación {self.nodos.loc[index,'Nombre']} id:{index}")
         if confirmacion:
             self.nodos = self.nodos.drop(self.nodos.index[index])
+     
+    # Elementos
+    def add_element(self) -> None:
+        pass
+    
+    def edit_element(self) -> None:
+        pass
+    
+    def delete_element(self) -> None:
+        pass
         
     # Secciones
     def add_section(self) -> None:

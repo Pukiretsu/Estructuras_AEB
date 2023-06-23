@@ -80,11 +80,49 @@ def nodos_settings(modelo):
                 return modelo
             case _:
                 print("Error: no se reconoce la opcion ingresada.\n\n")
-    pass
 
 def elementos_settings(modelo):
-    #TODO: Menu de Elementos
-    pass
+    os.system("cls")
+           
+    while True:
+        if not modelo.elementos.empty:
+            print("\nElementos actuales:\n")
+            print(modelo.elementos)
+        else:
+            print("\nNo hay Elementos en la base de datos.")
+        
+        print("\n¿Qué desea hacer?\n")
+        print("\t1. Nuevo Nodo.")
+        
+        if not modelo.elementos.empty:
+            print("\t2. Modificar Nodo existente.")
+            print("\t3. Eliminar Nodo existente.")
+        
+        print("\t4. Volver.")
+        
+        match input("\nIngrese una opción: "):
+            case "1":
+                os.system("cls")
+                modelo.add_element()
+                os.system("cls")
+            case "2":
+                if not modelo.elementos.empty:
+                    os.system("cls")
+                    modelo.edit_element()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opcion ingresada.\n\n")
+            case "3":
+                if not modelo.elementos.empty:
+                    os.system("cls")
+                    modelo.delete_element()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opcion ingresada.\n\n")
+            case "4":
+                return modelo
+            case _:
+                print("Error: no se reconoce la opcion ingresada.\n\n")
 
 def secciones_settings(modelo):
     os.system("cls")

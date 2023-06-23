@@ -1,5 +1,8 @@
 import os
 import Modules.Modelo as mod
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+from datetime import date
 
 # Miscelaneos
 
@@ -13,14 +16,25 @@ def new_model():
 
 def load_model():
     os.system("cls")
-    #TODO Implementar sistema de cargado
+    
     modelo = mod.model()
-    modelo.load_model()
+    
+    filename = askopenfilename(title="Cargar Modelo", filetypes=[("Modelos JSON",".json")])
+    
+    modelo.load_model(filename) 
+    
     model_system(modelo)
 
 def save_model(model):
-    #TODO Rutina de guardado del modelo
-    pass
+    filename = asksaveasfilename(title="Guardar Modelo", defaultextension='.json', filetypes=[("Modelos JSON",".json")])
+    
+    dt = date.today()
+    fecha = dt.strftime("%d-%m-%y")
+    
+    model.save_model(filename,fecha)
+    
+    os.system("cls")
+    print(f"Se guardo con exito el Modelo en {filename}\n")
 
 # Configuracion del modelo
 
@@ -49,14 +63,14 @@ def nodos_settings(modelo):
                 modelo.add_node()
                 os.system("cls")
             case "2":
-                if not modelo.Nodos.empty:
+                if not modelo.nodos.empty:
                     os.system("cls")
                     modelo.edit_section()
                     os.system("cls")
                 else:
                     print("Error: no se reconoce la opcion ingresada.\n\n")
             case "3":
-                if not modelo.Nodos.empty:
+                if not modelo.nodos.empty:
                     os.system("cls")
                     modelo.delete_section()
                     os.system("cls")

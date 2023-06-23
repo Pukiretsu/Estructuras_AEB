@@ -9,13 +9,6 @@ UNIDADES = pd.DataFrame({"Longitud": ["m"],
                          "Esfuerzo": ["mpa"],
                          "Angulo": ["°"]}) # Se añaden las unidades del SI por defecto
 
-MATERIALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
-                           "Modulo Young": pd.Series(dtype="float")})
-
-SECCIONES = pd.DataFrame({"Nombre": pd.Series(dtype="str"), 
-                          "Area": pd.Series(dtype="float"), 
-                          "Inercia": pd.Series(dtype="float")})
-
 NODOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                      "Coordenada x": pd.Series(dtype="float"),
                      "Coordenada y": pd.Series(dtype="float"),
@@ -30,6 +23,13 @@ ELEMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                           "Angulo": pd.Series(dtype="float"), 
                           "Material": pd.Series(dtype="str"),
                           "Secciones": pd.Series(dtype="str")}) 
+
+MATERIALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
+                           "Modulo Young": pd.Series(dtype="float")})
+
+SECCIONES = pd.DataFrame({"Nombre": pd.Series(dtype="str"), 
+                          "Area": pd.Series(dtype="float"), 
+                          "Inercia": pd.Series(dtype="float")})
 
 CARGAS_PUNTUALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                                  "Valor": pd.Series(dtype="float"),
@@ -63,7 +63,6 @@ def confirmation(message) -> bool:
             return False
         else:
             pass
-            
 
 def get_index(Index_list) -> bool:
     while True:
@@ -80,14 +79,48 @@ class model():
     def __init__(self) -> None:
         self.tipo_estructura = None
         self.unidades = UNIDADES 
+        self.nodos = NODOS
+        self.elementos = ELEMENTOS
         self.materiales = MATERIALES
         self.secciones = SECCIONES
-        self.nodos = NODOS
-        self.Elementos = ELEMENTOS
-        self.Cargas_Puntuales = CARGAS_PUNTUALES
-        self.Cargas_Distribuidas = CARGAS_DISTRIBUIDAS
-        self.Momentos = MOMENTOS
+        self.cargas_Puntuales = CARGAS_PUNTUALES
+        self.cargas_Distribuidas = CARGAS_DISTRIBUIDAS
+        self.momentos = MOMENTOS
+
+    #Carga y descarga de modelos
+    def load_model(self, path) -> None:
+        with open(path,"r") as f:
+            data = json.loads(f.read())
+            
+        self.tipo_estructura        = data["Model-meta"]["STRUCTURETYPE"]
+        self.unidades               = pd.json_normalize(data, record_path = ["UNIDADES"])
+        self.nodos                  = pd.concat([self.nodos, pd.json_normalize(data, record_path = ["NODOS"])])
+        self.elementos              = pd.concat([self.elementos, pd.json_normalize(data, record_path = ["ELEMENTOS"])])
+        self.materiales             = pd.concat([self.materiales, pd.json_normalize(data, record_path = ["MATERIALES"])])
+        self.secciones              = pd.concat([self.secciones, pd.json_normalize(data, record_path = ["SECCIONES"])]) 
+        self.cargas_Puntuales       = pd.concat([self.cargas_Puntuales, pd.json_normalize(data, record_path = ["CARGAS_PUNTUALES"])]) 
+        self.cargas_Distribuidas    = pd.concat([self.cargas_Distribuidas, pd.json_normalize(data, record_path = ["CARGAS_DISTRIBUIDAS"])]) 
+        self.momentos               = pd.concat([self.momentos, pd.json_normalize(data, record_path = ["MOMENTOS"])]) 
+
         
+    def save_model(self, path, date) -> None:
+        data = {'Model-meta': 
+                            {'STRUCTURETYPE': self.tipo_estructura,
+                            'Date_Saved': date},
+                            
+                'UNIDADES':             self.unidades.to_dict('records'),
+                'NODOS':                self.nodos.to_dict('records'),
+                'ELEMENTOS':            self.elementos.to_dict('records'),
+                'MATERIALES':           self.materiales.to_dict('records'),
+                'SECCIONES':            self.materiales.to_dict('records'),
+                'CARGAS_PUNTUALES':     self.cargas_Puntuales.to_dict('records'),
+                'CARGAS_DISTRIBUIDAS':  self.cargas_Distribuidas.to_dict('records'),
+                'MOMENTOS':             self.momentos.to_dict('records')}
+        
+        with open(path, "w") as f:
+            json.dump(data,f,indent=6)
+
+    # Unidades        
     def convert_Longitud(self, factor_conversion) -> None:
         # Area
         for idx in self.secciones.index:
@@ -162,18 +195,6 @@ class model():
         new_units = pd.DataFrame(units)
         self.unidades = pd.concat([self.unidades, new_units])
 
-    #TODO Carga y descarga de modelos
-    
-    def load_model(self) -> None:
-        with open("dummy.json","r") as f: #TODO poner interfaz para seleccionar archivo
-            data = json.loads(f.read())
-
-        self.materiales = pd.concat([self.materiales, pd.json_normalize(data, record_path = ["MATERIALES"])])
-        self.secciones = pd.concat([self.secciones, pd.json_normalize(data, record_path = ["SECCIONES"])]) 
-    
-    def save_model(self) -> None:
-        pass
-    
     # Nodos
     def add_node(self) -> None:
         node = {"Nombre": [], "Coordenada x": [], "Coordenada y": [], "U": [], "V": [], "Phi": []}
@@ -187,7 +208,7 @@ class model():
         
         nombre = input("\nIngrese un nombre para el nodo (En blanco nombre por defecto): ")
         if not (nombre):
-            nombre = f"Seccion {index}"
+            nombre = f"Nodo {index}"
 
         coordenadas = calc.set_coords()
         gdl = calc.get_grados_Libertad(self.tipo_estructura)
@@ -252,7 +273,6 @@ class model():
         
         self.nodos = pd.concat([self.nodos,new_node])
         self.nodos = self.nodos.sort_index()
-        
         
     def delete_node(self) -> None:
         print("\nSecciones actuales:\n")

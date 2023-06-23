@@ -26,7 +26,7 @@ def load_model():
     model_system(modelo)
 
 def save_model(model):
-    filename = asksaveasfilename(title="Guardar Modelo", defaultextension='.json', filetypes=[("Modelos JSON",".json")])
+    filename = asksaveasfilename(title="Guardar Modelo",initialfile= model.nombre, defaultextension='.json', filetypes=[("Modelos JSON",".json")])
     
     dt = date.today()
     fecha = dt.strftime("%d-%m-%y")
@@ -282,7 +282,8 @@ def model_settings(modelo):
 
 def model_system(modelo):
     while True:
-        print("¿Qué desea hacer?:\n")
+        print(f"Trabajando en: {modelo.nombre}")
+        print("\n¿Qué desea hacer?:\n")
         
         print("\t1. Configurar estructura.")
         print("\t2. Información de la estructura.")

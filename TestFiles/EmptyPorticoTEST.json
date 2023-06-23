@@ -1,11 +1,12 @@
 {
       "Model-meta": {
             "STRUCTURETYPE": "Portico",
-            "Date_Saved": "22-06-23"
+            "Date_Saved": "22-06-23",
+            "Model_Name": "EmptyPorticoTEST"
       },
       "UNIDADES": [
             {
-                  "Longitud": "cm",
+                  "Longitud": "m",
                   "Fuerza": "kN",
                   "Esfuerzo": "mpa",
                   "Angulo": "\u00b0"

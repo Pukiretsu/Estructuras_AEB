@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 import Modules.Calculos as calc
+import os
 
 # Definicion de dataframes en el contexto
 
@@ -77,6 +78,7 @@ def get_index(Index_list) -> bool:
 
 class model():
     def __init__(self) -> None:
+        self.nombre = "Modelo Nuevo"
         self.tipo_estructura = None
         self.unidades = UNIDADES 
         self.nodos = NODOS
@@ -92,6 +94,7 @@ class model():
         with open(path,"r") as f:
             data = json.loads(f.read())
             
+        self.nombre                 = data["Model-meta"]["Model_Name"]
         self.tipo_estructura        = data["Model-meta"]["STRUCTURETYPE"]
         self.unidades               = pd.json_normalize(data, record_path = ["UNIDADES"])
         self.nodos                  = pd.concat([self.nodos, pd.json_normalize(data, record_path = ["NODOS"])])
@@ -104,9 +107,12 @@ class model():
 
         
     def save_model(self, path, date) -> None:
+        file = os.path.basename(path)
+        self.nombre = os.path.splitext(file)[0]
         data = {'Model-meta': 
                             {'STRUCTURETYPE': self.tipo_estructura,
-                            'Date_Saved': date},
+                            'Date_Saved': date,
+                            'Model_Name': self.nombre},
                             
                 'UNIDADES':             self.unidades.to_dict('records'),
                 'NODOS':                self.nodos.to_dict('records'),

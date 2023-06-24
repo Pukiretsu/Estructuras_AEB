@@ -20,15 +20,15 @@ NODOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                      "Restriccion": pd.Series(dtype="int")})
 
 ELEMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
-                          "ID ni": pd.Series(dtype="int"),
+                          "ID ni": pd.Series(dtype="int64"),
                           "Nodo i": pd.Series(dtype="str"),
-                          "ID nj": pd.Series(dtype="int"), 
+                          "ID nj": pd.Series(dtype="int64"), 
                           "Nodo j": pd.Series(dtype="str"), 
                           "longitud": pd.Series(dtype="float"),
                           "Angulo": pd.Series(dtype="float"), 
-                          "ID Mat": pd.Series(dtype="int"),
+                          "ID Mat": pd.Series(dtype="int64"),
                           "Material": pd.Series(dtype="str"),
-                          "ID Sec": pd.Series(dtype="int"),
+                          "ID Sec": pd.Series(dtype="int64"),
                           "Seccion": pd.Series(dtype="str")}) 
 
 MATERIALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
@@ -376,7 +376,7 @@ class model():
         elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": []}
 
         indexes = self.elementos.index.values.tolist()
-        index =get_index(indexes)
+        index = get_index(indexes)
         
         print(f"\nElemento seleccionado id: [{index}]")
         print(self.elementos.loc[[index]])
@@ -399,7 +399,7 @@ class model():
             print(f"\nLa longitud del elemento es: {longitud[0]:.2f} {self.unidades.loc[0, 'Longitud']}")
             print(f"\nEl ángulo del elemento es: {angulo:.2f} {self.unidades.loc[0, 'Angulo']}")
         
-        last_material = self.elementos.loc[index,"Material"]
+        last_material = (self.elementos.loc[index, "ID Mat"],self.elementos.loc[index,"Material"])
         confirm = confirmation("¿Editar material?")
         
         if confirm:
@@ -410,7 +410,7 @@ class model():
         else: 
             material = last_material
         
-        last_seccion = self.elementos.loc[index,"Seccion"]
+        last_seccion = (self.elementos.loc[index, "ID Sec"],self.elementos.loc[index,"Seccion"])
         confirm =confirmation("¿Editar la sección?")
         if confirm:
             if last_seccion:

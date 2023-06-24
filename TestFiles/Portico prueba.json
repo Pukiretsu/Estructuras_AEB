@@ -1,7 +1,7 @@
 {
       "Model-meta": {
             "STRUCTURETYPE": "Portico",
-            "Date_Saved": "23-06-23",
+            "Date_Saved": "24-06-23",
             "Model_Name": "Portico prueba"
       },
       "UNIDADES": [
@@ -63,9 +63,9 @@
                   "Nodo j": "B",
                   "longitud": 5.0,
                   "Angulo": 90.0,
-                  "ID Mat": 0.0,
+                  "ID Mat": 0,
                   "Material": "Acero",
-                  "ID Sec": 0.0,
+                  "ID Sec": 0,
                   "Seccion": "PTE 100x100x20"
             },
             {
@@ -76,9 +76,22 @@
                   "Nodo j": "C",
                   "longitud": 5.0,
                   "Angulo": 0.0,
-                  "ID Mat": 0.0,
+                  "ID Mat": 0,
                   "Material": "Acero",
-                  "ID Sec": 0.0,
+                  "ID Sec": 0,
+                  "Seccion": "PTE 100x100x20"
+            },
+            {
+                  "Nombre": "3",
+                  "ID ni": 2,
+                  "Nodo i": "C",
+                  "ID nj": 3,
+                  "Nodo j": "D",
+                  "longitud": 5.0,
+                  "Angulo": 270.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
                   "Seccion": "PTE 100x100x20"
             }
       ],

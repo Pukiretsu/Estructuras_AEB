@@ -160,7 +160,7 @@ def set_seccion(seccion, last_seccion = None, edit = False):
     else: 
         print("\nNo se encuentran secciones en la base de datos.\n")
         input("Pulse enter para continuar.")
-        return (False,False)
+        return (None,False)
     
 # Sistema de nodos
 
@@ -628,3 +628,5 @@ def area_custom(units) -> float:
 
 def inercia_custom(units) -> float: 
     return floatInput(f"Ingrese el valor de la inercia ({units}^4): ")
+
+###  Caculos de estructuras ###

@@ -102,7 +102,7 @@ def elementos_settings(modelo):
         show_units()
         if not modelo.elementos.empty:
             print("\nElementos actuales:\n")
-            print(modelo.elementos)
+            print(modelo.elementos.loc[:,~modelo.elementos.columns.isin(["ID ni", "ID nj", "ID Mat", "ID Sec"])])
         else:
             print("\nNo hay Elementos en la base de datos.")
         

@@ -84,6 +84,11 @@ def get_index(Index_list) -> bool:
                 print("Error: id inválido.\n")
     return index
 
+def check_index(lookupDf, lookupQuery, value) -> bool:
+    check_series = lookupDf.loc[:, lookupQuery]
+    if value in check_series.values:
+        return True
+
 class model():
     def __init__(self) -> None:
         self.nombre = "Modelo Nuevo"
@@ -319,12 +324,20 @@ class model():
         indexes = self.nodos.index.values.tolist()
         index = get_index(indexes)
         
-        print(f"\nNodo seleccionado id: [{index}]")
-        print(self.nodos.loc[[index]])
+        # Verificacion de asociatividad con elementos
+        check_elements_ni = check_index(self.elementos, "ID ni", index)
+        check_elements_nj = check_index(self.elementos, "ID nj", index)
         
-        confirmacion = confirmation(f"Confirmar eliminación {self.nodos.loc[index,'Nombre']} id:{index}")
-        if confirmacion:
-            self.nodos = self.nodos.drop(self.nodos.index[index])
+        if check_elements_ni or check_elements_nj:
+            print("\nEl Nodo no puede ser eliminado porque se encuentra en uso.")
+            input("\nPresione enter para continuar.")
+        else:
+            print(f"\nNodo seleccionado id: [{index}]")
+            print(self.nodos.loc[[index]])
+        
+            confirmacion = confirmation(f"Confirmar eliminación {self.nodos.loc[index,'Nombre']} id:{index}")
+            if confirmacion:
+                self.nodos = self.nodos.drop(self.nodos.index[index])
      
     # Elementos
     def add_element(self) -> None:
@@ -511,13 +524,19 @@ class model():
         
         indexes = self.secciones.index.values.tolist()
         index = get_index(indexes)
-                
-        print(f"\nSeccion seleccionada id:{index}")
-        print(self.secciones.loc[[index]])
         
-        confirmacion = confirmation(f"Confirmar eliminación {self.secciones.loc[index,'Nombre']} id:{index}")
-        if confirmacion:
-            self.secciones = self.secciones.drop(self.secciones.index[index])
+        check_elements_IDSec = check_index(self.elementos, "ID Sec", index)
+        
+        if check_elements_IDSec:
+            print("\nLa sección no puede ser eliminada porque se encuentra en uso.")
+            input("\nPresione enter para continuar.")
+        else:
+            print(f"\nSeccion seleccionada id:{index}")
+            print(self.secciones.loc[[index]])
+            
+            confirmacion = confirmation(f"Confirmar eliminación {self.secciones.loc[index,'Nombre']} id:{index}")
+            if confirmacion:
+                self.secciones = self.secciones.drop(self.secciones.index[index])
 
     # Materiales
     def add_material(self) -> None:
@@ -574,13 +593,19 @@ class model():
         
         indexes = self.materiales.index.values.tolist()
         index = get_index(indexes)
-                
-        print(f"\nMaterial seleccionado id:{index}")
-        print(self.materiales.loc[[index]])
         
-        confirmacion = confirmation(f"Confirmar eliminación {self.materiales.loc[index,'Nombre']} id:{index}")
-        if confirmacion:
-            self.materiales = self.materiales.drop(self.materiales.index[index])
+        check_elements_IDMat = check_index(self.elementos, "ID Mat", index)
+        
+        if check_elements_IDMat:
+            print("\nEl Material no puede ser eliminado porque se encuentra en uso.")
+            input("\nPresione enter para continuar.")
+        else:
+            print(f"\nMaterial seleccionado id:{index}")
+            print(self.materiales.loc[[index]])
+            
+            confirmacion = confirmation(f"Confirmar eliminación {self.materiales.loc[index,'Nombre']} id:{index}")
+            if confirmacion:
+                self.materiales = self.materiales.drop(self.materiales.index[index])
 
 
 if __name__ == "__main__":

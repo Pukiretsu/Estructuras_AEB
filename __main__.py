@@ -43,10 +43,14 @@ def save_model(model):
 
 def nodos_settings(modelo):
     os.system("cls")
-    while True:
+    
+    def showTittle():
         divideBar()      
         print("Nodos.")
-        divideBar()      
+        divideBar()    
+    
+    while True:
+        showTittle()   
         if not modelo.nodos.empty:
             print("\nNodos actuales:\n")
             print(modelo.nodos)
@@ -65,11 +69,13 @@ def nodos_settings(modelo):
         match input("\nIngrese una opción: "):
             case "1":
                 os.system("cls")
+                showTittle()  
                 modelo.add_node()
                 os.system("cls")
             case "2":
                 if not modelo.nodos.empty:
                     os.system("cls")
+                    showTittle()  
                     modelo.edit_node()
                     os.system("cls")
                 else:
@@ -77,6 +83,7 @@ def nodos_settings(modelo):
             case "3":
                 if not modelo.nodos.empty:
                     os.system("cls")
+                    showTittle()  
                     modelo.delete_node()
                     os.system("cls")
                 else:
@@ -169,7 +176,7 @@ def secciones_settings(modelo):
             print("\t2. Modificar sección existente.")
             print("\t3. Eliminar sección existente.")
         
-        print("\t0. Volver.")
+        print("\n0. Volver.")
         
         match input("\nIngrese una opción: "):
             case "1":

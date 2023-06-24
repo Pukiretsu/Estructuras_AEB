@@ -24,7 +24,7 @@ ELEMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                           "Nodo i": pd.Series(dtype="str"),
                           "ID nj": pd.Series(dtype="int64"), 
                           "Nodo j": pd.Series(dtype="str"), 
-                          "longitud": pd.Series(dtype="float"),
+                          "Longitud": pd.Series(dtype="float"),
                           "Angulo": pd.Series(dtype="float"), 
                           "ID Mat": pd.Series(dtype="int64"),
                           "Material": pd.Series(dtype="str"),
@@ -146,7 +146,7 @@ class model():
             self.secciones.loc[idx,"Inercia"] = self.secciones.loc[idx,"Inercia"] * (factor_conversion**4)
         # Distancia de elementos
         for idx in self.elementos.index:
-            self.elementos.loc[idx,"longitud"] = self.elementos.loc[idx, "longitud"] * (factor_conversion)
+            self.elementos.loc[idx,"Longitud"] = self.elementos.loc[idx, "Longitud"] * (factor_conversion)
 
     def convert_Fuerza(self, factor_conversion) -> None:
         pass
@@ -157,7 +157,9 @@ class model():
             self.materiales.loc[idx,"Modulo Young"] = self.materiales.loc[idx,"Modulo Young"]*factor_conversion #BUG HAY PROBLEMA CON LA CONVERSION
     
     def convert_Angulo(self, factor_conversion) -> None:
-        pass
+        # Grados de elementos
+        for idx in self.elementos.index:
+            self.elementos.loc[idx,"Angulo"] = self.elementos.loc[idx, "Angulo"] * (factor_conversion)
         
     def set_units(self) -> None:
         units = {"Longitud": [], "Fuerza": [], "Esfuerzo": [], "Angulo": [], }
@@ -341,7 +343,7 @@ class model():
      
     # Elementos
     def add_element(self) -> None:
-        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": []}
+        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "Longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": []}
         
         print("\nNuevo elemento.")
         
@@ -371,7 +373,7 @@ class model():
         elemento["Nodo i"].append(nodos[0][1])
         elemento["ID nj"].append(nodos[1][0])
         elemento["Nodo j"].append(nodos[1][1])
-        elemento["longitud"].append(longitud[0])
+        elemento["Longitud"].append(longitud[0])
         elemento["Angulo"].append(angulo)
         elemento["ID Mat"].append(material[0])
         elemento["Material"].append(material[1])
@@ -386,7 +388,7 @@ class model():
         print("\nElementos actuales: \n")
         print(self.elementos)
 
-        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": []}
+        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "Longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": []}
 
         indexes = self.elementos.index.values.tolist()
         index = get_index(indexes)
@@ -438,7 +440,7 @@ class model():
         elemento["Nodo i"].append(nodos[0][1])
         elemento["ID nj"].append(nodos[1][0])
         elemento["Nodo j"].append(nodos[1][1])
-        elemento["longitud"].append(longitud[0])
+        elemento["Longitud"].append(longitud[0])
         elemento["Angulo"].append(angulo)
         elemento["ID Mat"].append(material[0])
         elemento["Material"].append(material[1])

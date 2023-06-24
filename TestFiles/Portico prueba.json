@@ -75,8 +75,9 @@
       ],
       "SECCIONES": [
             {
-                  "Nombre": "Acero",
-                  "Modulo Young": "200"
+                  "Nombre": "PTE 100x100x20",
+                  "Area": 6400.0,
+                  "Inercia": 7253333.333333333
             }
       ],
       "CARGAS_PUNTUALES": [],

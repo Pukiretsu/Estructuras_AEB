@@ -123,7 +123,7 @@ class model():
                 'NODOS':                self.nodos.to_dict('records'),
                 'ELEMENTOS':            self.elementos.to_dict('records'),
                 'MATERIALES':           self.materiales.to_dict('records'),
-                'SECCIONES':            self.materiales.to_dict('records'),
+                'SECCIONES':            self.secciones.to_dict('records'),
                 'CARGAS_PUNTUALES':     self.cargas_Puntuales.to_dict('records'),
                 'CARGAS_DISTRIBUIDAS':  self.cargas_Distribuidas.to_dict('records'),
                 'MOMENTOS':             self.momentos.to_dict('records')}

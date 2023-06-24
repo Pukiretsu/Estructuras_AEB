@@ -170,12 +170,12 @@ def set_coords(previousCoords=None,edit=False):
         coord_y = floatInput("Coordenada y del nodo: ")
     else:
         while True:
-            print("Coordenada a editar.")
+            print("\nCoordenada a editar.\n")
             print("\t1. Coordenada x.")
             print("\t2. Coordenada y.")
             print("\t3. Ambas.")
             print("\n4. Mantener coordenadas")
-            match input("\nIngrese el tipo de seccion: "):
+            match input("\nIngrese una opción: "):
                 case "1": 
                     coord_x = floatInput("Coordenada x del nodo: ")
                     coord_y = previousCoords[1]
@@ -194,27 +194,30 @@ def set_coords(previousCoords=None,edit=False):
 def get_grados_Libertad(structureType):
     match structureType:
         case "Cercha":
-            u = intInput("Ingrese el grado de libertad u del nodo: ")
-            v = intInput("Ingrese el grado de libertad v del nodo: ")
+            u =     intInput("\nIngrese el grado de libertad u del nodo: ")
+            v =     intInput("\nIngrese el grado de libertad v del nodo: ")
             return (u,v)
         case "Viga":
-            u = intInput("Ingrese el grado de libertad u del nodo: ")
-            phi = intInput("Ingrese el grado de libertad phi del nodo: ")
+            u =     intInput("\nIngrese el grado de libertad u del nodo: ")
+            phi =   intInput("\nIngrese el grado de libertad phi del nodo: ")
             return (u,phi)
         case "Portico":
-            u = intInput("Ingrese el grado de libertad u del nodo: ")
-            v = intInput("Ingrese el grado de libertad v del nodo: ")
-            phi = intInput("Ingrese el grado de libertad phi del nodo: ")
+            u =     intInput("\nIngrese el grado de libertad u del nodo: ")
+            v =     intInput("\nIngrese el grado de libertad v del nodo: ")
+            phi =   intInput("\nIngrese el grado de libertad phi del nodo: ")
             return (u,v,phi)
 
-def get_support(structureType):
+def get_support(structureType, edit=False):
     while True:
-        print("\nTipos de apoyo:")  
+        print("\nTipos de apoyo:\n")  
         match structureType:
             case "Cercha":
-                print("\n\t 1. Primer Grado restriccion en Y (Apoyo simple)")
-                print("\n\t 2. Primer Grado restriccion en X (Apoyo simple)")
-                print("\n\t 3. Segundo Grado (Apoyo articulado)")
+                print("\t 1. Primer Grado restriccion en Y (Apoyo simple)")
+                print("\t 2. Primer Grado restriccion en X (Apoyo simple)")
+                print("\t 3. Segundo Grado (Apoyo articulado)") 
+                if edit:
+                    print("\n\t 4. No editar apoyos")
+                
                 support = intInput("\nElija una opción: ")
                 match support:
                     case 1:
@@ -223,27 +226,43 @@ def get_support(structureType):
                         return (True,"X")
                     case 3:
                         return (True,"XY")
+                    case 4:
+                        if edit:
+                            return False
+                        else:
+                            print("Apoyo no válido")
                     case _:
                         print("\nApoyo no válido.")
             case "Viga":
-                print("\n\t 1. Primer Grado restriccion en Y (Apoyo simple)")
-                print("\n\t 2. Segundo Grado (Apoyo articulado)")
-                print("\n\t 3. Tercer Grado (Empotrado)")
+                print("\t 1. Primer Grado restriccion en Y (Apoyo simple)")
+                print("\t 2. Segundo Grado (Apoyo articulado)")
+                print("\t 3. Tercer Grado (Empotrado)")
+                if edit:
+                    print("\n\t 4. No editar apoyos")
+                
                 support = intInput("\nElija una opción: ")
                 match support:
                     case 1:
                         return (True,"Y")
-                    case 3:
+                    case 2:
                         return (True,"XY")
-                    case 4:
+                    case 3:
                         return (True,"XYM")
+                    case 4:
+                        if edit:
+                            return False
+                        else:
+                            print("Apoyo no válido")
                     case _:
                         print("\nApoyo no válido.")
             case "Portico":
-                print("\n\t 1. Primer Grado restriccion en Y (Apoyo simple)")
-                print("\n\t 2. Primer Grado restriccion en X (Apoyo simple)")
-                print("\n\t 3. Segundo Grado (Apoyo articulado)")
-                print("\n\t 4. Tercer Grado (Empotrado)")
+                print("\t 1. Primer Grado restriccion en Y (Apoyo simple)")
+                print("\t 2. Primer Grado restriccion en X (Apoyo simple)")
+                print("\t 3. Segundo Grado (Apoyo articulado)")
+                print("\t 4. Tercer Grado (Empotrado)")
+                if edit:
+                    print("\n\t 5. No editar apoyos")
+                
                 support = intInput("\nElija una opción: ")
                 match support:
                     case 1:
@@ -254,6 +273,11 @@ def get_support(structureType):
                         return (True,"XY")
                     case 4:
                         return (True,"XYM")
+                    case 5:
+                        if edit:
+                            return False
+                        else:
+                            print("Apoyo no válido")
                     case _:
                         print("\nApoyo no válido.")
             

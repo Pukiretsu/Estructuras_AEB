@@ -6,9 +6,9 @@
       },
       "UNIDADES": [
             {
-                  "Longitud": "m",
+                  "Longitud": "mm",
                   "Fuerza": "kN",
-                  "Esfuerzo": "mpa",
+                  "Esfuerzo": "Gpa",
                   "Angulo": "\u00b0"
             }
       ],
@@ -50,8 +50,8 @@
                   "U": 10,
                   "V": 11,
                   "Phi": 12,
-                  "Soporte": false,
-                  "Restriccion": ""
+                  "Soporte": true,
+                  "Restriccion": "XYM"
             }
       ],
       "ELEMENTOS": [
@@ -67,8 +67,18 @@
                   "Seccion": false
             }
       ],
-      "MATERIALES": [],
-      "SECCIONES": [],
+      "MATERIALES": [
+            {
+                  "Nombre": "Acero",
+                  "Modulo Young": "200"
+            }
+      ],
+      "SECCIONES": [
+            {
+                  "Nombre": "Acero",
+                  "Modulo Young": "200"
+            }
+      ],
       "CARGAS_PUNTUALES": [],
       "CARGAS_DISTRIBUIDAS": [],
       "MOMENTOS": []

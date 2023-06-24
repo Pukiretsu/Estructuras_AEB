@@ -251,6 +251,7 @@ class model():
         
         node["Soporte"] = soporte[0]
         node["Restriccion"] = soporte[1]
+        node["Restriccion"] = soporte[1]
         
         new_node = pd.DataFrame(node, index=[index])
         self.nodos = pd.concat([self.nodos,new_node]) 
@@ -259,7 +260,7 @@ class model():
         print("\nNodos actuales:\n")
         print(self.nodos)
         
-        node = {"Nombre": [], "Coordenada x": [], "Coordenada y": [], "U": [], "V": [], "Phi": []}
+        node = {"Nombre": [], "Coordenada x": [], "Coordenada y": [], "U": [], "V": [], "Phi": [], "Soporte": [], "Restriccion": []}
     
         indexes = self.nodos.index.values.tolist()
         index = get_index(indexes)
@@ -268,8 +269,18 @@ class model():
         print(self.nodos.loc[[index]])
         
         nombre = input(f"\nNombre ({self.nodos.loc[index,'Nombre']}): ") or self.nodos.loc[index,'Nombre']
-        coordenadas = calc.set_coords((self.nodos.loc[index,'Coordenada x'],self.nodos.loc[index,'Coordenada y']),True) 
+        last_coords = (self.nodos.loc[index,'Coordenada x'],self.nodos.loc[index,'Coordenada y'])
+        coordenadas = calc.set_coords(last_coords,True) or last_coords
         gdl = calc.get_grados_Libertad(self.tipo_estructura)       
+        
+        confirm = confirmation("¿El Nodo es apoyo?.")
+        if confirm:
+            if self.nodos.loc[index, 'Soporte']:
+                soporte = calc.get_support(self.tipo_estructura, True) or (self.nodos.loc[index,'Soporte'], self.nodos.loc['Restriccion'])
+            else:
+                soporte = calc.get_support(self.tipo_estructura)
+        else:
+            soporte = (False,"")
         
         node["Nombre"].append(nombre)
         node["Coordenada x"].append(coordenadas[0])
@@ -288,6 +299,9 @@ class model():
                 node["U"].append(gdl[0])
                 node["V"].append(gdl[1])
                 node["Phi"].append(gdl[2])
+                
+        node["Soporte"] = soporte[0]
+        node["Restriccion"] = soporte[1]
         
         self.nodos = self.nodos.drop(self.nodos.index[index])
         new_node = pd.DataFrame(node, index=[index])
@@ -359,7 +373,7 @@ class model():
         print(f"\nElemento seleccionado id: [{index}]")
         print(self.elementos.loc[[index]])
         
-        nombre = input(f"\nNombre ({self.elementos.loc[index, 'Nombre']}): ") or self.elemetos.loc[index, 'Nombre']
+        nombre = input(f"\nNombre ({self.elementos.loc[index, 'Nombre']}): ") or self.elementos.loc[index, 'Nombre']
         
         last_nodos = ((self.elementos.loc[index,"ID ni"],self.elementos.loc[index,"Nodo i"]),(self.elementos.loc[index,"ID nj"],self.elementos.loc[index,"Nodo j"]))
         conf = confirmation("¿Editar nodos?")

@@ -54,19 +54,7 @@
                   "Restriccion": "XYM"
             }
       ],
-      "ELEMENTOS": [
-            {
-                  "Nombre": "1",
-                  "ID ni": 0,
-                  "Nodo i": "A",
-                  "ID nj": 1,
-                  "Nodo j": "B",
-                  "longitud": 5.0,
-                  "Angulo": 90.0,
-                  "Material": false,
-                  "Seccion": false
-            }
-      ],
+      "ELEMENTOS": [],
       "MATERIALES": [
             {
                   "Nombre": "Acero",

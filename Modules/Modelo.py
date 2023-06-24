@@ -133,12 +133,13 @@ class model():
 
     # Unidades        
     def convert_Longitud(self, factor_conversion) -> None:
-        # Area
+        # Area y inercia
         for idx in self.secciones.index:
-            self.secciones.loc[idx,"Area"] = self.secciones.loc[idx,"Area"]*(factor_conversion**2)
-        # Inercia
-        for idx in self.secciones.index:
-            self.secciones.loc[idx,"Inercia"] = self.secciones.loc[idx,"Inercia"]*(factor_conversion**4)
+            self.secciones.loc[idx,"Area"] = self.secciones.loc[idx,"Area"] * (factor_conversion**2)
+            self.secciones.loc[idx,"Inercia"] = self.secciones.loc[idx,"Inercia"] * (factor_conversion**4)
+        # Distancia de elementos
+        for idx in self.elementos.index:
+            self.elementos.loc[idx,"longitud"] = self.elementos.loc[idx, "longitud"] * (factor_conversion)
 
     def convert_Fuerza(self, factor_conversion) -> None:
         pass
@@ -342,10 +343,12 @@ class model():
         
         if nodos: 
             longitud = calc.get_longitud(self.nodos, nodos[0][0],nodos[1][0], self.unidades.loc[0,'Longitud'])
-            angulo = calc.get_angulo(longitud[0],longitud[1][0],longitud[1][1], self.unidades.loc[0,'Angulo'])
-              
-        material = calc.set_material(self.materiales)
+            angulo = calc.get_angulo(longitud[0],longitud[1][0],longitud[1][1], self.unidades.loc[0,'Angulo'])     
+            
+            print(f"\nLa longitud del elemento es: {longitud[0]:.2f} {self.unidades.loc[0, 'Longitud']}")
+            print(f"\nEl ángulo del elemento es: {angulo:.2f} {self.unidades.loc[0, 'Angulo']}")
         
+        material = calc.set_material(self.materiales)
         seccion = calc.set_seccion(self.secciones) 
         
         elemento["Nombre"].append(nombre)
@@ -376,8 +379,9 @@ class model():
         nombre = input(f"\nNombre ({self.elementos.loc[index, 'Nombre']}): ") or self.elementos.loc[index, 'Nombre']
         
         last_nodos = ((self.elementos.loc[index,"ID ni"],self.elementos.loc[index,"Nodo i"]),(self.elementos.loc[index,"ID nj"],self.elementos.loc[index,"Nodo j"]))
-        conf = confirmation("¿Editar nodos?")
-        if conf :
+        
+        confirm = confirmation("¿Editar nodos?")
+        if confirm :
             nodos = calc.set_nodos(self.nodos, last_nodos[0][0], last_nodos[1][0], True)  
         else:
             nodos = last_nodos
@@ -386,17 +390,28 @@ class model():
             longitud = calc.get_longitud(self.nodos, nodos[0][0],nodos[1][0], self.unidades.loc[0,'Longitud'])
             angulo = calc.get_angulo(longitud[0],longitud[1][0],longitud[1][1], self.unidades.loc[0,'Angulo'])
         
+        if confirm:
+            print(f"\nLa longitud del elemento es: {longitud[0]:.2f} {self.unidades.loc[0, 'Longitud']}")
+            print(f"\nEl ángulo del elemento es: {angulo:.2f} {self.unidades.loc[0, 'Angulo']}")
+        
         last_material = self.elementos.loc[index,"Material"]
-        conf = confirmation("¿Editar material?")
-        if conf:
-            material = calc.set_material(self.materiales, last_material, True)
+        confirm = confirmation("¿Editar material?")
+        
+        if confirm:
+            if last_material:
+                material = calc.set_material(self.materiales, last_material, True)
+            else:
+                material = calc.set_material(self.materiales)
         else: 
             material = last_material
         
         last_seccion = self.elementos.loc[index,"Seccion"]
-        conf =confirmation("¿Editar la sección?")
-        if conf:
-            seccion =  calc.set_seccion(self.secciones, last_seccion, True)
+        confirm =confirmation("¿Editar la sección?")
+        if confirm:
+            if last_seccion:
+                seccion =  calc.set_seccion(self.secciones, last_seccion, True)
+            else:
+                seccion =  calc.set_seccion(self.secciones)
         else:
             seccion = last_seccion
         

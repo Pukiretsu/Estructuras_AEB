@@ -6,6 +6,9 @@ from datetime import date
 
 # Miscelaneos
 
+def divideBar():
+    print("-------------------------------")  
+
 def new_model():
     os.system("cls")
     modelo = mod.model()
@@ -40,8 +43,10 @@ def save_model(model):
 
 def nodos_settings(modelo):
     os.system("cls")
-           
     while True:
+        divideBar()      
+        print("Nodos.")
+        divideBar()      
         if not modelo.nodos.empty:
             print("\nNodos actuales:\n")
             print(modelo.nodos)
@@ -55,7 +60,7 @@ def nodos_settings(modelo):
             print("\t2. Modificar Nodo existente.")
             print("\t3. Eliminar Nodo existente.")
         
-        print("\t0. Volver.")
+        print("\n0. Volver.")
         
         match input("\nIngrese una opción: "):
             case "1":
@@ -83,8 +88,18 @@ def nodos_settings(modelo):
 
 def elementos_settings(modelo):
     os.system("cls")
-           
+    
+    def show_units():
+        divideBar()     
+        print("Elementos.")
+        divideBar()     
+        print("Unidades.")
+        print(f"Longitud: {modelo.unidades.loc[0,'Longitud']}")
+        print(f"Ángulo: {modelo.unidades.loc[0,'Angulo']}")
+        divideBar()     
+    
     while True:
+        show_units()
         if not modelo.elementos.empty:
             print("\nElementos actuales:\n")
             print(modelo.elementos)
@@ -96,18 +111,20 @@ def elementos_settings(modelo):
         
         if not modelo.elementos.empty:
             print("\t2. Modificar elemento existente.")
-            print("\t3. Eliminar elemento existente.")
+            print("\t3. Eliminar elemento existenste.")
         
-        print("\t0. Volver.")
+        print("\n0. Volver.")
         
         match input("\nIngrese una opción: "):
             case "1":
                 os.system("cls")
+                show_units()
                 modelo.add_element()
                 os.system("cls")
             case "2":
                 if not modelo.elementos.empty:
                     os.system("cls")
+                    show_units()
                     modelo.edit_element()
                     os.system("cls")
                 else:
@@ -115,6 +132,7 @@ def elementos_settings(modelo):
             case "3":
                 if not modelo.elementos.empty:
                     os.system("cls")
+                    show_units()
                     modelo.delete_element()
                     os.system("cls")
                 else:
@@ -128,10 +146,13 @@ def secciones_settings(modelo):
     os.system("cls")
     
     def show_units():
-        print("Unidades.")
-        print("---------------------")
+        divideBar()
+        print("Secciones.")
+        divideBar()
+        print("Unidades:")
         print(f"Area: {modelo.unidades.loc[0,'Longitud']}^2")
         print(f"Inercia: {modelo.unidades.loc[0,'Longitud']}^4")
+        divideBar()
            
     while True:
         show_units()
@@ -181,9 +202,12 @@ def materiales_settings(modelo):
     os.system("cls")
     
     def show_units():
-        print("Unidades.")
-        print("---------------------")
+        divideBar()
+        print("Materiales.")
+        divideBar()
+        print("Unidades:")
         print(f"Modulo de Young: {modelo.unidades.loc[0,'Esfuerzo']}")
+        divideBar()
     
     while True:
         show_units()
@@ -200,7 +224,7 @@ def materiales_settings(modelo):
             print("\t2. Modificar material existente.")
             print("\t3. Eliminar material existente.")
         
-        print("\t0. Volver.")
+        print("\n0. Volver.")
         
         match input("\nIngrese una opción: "):
             case "1":
@@ -244,6 +268,9 @@ def momentos_settings(modelo):
 def units_settings(modelo):
     os.system("cls")
     while True:
+        divideBar()      
+        print("Unidades.")
+        divideBar()   
         print("Unidades actuales:\n")
         print(modelo.unidades)
         print("\n¿Qué desea hacer?.\n")
@@ -264,21 +291,24 @@ def units_settings(modelo):
 def model_settings(modelo):
     os.system("cls")
     while True:
-        print("Estructura:")
-        print("-------------------------")
+        print("Configuración modelo.")
+        divideBar()
+        
+        print("\nEstructura:")
+        divideBar()
         print("\t1. Nodos.")
         print("\t2. Elementos.")
         print("\t3. Secciones.")
         print("\t4. Materiales.")
         
         print("\nCargas:")
-        print("-------------------------")
+        divideBar()
         print("\t5. Cargas Puntuales.")
         print("\t6. Cargas Distribuidas.")
         print("\t7. Momentos.")
         
         print("\nMiscelaneos:")
-        print("-------------------------")
+        divideBar()
         print("\t8. Unidades del modelo.")
         
         print("\n0. Volver.")
@@ -322,6 +352,7 @@ def model_system(modelo):
     while True:
         print(f"Trabajando en: {modelo.nombre}")
         print(f"Tipo de estructura: {modelo.tipo_estructura}")
+        divideBar()
         print("\n¿Qué desea hacer?:\n")
         
         print("\t1. Configurar estructura.")
@@ -329,7 +360,7 @@ def model_system(modelo):
         print("\t3. Computar estructura.")
         print("\t4. Resultados.")
         print("\t5. Guardar estructura.")
-        print("\t0. Volver.")
+        print("\n0. Volver.")
         
         match input("\nIngrese una opción: "):
             case "1":
@@ -356,10 +387,11 @@ def main():
     while True:
         os.system("cls")
         print("Solucionador de estructuras:\n")
+        divideBar
         
         print("\t1. Nuevo modelo.")
         print("\t2. Cargar Modelo.")
-        print("\t0. Finalizar el programa")
+        print("\n0. Finalizar el programa")
         
         match input("\nIngrese una opción: "):
             case "1":

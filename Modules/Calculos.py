@@ -24,7 +24,7 @@ def set_structure_type():
         print("\t1. Cercha.")
         print("\t2. Viga.")
         print("\t3. Portico.")
-        print("\n4. Volver")
+        print("\n0. Volver")
         
         match input("\nIngrese el tipo de seccion: "):
             case "1": 
@@ -33,18 +33,20 @@ def set_structure_type():
                 return "Viga"
             case "3":
                 return "Portico"
-            case "4":
+            case "0":
                 return False
             case _:
                 print("Error: No se reconoce la opcion ingresada.\n\n")
 
 #Sistema de elementos
 
-def index(index_list,message, edit = False, default = None):
+def get_index(index_list,message, edit = False, default = None):
     while True:
         try:
             if edit:
-                index = int(input(message)) or default
+                index = input(message) or default
+                if index:
+                    index = int(index)
             else:
                 index = int(input(message))      
             if index_list.count(index) == 0:
@@ -61,18 +63,18 @@ def set_nodos(nodos, ID_i = None, ID_j = None,edit = False):
         index_list = nodos.index.values.tolist()
         
         if edit:
-            index_i = index(index_list,f"Seleccione el id del nodo i({ID_i}): ", ID_i)
+            index_i = get_index(index_list,f"\nSeleccione el id del nodo i({ID_i}): ", edit, ID_i)
         else:
-            index_i = index(index_list,"Seleccione el id del nodo i: ")
+            index_i = get_index(index_list,"\nSeleccione el id del nodo i: ")
             
         print(f"\nNodo i selecionado id [{index_i}]: ") 
         print(nodos.loc[[index_i]])
         
         while True: 
             if edit:
-                index_j = index(index_list,f"Seleccione el id del nodo j({ID_j}): ", ID_j)
+                index_j = get_index(index_list,f"\nSeleccione el id del nodo j({ID_j}): ", edit, ID_j)
             else:
-                index_j = index(index_list,"Seleccione el id del nodo j: ")
+                index_j = get_index(index_list,"\nSeleccione el id del nodo j: ")
                 
             if index_i != index_j:
                 print(f"\nNodo j selecionado id [{index_j}]: ") 
@@ -93,9 +95,7 @@ def get_longitud(nodos,nodoi,nodoj,units):
     delta_y = nodos.loc[nodoj,'Coordenada y'] - nodos.loc[nodoi,'Coordenada y']
 
     longitud = (delta_x**2 + delta_y**2)**(1/2)
-    
-    print(f"\nLa longitud del elemento es: {longitud:.2f} {units}")
-    
+        
     return (longitud, (delta_x, delta_y))
 
 def get_angulo(longitud,delta_x,delta_y,units):
@@ -129,9 +129,9 @@ def set_material(material, last_id = None, edit = False):
         index_list = material.index.values.tolist()
         
         if edit:
-            index = index(index_list,f"Seleccione el id del material({last_id}): ", last_id)
+            index = get_index(index_list,f"\nSeleccione el id del material({last_id}): ", True, last_id)
         else:        
-            index = index(index_list,"Seleccione el id del material: ")
+            index = get_index(index_list,"\nSeleccione el id del material: ")
         print(f"\nMaterial selecionado id [{index}]: ") 
         print(material.loc[[index]])
                 
@@ -149,13 +149,14 @@ def set_seccion(seccion, last_id = None, edit = False):
         index_list = seccion.index.values.tolist()
         
         if edit:
-            index = index(index_list,f"Seleccione el id de la sección({last_id}): ", last_id)
+            index = get_index(index_list,f"\nSeleccione el id de la sección({last_id}): ", True, last_id)
         else:        
-            index= index(index_list,"Seleccione el id de la sección: ")
+            index= get_index(index_list,"\nSeleccione el id de la sección: ")
+        
         print(f"\nSección selecionada id [{index}]: ") 
-        print(seccion.loc[[index]])
-                
+        print(seccion.loc[[index]])      
         return index
+    
     else: 
         print("\nNo se encuentran secciones en la base de datos.\n")
         print("\t0. Volver")

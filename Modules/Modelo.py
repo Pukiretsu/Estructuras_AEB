@@ -26,7 +26,9 @@ ELEMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                           "Nodo j": pd.Series(dtype="str"), 
                           "longitud": pd.Series(dtype="float"),
                           "Angulo": pd.Series(dtype="float"), 
+                          "ID Mat": pd.Series(dtype="int"),
                           "Material": pd.Series(dtype="str"),
+                          "ID Sec": pd.Series(dtype="int"),
                           "Seccion": pd.Series(dtype="str")}) 
 
 MATERIALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
@@ -326,7 +328,7 @@ class model():
      
     # Elementos
     def add_element(self) -> None:
-        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "Material": [], "Seccion": []}
+        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": []}
         
         print("\nNuevo elemento.")
         
@@ -358,8 +360,10 @@ class model():
         elemento["Nodo j"].append(nodos[1][1])
         elemento["longitud"].append(longitud[0])
         elemento["Angulo"].append(angulo)
-        elemento["Material"].append(material)
-        elemento["Seccion"].append(seccion)
+        elemento["ID Mat"].append(material[0])
+        elemento["Material"].append(material[1])
+        elemento["ID Sec"].append(seccion[0])
+        elemento["Seccion"].append(seccion[1])
         
         new_element = pd.DataFrame(elemento, index=[index])
         
@@ -368,8 +372,9 @@ class model():
     def edit_element(self) -> None:
         print("\nElementos actuales: \n")
         print(self.elementos)
-        
-        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "Material": [], "Seccion": []}
+
+        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": []}
+
         indexes = self.elementos.index.values.tolist()
         index =get_index(indexes)
         
@@ -422,8 +427,10 @@ class model():
         elemento["Nodo j"].append(nodos[1][1])
         elemento["longitud"].append(longitud[0])
         elemento["Angulo"].append(angulo)
-        elemento["Material"].append(material)
-        elemento["Seccion"].append(seccion)
+        elemento["ID Mat"].append(material[0])
+        elemento["Material"].append(material[1])
+        elemento["ID Sec"].append(seccion[0])
+        elemento["Seccion"].append(seccion[1])
         
         self.elementos = self.elementos.drop(self.elementos.index[index])
         new_element = pd.DataFrame(elemento, index=[index])

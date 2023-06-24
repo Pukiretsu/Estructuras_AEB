@@ -6,7 +6,7 @@
       },
       "UNIDADES": [
             {
-                  "Longitud": "mm",
+                  "Longitud": "m",
                   "Fuerza": "kN",
                   "Esfuerzo": "Gpa",
                   "Angulo": "\u00b0"
@@ -54,7 +54,34 @@
                   "Restriccion": "XYM"
             }
       ],
-      "ELEMENTOS": [],
+      "ELEMENTOS": [
+            {
+                  "Nombre": "1",
+                  "ID ni": 0,
+                  "Nodo i": "A",
+                  "ID nj": 1,
+                  "Nodo j": "B",
+                  "longitud": 5.0,
+                  "Angulo": 90.0,
+                  "ID Mat": 0.0,
+                  "Material": "Acero",
+                  "ID Sec": 0.0,
+                  "Seccion": "PTE 100x100x20"
+            },
+            {
+                  "Nombre": "2",
+                  "ID ni": 1,
+                  "Nodo i": "B",
+                  "ID nj": 2,
+                  "Nodo j": "C",
+                  "longitud": 5.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0.0,
+                  "Material": "Acero",
+                  "ID Sec": 0.0,
+                  "Seccion": "PTE 100x100x20"
+            }
+      ],
       "MATERIALES": [
             {
                   "Nombre": "Acero",
@@ -64,8 +91,8 @@
       "SECCIONES": [
             {
                   "Nombre": "PTE 100x100x20",
-                  "Area": 6400.0,
-                  "Inercia": 7253333.333333333
+                  "Area": 0.0063999999999999994,
+                  "Inercia": 7.253333333333335e-06
             }
       ],
       "CARGAS_PUNTUALES": [],

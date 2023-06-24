@@ -122,46 +122,45 @@ def get_angulo(longitud,delta_x,delta_y,units):
     
     return angulo * get_conversion_angulo("rad",units)
           
-def set_material(material, last_id = None, edit = False):
+def set_material(material, last_material = None, edit = False):
     if not material.empty:  
         print("\nMateriales actuales:\n")
         print(material)
         index_list = material.index.values.tolist()
         
         if edit:
-            index = get_index(index_list,f"\nSeleccione el id del material({last_id}): ", True, last_id)
+            index = get_index(index_list,f"\nSeleccione el id del material({last_material[0]}): ", True, last_material[0])
         else:        
             index = get_index(index_list,"\nSeleccione el id del material: ")
         print(f"\nMaterial selecionado id [{index}]: ") 
         print(material.loc[[index]])
                 
-        return index
+        return (index, material.loc[index, "Nombre"])
     else: 
         print("\nNo se encuentran materiales en la base de datos.\n")
-        print("\t0. Volver")
-        input("Seleciona una opción: ")
-        return False
+        input("Pulse enter para continuar.")
+        
+        return (False,False)
 
-def set_seccion(seccion, last_id = None, edit = False):
+def set_seccion(seccion, last_seccion = None, edit = False):
     if not seccion.empty:  
         print("\nSecciones actuales:\n")
         print(seccion)
         index_list = seccion.index.values.tolist()
         
         if edit:
-            index = get_index(index_list,f"\nSeleccione el id de la sección({last_id}): ", True, last_id)
+            index = get_index(index_list,f"\nSeleccione el id de la sección({last_seccion[0]}): ", True, last_seccion[0])
         else:        
             index= get_index(index_list,"\nSeleccione el id de la sección: ")
         
         print(f"\nSección selecionada id [{index}]: ") 
         print(seccion.loc[[index]])      
-        return index
+        return (index, seccion.loc[index, 'Nombre'])
     
     else: 
         print("\nNo se encuentran secciones en la base de datos.\n")
-        print("\t0. Volver")
-        input("Seleciona una opción: ")
-        return False
+        input("Pulse enter para continuar.")
+        return (False,False)
     
 # Sistema de nodos
 

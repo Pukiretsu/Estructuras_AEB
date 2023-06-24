@@ -281,6 +281,49 @@ def get_support(structureType, edit=False):
                     case _:
                         print("\nApoyo no válido.")
             
+# Sistema de cargas puntuales
+def set_nodo(nodo, ID_n = None, edit = False):
+    if not nodo.empty:   
+        print("\nNodos actuales:\n")
+        print(nodo)
+        index_list = nodo.index.values.tolist()
+        
+        if edit:
+            index = get_index(index_list,f"\nSeleccione el id del nodo en el que está ubicada la carga({ID_n}): ", edit, ID_n)
+        else:
+            index = get_index(index_list,"\nSeleccione el id del nodo en el que está ubicada la carga: ")
+
+        print(f"\nNodo selecionado id [{index}]: ") 
+        print(nodo.loc[[index]])
+        
+        return (index,nodo.loc[index,'Nombre'])
+    else: 
+        print("\nNo se encuentran nodos en la base de datos.\n")
+        print("\t0. Volver")
+        input("Seleciona una opción: ")
+        return False
+   
+def set_elemento(elemento,  last_elemento = None, edit = False):
+    if not elemento.empty:
+        print("\nElementos actuales:\n")
+        print(elemento)
+        index_list = elemento.index.values.tolist()
+        
+        if edit: 
+            index = get_index(index_list,f"\nSeleccione el id del elemento en el cual está ubicada la carga({last_elemento[0]}): ", True, last_elemento[0])
+        else:
+            index = get_index(index_list,f"\nSelecccione el id del elemento en el cual está ubicada la carga: ")
+            
+        print(f"\nElemento seleccionado id[{index}]: ")
+        print(elemento.loc[[index]])
+        
+        return (index,elemento.loc["Nombre"])
+    else: 
+        print("\nNo se encuentran elementos en la base de datos.\n")
+        print("\t0. Volver")
+        input("Seleciona una opción: ")
+        return False
+    
 # Sistema de unidades:
 
 def get_conversion_longitud(unit_in, unit_out):

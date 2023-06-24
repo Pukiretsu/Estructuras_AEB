@@ -400,7 +400,7 @@ class model():
         
         last_nodos = ((self.elementos.loc[index,"ID ni"],self.elementos.loc[index,"Nodo i"]),(self.elementos.loc[index,"ID nj"],self.elementos.loc[index,"Nodo j"]))
         
-        confirm = confirmation("¿Editar nodos?")
+        confirm = confirmation("\n¿Editar nodos?")
         if confirm :
             nodos = calc.set_nodos(self.nodos, last_nodos[0][0], last_nodos[1][0], True)  
         else:
@@ -415,7 +415,7 @@ class model():
             print(f"\nEl ángulo del elemento es: {angulo:.2f} {self.unidades.loc[0, 'Angulo']}")
         
         last_material = (self.elementos.loc[index, "ID Mat"],self.elementos.loc[index,"Material"])
-        confirm = confirmation("¿Editar material?")
+        confirm = confirmation("\n¿Editar material?")
         
         if confirm:
             if last_material:
@@ -426,7 +426,7 @@ class model():
             material = last_material
         
         last_seccion = (self.elementos.loc[index, "ID Sec"],self.elementos.loc[index,"Seccion"])
-        confirm =confirmation("¿Editar la sección?")
+        confirm =confirmation("\n¿Editar la sección?")
         if confirm:
             if last_seccion:
                 seccion =  calc.set_seccion(self.secciones, last_seccion, True)
@@ -609,7 +609,117 @@ class model():
             if confirmacion:
                 self.materiales = self.materiales.drop(self.materiales.index[index])
 
+    # Cargas puntales
+    def add_cargapuntual(self) -> None: 
+        carga_puntual = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "Elemento": [], "Distancia": []}
 
+        print("\nNuevo elemento.")
+        
+        try:
+            index = max(self.cargas_Puntuales.index) + 1
+        except:
+            index =len(self.cargas_Puntuales.index)
+        
+        nombre = input("\nIngrese un nombre para la carga puntual (En blanco nombre por defecto): ")
+        if not (nombre):
+            nombre = f"Elemento {index}"
+            
+        valor = input(f"\nIngrese el valor de la carga ({self.unidades.loc[0,'Fuerza']}): ")
+        
+        direccion = input(f"Ingrese la dirección de la carga (X o Y) : ")
+        
+        confirmacion = confirmation("\n¿La carga está ubicada en un nodo?")
+        if confirmacion:
+            nodo = calc.set_nodo(self.nodos)
+        else: 
+            confirmacion =confirmacion("\n¿La carga está ubicada en un elemento?")
+            if confirmacion:
+                elemento = calc.set_elemento(self.elementos)
+                
+                print(f"\nEl nodo i del elemento {elemento[0]} es: {nodo[0]} ")
+                distancia = input("\nIngrese la distancia de la carga respecto al nodo i del elemento: ")
+            else:
+                print("\nNo se selecciono una ubicación para la carga\n")
+                print("\t0. Volver")
+                return False
+        
+        carga_puntual["Nombre"].append(nombre)
+        carga_puntual["Valor"].append(valor)
+        carga_puntual["Direccion"].append(direccion)
+        carga_puntual["Nodo"].append(nodo)
+        carga_puntual["Elemento"].append(elemento)
+        carga_puntual["Distancia"].append(distancia)
+        
+        new_cargaP = pd.DataFrame(carga_puntual, index=[index])
+        
+        self.cargas_Puntuales = pd.concat([self.cargas_Puntuales,new_cargaP])
+        
+    def edit_cargapuntual(self) -> None: 
+        print("\nCargas puntuales actuales: \n")
+        print(self.cargas_Puntuales)
+        
+        carga_puntual = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "Elemento": [], "Distancia": []}
+
+        indexes = self.cargas_Puntuales.index.values.tolist()
+        index = get_index(indexes)
+        
+        print(f"\nCarga puntual seleccionada id: [{index}]")
+        print(self.cargas_Puntuales.loc[[index]])
+        
+        nombre = input(f"\nNombre ({self.cargas_Puntuales.loc[index, 'Nombre']}): ") or self.cargas_Puntuales.loc[index, 'Nombre']
+        valor = input(f"\nValor ({self.cargas_Puntuales.loc[index,'Valor']} {self.unidades.loc[0],'Fuerza'}): ") or self.cargas_Puntuales.loc[index,'Valor']
+        direccion = input(f"\nDireccion ({self.cargas_Puntuales.loc[index, 'Direcccion']}): ") or self.cargas_Puntuales.loc[index, 'Direccion']
+        
+        last_node = self.cargas_Puntuales.loc[index,"Nodo"]
+        last_elemento = self.cargas_Puntuales[index,"Elemento"]
+        
+        confirmacion = confirmation("¿Quiere editar la ubicacion de la carga?")
+        if confirmacion:
+            confirmacion = confirmation("\n¿La carga está ubicada en un nodo?")
+            if confirmacion:
+                nodo = calc.set_nodo(self.nodos)
+            else: 
+                confirmacion =confirmacion("\n¿La carga está ubicada en un elemento?")
+                if confirmacion:
+                    elemento = calc.set_elemento(self.elementos)
+                    
+                    print(f"\nEl nodo i del elemento {elemento[0]} es: {nodo[0]} ")
+                    distancia = input("\nIngrese la distancia de la carga respecto al nodo i del elemento: ")
+                else:
+                    print("\nNo se selecciono una ubicación para la carga\n")
+                    print("\t0. Volver")
+                    return False
+        else :
+            nodo = last_node
+            elemento = last_elemento                
+            
+        carga_puntual["Nombre"].append(nombre)
+        carga_puntual["Valor"].append(valor)
+        carga_puntual["Direccion"].append(direccion)
+        carga_puntual["Nodo"].append(nodo)
+        carga_puntual["Elemento"].append(elemento)
+        carga_puntual["Distancia"].append(distancia)
+        
+        self.cargas_Puntuales = self.cargas_Puntuales.drop(self.cargas_Puntuales.index[index])
+        new_cargaP = pd.DataFrame(carga_puntual, index=[index])
+        
+        self.cargas_Puntuales = pd.concat([self.cargas_Puntuales,new_cargaP])
+        self.cargas_Puntuales = self.cargas_Puntuales.sort_index() 
+    
+    def delete_cargapuntual(self) -> None: 
+        print("\nCargas puntuales actuales: \n")
+        print(self.cargas_Puntuales)
+        
+        indexes = self.cargas_Puntuales.index.values.tolist()
+        index = get_index(indexes)
+        
+        confirmacion = confirmation(f"Confirmar eliminación {self.cargas_Puntuales.loc[index,'Nombre']} id:{index}")
+        if confirmacion: 
+            self.cargas_Puntuales = self.cargas_Puntuales.drop(self.cargas_Puntuales.index[index])
+
+    # Cargas Distribuidas
+    
+    
 if __name__ == "__main__":
     model = model()
     model.add_section()

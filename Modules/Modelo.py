@@ -612,7 +612,7 @@ class model():
     # Cargas puntales
     def add_cargapuntual(self) -> None: 
         carga_puntual = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "Elemento": [], "Distancia": []}
-
+        # FIXME: Agregar campos para ID nodo y ID elemento 
         print("\nNuevo elemento.")
         
         try:
@@ -624,9 +624,11 @@ class model():
         if not (nombre):
             nombre = f"Elemento {index}"
             
-        valor = input(f"\nIngrese el valor de la carga ({self.unidades.loc[0,'Fuerza']}): ")
+        valor = input(f"\nIngrese el valor de la carga ({self.unidades.loc[0,'Fuerza']}): ") #FIXME: Enviar a calculos como una funcion 
         
-        direccion = input(f"Ingrese la dirección de la carga (X o Y) : ")
+        direccion = input(f"Ingrese la dirección de la carga (X o Y) : ") #FIXME: Enviar a modulo calculos como funcion
+        
+        # FIXME: el tipo de carga se puede refactorizar como un submenú en el modulo de calculos
         
         confirmacion = confirmation("\n¿La carga está ubicada en un nodo?")
         if confirmacion:
@@ -636,12 +638,13 @@ class model():
             if confirmacion:
                 elemento = calc.set_elemento(self.elementos)
                 
+                # FIXME: cuando se refactorice enviar este bloque de codigo para calculos
                 print(f"\nEl nodo i del elemento {elemento[0]} es: {nodo[0]} ")
                 distancia = input("\nIngrese la distancia de la carga respecto al nodo i del elemento: ")
             else:
                 print("\nNo se selecciono una ubicación para la carga\n")
                 print("\t0. Volver")
-                return False
+                return False #FIXME: Borrar return innecesario
         
         carga_puntual["Nombre"].append(nombre)
         carga_puntual["Valor"].append(valor)
@@ -659,6 +662,7 @@ class model():
         print(self.cargas_Puntuales)
         
         carga_puntual = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "Elemento": [], "Distancia": []}
+        # FIXME: Agregar campos para ID nodo y ID elemento 
 
         indexes = self.cargas_Puntuales.index.values.tolist()
         index = get_index(indexes)
@@ -667,11 +671,17 @@ class model():
         print(self.cargas_Puntuales.loc[[index]])
         
         nombre = input(f"\nNombre ({self.cargas_Puntuales.loc[index, 'Nombre']}): ") or self.cargas_Puntuales.loc[index, 'Nombre']
+        
+        #FIXME: Refactorizar con la funcion implementada en add 
+        # Como solucion a estos inputs se puede volver a llamar la funcion para obtener carga y dirección pero colocandole un argumento para saber que es edicion
+        
         valor = input(f"\nValor ({self.cargas_Puntuales.loc[index,'Valor']} {self.unidades.loc[0],'Fuerza'}): ") or self.cargas_Puntuales.loc[index,'Valor']
         direccion = input(f"\nDireccion ({self.cargas_Puntuales.loc[index, 'Direcccion']}): ") or self.cargas_Puntuales.loc[index, 'Direccion']
         
         last_node = self.cargas_Puntuales.loc[index,"Nodo"]
         last_elemento = self.cargas_Puntuales[index,"Elemento"]
+        
+        #FIXME: Refactorizar con la funcion implementada en add
         
         confirmacion = confirmation("¿Quiere editar la ubicacion de la carga?")
         if confirmacion:

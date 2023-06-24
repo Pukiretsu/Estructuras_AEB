@@ -92,11 +92,11 @@ def elementos_settings(modelo):
             print("\nNo hay Elementos en la base de datos.")
         
         print("\n¿Qué desea hacer?\n")
-        print("\t1. Nuevo Nodo.")
+        print("\t1. Nuevo Elemento.")
         
         if not modelo.elementos.empty:
-            print("\t2. Modificar Nodo existente.")
-            print("\t3. Eliminar Nodo existente.")
+            print("\t2. Modificar elemento existente.")
+            print("\t3. Eliminar elemento existente.")
         
         print("\t4. Volver.")
         
@@ -111,18 +111,18 @@ def elementos_settings(modelo):
                     modelo.edit_element()
                     os.system("cls")
                 else:
-                    print("Error: no se reconoce la opcion ingresada.\n\n")
+                    print("Error: no se reconoce la opción ingresada.\n\n")
             case "3":
                 if not modelo.elementos.empty:
                     os.system("cls")
                     modelo.delete_element()
                     os.system("cls")
                 else:
-                    print("Error: no se reconoce la opcion ingresada.\n\n")
+                    print("Error: no se reconoce la opción ingresada.\n\n")
             case "4":
                 return modelo
             case _:
-                print("Error: no se reconoce la opcion ingresada.\n\n")
+                print("Error: no se reconoce la opción ingresada.\n\n")
 
 def secciones_settings(modelo):
     os.system("cls")
@@ -163,7 +163,7 @@ def secciones_settings(modelo):
                     modelo.edit_section()
                     os.system("cls")
                 else:
-                    print("Error: no se reconoce la opcion ingresada.\n\n")
+                    print("Error: no se reconoce la opcóon ingresada.\n\n")
             case "3":
                 if not modelo.secciones.empty:
                     os.system("cls")
@@ -171,11 +171,11 @@ def secciones_settings(modelo):
                     modelo.delete_section()
                     os.system("cls")
                 else:
-                    print("Error: no se reconoce la opcion ingresada.\n\n")
+                    print("Error: no se reconoce la opción ingresada.\n\n")
             case "4":
                 return modelo
             case _:
-                print("Error: no se reconoce la opcion ingresada.\n\n")
+                print("Error: no se reconoce la opción ingresada.\n\n")
 
 def materiales_settings(modelo):
     os.system("cls")

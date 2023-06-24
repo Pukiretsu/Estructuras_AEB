@@ -40,10 +40,13 @@ def set_structure_type():
 
 #Sistema de elementos
 
-def index(index_list,message):
+def index(index_list,message, edit = False, default = None):
     while True:
         try:
-            index = int(input(message))
+            if edit:
+                index = int(input(message)) or default
+            else:
+                index = int(input(message))      
             if index_list.count(index) == 0:
                 raise Exception() 
             break
@@ -51,18 +54,26 @@ def index(index_list,message):
             print("Error: id inválido.\n")
     return index
 
-def set_nodos(nodos):
-    if not nodos.empty:  
+def set_nodos(nodos, ID_i = None, ID_j = None,edit = False):
+    if not nodos.empty:   
         print("\nNodos actuales:\n")
         print(nodos)
         index_list = nodos.index.values.tolist()
         
-        index_i = index(index_list,"Seleccione el id del nodo i: ")
+        if edit:
+            index_i = index(index_list,f"Seleccione el id del nodo i({ID_i}): ", ID_i)
+        else:
+            index_i = index(index_list,"Seleccione el id del nodo i: ")
+            
         print(f"\nNodo i selecionado id [{index_i}]: ") 
         print(nodos.loc[[index_i]])
         
         while True: 
-            index_j = index(index_list,"Seleccione el ide del nodo j: ")
+            if edit:
+                index_j = index(index_list,f"Seleccione el id del nodo j({ID_j}): ", ID_j)
+            else:
+                index_j = index(index_list,"Seleccione el id del nodo j: ")
+                
             if index_i != index_j:
                 print(f"\nNodo j selecionado id [{index_j}]: ") 
                 print(nodos.loc[[index_j]])
@@ -111,13 +122,16 @@ def get_angulo(longitud,delta_x,delta_y,units):
     
     return angulo * get_conversion_angulo("rad",units)
           
-def set_material(material):
+def set_material(material, last_id = None, edit = False):
     if not material.empty:  
         print("\nMateriales actuales:\n")
         print(material)
         index_list = material.index.values.tolist()
         
-        index= index(index_list,"Seleccione el id del material: ")
+        if edit:
+            index = index(index_list,f"Seleccione el id del material({last_id}): ", last_id)
+        else:        
+            index = index(index_list,"Seleccione el id del material: ")
         print(f"\nMaterial selecionado id [{index}]: ") 
         print(material.loc[[index]])
                 
@@ -128,19 +142,22 @@ def set_material(material):
         input("Seleciona una opción: ")
         return False
 
-def set_seccion(seccion):
+def set_seccion(seccion, last_id = None, edit = False):
     if not seccion.empty:  
         print("\nSecciones actuales:\n")
         print(seccion)
         index_list = seccion.index.values.tolist()
         
-        index= index(index_list,"Seleccione el id de la sección: ")
+        if edit:
+            index = index(index_list,f"Seleccione el id de la sección({last_id}): ", last_id)
+        else:        
+            index= index(index_list,"Seleccione el id de la sección: ")
         print(f"\nSección selecionada id [{index}]: ") 
         print(seccion.loc[[index]])
                 
         return index
     else: 
-        print("\nNo se encuentran elementos en la base de datos.\n")
+        print("\nNo se encuentran secciones en la base de datos.\n")
         print("\t0. Volver")
         input("Seleciona una opción: ")
         return False

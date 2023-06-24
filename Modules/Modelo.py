@@ -349,11 +349,73 @@ class model():
         self.elementos = pd.concat([self.elementos,new_element])
         
     def edit_element(self) -> None:
-        pass
-    
-    def delete_element(self) -> None:
-        pass
+        print("\nElementos actuales: \n")
+        print(self.elementos)
         
+        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "longitud": [], "Angulo": [], "Material": [], "Seccion": []}
+        indexes = self.elementos.index.values.tolist()
+        index =get_index(indexes)
+        
+        print(f"\nElemento seleccionado id: [{index}]")
+        print(self.elementos.loc[[index]])
+        
+        nombre = input(f"\nNombre ({self.elementos.loc[index, 'Nombre']}): ") or self.elemetos.loc[index, 'Nombre']
+        
+        last_nodos = ((self.elementos.loc[index,"ID ni"],self.elementos.loc[index,"Nodo i"]),(self.elementos.loc[index,"ID nj"],self.elementos.loc[index,"Nodo j"]))
+        conf = confirmation("¿Editar nodos?")
+        if conf :
+            nodos = calc.set_nodos(self.nodos, last_nodos[0][0], last_nodos[1][0], True)  
+        else:
+            nodos = last_nodos
+            
+        if nodos: 
+            longitud = calc.get_longitud(self.nodos, nodos[0][0],nodos[1][0], self.unidades.loc[0,'Longitud'])
+            angulo = calc.get_angulo(longitud[0],longitud[1][0],longitud[1][1], self.unidades.loc[0,'Angulo'])
+        
+        last_material = self.elementos.loc[index,"Material"]
+        conf = confirmation("¿Editar material?")
+        if conf:
+            material = calc.set_material(self.materiales, last_material, True)
+        else: 
+            material = last_material
+        
+        last_seccion = self.elementos.loc[index,"Seccion"]
+        conf =confirmation("¿Editar la sección?")
+        if conf:
+            seccion =  calc.set_seccion(self.secciones, last_seccion, True)
+        else:
+            seccion = last_seccion
+        
+        elemento["Nombre"].append(nombre)
+        elemento["ID ni"].append(nodos[0][0])
+        elemento["Nodo i"].append(nodos[0][1])
+        elemento["ID nj"].append(nodos[1][0])
+        elemento["Nodo j"].append(nodos[1][1])
+        elemento["longitud"].append(longitud[0])
+        elemento["Angulo"].append(angulo)
+        elemento["Material"].append(material)
+        elemento["Seccion"].append(seccion)
+        
+        self.elementos = self.elementos.drop(self.elementos.index[index])
+        new_element = pd.DataFrame(elemento, index=[index])
+        
+        self.elementos = pd.concat([self.elementos,new_element])
+        self.elementos = self.elementos.sort_index() 
+            
+    def delete_element(self) -> None:
+        print("\nElementos actuales:\n")
+        print(self.elementos)
+        
+        indexes = self.elementos.index.values.tolist()
+        index = get_index(indexes)
+        
+        print(f"\nElemento seleccionado id: [{index}]")
+        print(self.elementos.loc[[index]])
+        
+        confirmacion = confirmation(f"Confirmar eliminación {self.elementos.loc[index,'Nombre']} id:{index}")
+        if confirmacion: 
+            self.elementos = self.elementos.drop(self.elementos.index[index])
+
     # Secciones
     def add_section(self) -> None:
         section = {"Nombre": [], "Area": [], "Inercia": []}

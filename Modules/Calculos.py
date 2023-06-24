@@ -630,3 +630,68 @@ def inercia_custom(units) -> float:
     return floatInput(f"Ingrese el valor de la inercia ({units}^4): ")
 
 ###  Caculos de estructuras ###
+
+def get_rigidez_local(structureType, L, A, E, I):
+    match structureType:
+        case "Cercha":
+            rigidez_local = np.array([ [  A*E/L , -A*E/L ]
+                                      ,[ -A*E/L ,  A*E/L ]])
+        case "Viga":
+            rigidez_local = np.array([ [  12*E*I/L**3 ,  6*E*I/L**2 , -12*E*I/L**3 ,  6*E*I/L**2 ]
+                                      ,[   6*E*I/L**2 ,  4*E*I/L    ,  -6*E*I/L**2 ,  2*E*I/L    ]
+                                      ,[ -12*E*I/L**3 , -6*E*I/L**2 ,  12*E*I/L**3 , -6*E*I/L**2 ]
+                                      ,[   6*E*I/L**2 ,  2*E*I/L    ,  -6*E*I/L**2 ,  4*E*I/L    ]])
+        case "Portico":
+            rigidez_local = np.array([ [  A*E/L ,      0       ,     0       , -A*E/L ,       0      ,      0      ]
+                                      ,[    0   ,  12*E*I/L**3 ,  6*E*I/L**2 ,    0   , -12*E*I/L**3 ,  6*E*I/L**2 ]
+                                      ,[    0   ,   6*E*I/L**2 ,  4*E*I/L    ,    0   ,  -6*E*I/L**2 ,  2*E*I/L    ]
+                                      ,[ -A*E/L ,      0       ,     0       ,  A*E/L ,       0      ,      0      ]
+                                      ,[    0   , -12*E*I/L**3 , -6*E*I/L**2 ,    0   ,  12*E*I/L**3 , -6*E*I/L**2 ]
+                                      ,[    0   ,   6*E*I/L**2 ,  2*E*I/L    ,    0   ,  -6*E*I/L**2 ,  4*E*I/L    ]])
+    
+    return rigidez_local
+
+def get_Transformacion_GL(structureType, ang):
+    match structureType:
+        case "Cercha":
+            Global_Local = np.array( [ np.cos(ang) , np.sin(ang) ,      0      ,      0      ]
+                                    ,[      0      ,      0      , np.cos(ang) , np.sin(ang) ])
+        case "Viga":
+            return 1
+        case "Portico":
+            Global_Local = np.array([ [  np.cos(ang) , np.sin(ang) , 0 ,       0      ,      0      , 0 ]
+                                     ,[ -np.sin(ang) , np.cos(ang) , 0 ,       0      ,      0      , 0 ]
+                                     ,[       0      ,      0      , 1 ,       0      ,      0      , 0 ]
+                                     ,[       0      ,      0      , 0 ,  np.cos(ang) , np.sin(ang) , 0 ]
+                                     ,[       0      ,      0      , 0 , -np.sin(ang) , np.cos(ang) , 0 ]
+                                     ,[       0      ,      0      , 0 ,       0      ,      0      , 1 ]])
+    return Global_Local
+if __name__ == "__main__":
+    E = 27805574.98
+    A = 0.25
+    I = 0.005208333
+    L = 5
+    ang = 2.214297436
+
+    
+    estrutura = "Portico"
+    k_p = pd.DataFrame(get_rigidez_local(estrutura,L,A,E,I))
+    TGL = pd.DataFrame(get_Transformacion_GL(estrutura,ang))
+    TLG = TGL.transpose()
+    
+    k_rigidez = (TLG.dot(k_p)).dot(TGL)
+    
+    """ print("K':\n")
+    print(k_p)
+    print("TGL:\n")
+    print(TGL)
+    print("TLG:\n")
+    print(TLG)
+    
+    print("\n\nK_elemento:")
+    print(k_rigidez)
+     """
+    matriz_global = np.zeros((6,6), dtype="float64")
+    
+    
+    print(matriz_global)

@@ -375,7 +375,7 @@ def set_elementoCarga(elemento, units, last_distancia = None, ID_e = None, edit 
         input("Presione enter para continuar.")
         return (False,False,False)
     
-# Sistema de cargas distribuidas
+# Sistema de cargas distribuidas:
 def get_cargaD(units, last_carga_i = None, last_carga_f = None, edit = False):
     if edit:
         valor_i = intInput(f"\nINgrese el valor de la carga inicial ({last_carga_i [0]})({units.loc[0,'Fuerza']}): ")
@@ -414,8 +414,12 @@ def set_elementoCD(elemento, units, ID_e = None, last_distancia_i = None,  last_
         print("\nNo se encuentran elementos en la base de datos.\n")
         input("Presione enter para continuar.")
         return (False,False,False,False)
-# Sistema de unidades:
 
+# Sistema de momentos:
+def get_momento(units, last_carga = None, edit = False):
+    pass
+
+# Sistema de unidades:
 def get_conversion_longitud(unit_in, unit_out):
     match unit_in: 
         case "m":

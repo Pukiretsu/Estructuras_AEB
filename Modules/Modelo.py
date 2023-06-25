@@ -59,7 +59,9 @@ MOMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                          "Valor": pd.Series(dtype="float"),
                          "Direccion": pd.Series(dtype="str"),
                          "Nodo" : pd.Series(dtype="str"),
+                         "ID_n" : pd.Series(dtype="int"),
                          "Elemento": pd.Series(dtype="str"),
+                         "ID_e": pd.Series(dtype="int"),
                          "Distancia": pd.Series(dtype="float")})
 
 # Funciones de soporte
@@ -674,9 +676,9 @@ class model():
         nombre = input(f"\nNombre ({self.cargas_Puntuales.loc[index, 'Nombre']}): ") or self.cargas_Puntuales.loc[index, 'Nombre']
         
         last_carga = (self.cargas_Puntuales.loc[index,'Valor'],self.cargas_Puntuales.loc[index, 'Direccion'])
-        confirmacion = confirmation( "\n¿Mantener valores?")
+        confirmacion = confirmation( "\n¿Cambiar valores?")
         if confirmacion:
-            carga = calc.get_carga(self.unidades, last_carga, True)
+            carga = calc.get_cargaP(self.unidades, last_carga, True)
         else:
             carga = last_carga
         
@@ -684,7 +686,6 @@ class model():
         direccion = carga[1]
 
         last_ubicacion = ((self.cargas_Puntuales.loc[index, 'ID_n'],self.cargas_Puntuales.loc[index, 'Nodo']),(self.cargas_Puntuales.loc[index, 'ID_e'],self.cargas_Puntuales.loc[index, 'Elemento'],self.cargas_Puntuales.loc[index, 'Distancia']))
-        
         confirmacion = confirmation("¿Quiere editar la ubicacion de la carga?")
         if confirmacion: 
             ubicacion = calc.get_ubicacionCarga(self.nodos, self.elementos, self.unidades, last_ubicacion[0][0], last_ubicacion[1][0], True)
@@ -738,8 +739,8 @@ class model():
             nombre = f"Carga distribuida {index}"
             
         carga = calc.get_cargaD(self.unidades)
-        carga_i = carga[0]
-        carga_f = carga[1]
+        carga_i = carga[0][0]
+        carga_f = carga[0][1]
         
         ubicacion = calc.set_elementoCD(self.elementos, self.unidades)
         
@@ -756,18 +757,93 @@ class model():
         carga_distribuida["Distancia i"].append(distancia_i)
         carga_distribuida["Distancia f"].append(distancia_f)
         
+        new_cargaD = pd.DataFrame(carga_distribuida, index=[index])
+        
+        self.cargas_Distribuidas = pd.concat([self.cargas_Distribuidas,new_cargaD])
         
     def edit_cargadistribuida(self) -> None:
+        print("\nCargas distribuidas actuales: \n")
+        print(self.cargas_Distribuidas)
+        
         carga_distribuida = {"Nombre": [], "Carga i": [], "Carga f": [], "Direcccion": [], "Elemento": [], "ID_e": [], "Distancia i": [], "Distancia f": []}
         
+        indexes = self.cargas_Distribuidas.index.values.tolist()
+        index = get_index(indexes)
         
-        pass
-    
+        print(f"\nCarga distribuida selecionada id: [{index}]")
+        print(self.cargas_Distribuidas.loc[[index]])
+        
+        nombre = input(f"\nNombre ({self.cargas_Distribuidas.loc[index, 'Nombre']}): ") or self.cargas_Distribuidas.loc[index, 'Nombre']
+
+        last_cargas = (self.cargas_Distribuidas.loc[index, 'Carga i', self.cargas_Distribuidas.loc[index, 'Carga f']])
+        confirmacion = confirmation("\n¿Cambiar los valores de la carga?")
+        if confirmacion:
+            cargas = calc.get_cargaD(self.unidades, last_cargas, True)
+        else:
+            cargas = last_cargas
+            
+        carga_i = cargas[0][0]
+        carga_f = cargas[0][1]
+        
+        last_ubicacion = ((self.cargas_Distribuidas.loc[index, 'ID_e'], self.cargas_Distribuidas.loc[index,'Elemento']), (self.cargas_Distribuidas.loc[index, 'Distancia i'], self.cargas_Distribuidas.loc[index, 'Distancia f']))
+        confirmacion = confirmation("\n¿Quiere editar la ubicación de la carga?")
+        if confirmacion:
+            ubicacion = calc.set_elementoCD(self.elementos, self.unidades, last_ubicacion[0][0], last_ubicacion[1][0], True)
+        else: 
+            ubicacion = last_ubicacion
+        
+        id_e = ubicacion[0][0]
+        elemento = ubicacion[0][1]
+        distancia_i = ubicacion[0][2]
+        distancia_f = ubicacion[0][3]
+        
+        carga_distribuida["Nombre"].append(nombre)
+        carga_distribuida["Carga i"].append(carga_i)
+        carga_distribuida["Carga f"].append(carga_f)
+        carga_distribuida["Elemento"].append(elemento)
+        carga_distribuida["ID_e"].append(id_e)
+        carga_distribuida["Distancia i"].append(distancia_i)
+        carga_distribuida["Distancia f"].append(distancia_f)
+        
+        self.cargas_Distribuidas = self.cargas_Distribuidas.drop([index])
+        new_cargaD = pd.DataFrame(carga_distribuida, index=[index])
+        
+        self.cargas_Distribuidas = pd.concat([self.cargas_Distribuidas,new_cargaD])
+        self.cargas_Distribuidas = self.cargas_Distribuidas.sort_index() 
+        
     def delete_cargadistribuida(self) -> None:
-        pass
+        print("\nCargas distribuidas actuales: \n")
+        print(self.cargas_Distribuidas)
+        
+        indexes = self.cargas_Puntuales.index.values.tolist()
+        index = get_index(indexes)
+        
+        confirmacion = confirmation(f"Confirmar eliminación {self.cargas_Distribuidas.loc[index,'Nombre']} id:{index}")
+        if confirmacion: 
+            self.cargas_Distribuidas = self.cargas_Distribuidas.drop([index])
     
     # Momentos
+    def add_momento(self) -> None:
+        momento = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "ID_n": [], "Elemento": [], "ID_e": [], "Distancia": []}
+        print("\nNueo momento.") 
+        
+        try:
+            index = max(self.momentos.index) + 1
+        except:
+            index = len(self.momentos.index)    
+            
+        nombre = input("\nIngrese un nombre para el momento (En blanco nombre por defecto): ")
+        if not (nombre):
+            nombre = f"Momento {index}"
+            
+        carga = calc.get_momento(self.unidades)
+        
     
+    def edit_momento(self) -> None:
+        pass
+    
+    def delete_momento(self) -> None:
+        pass
     
     # Calculos de estructura
     def calculate(self) -> None:

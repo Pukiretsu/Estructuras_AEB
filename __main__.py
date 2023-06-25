@@ -261,8 +261,60 @@ def materiales_settings(modelo):
                 print("Error: no se reconoce la opción ingresada.\n\n")                
 
 def cargas_puntuales_settings(modelo):
-    #TODO: Menu de Cargas Puntuales
-    pass
+    os.system("cls")
+    
+    def show_units():
+        divideBar()     
+        print("Cargas puntuales.")
+        divideBar()     
+        print("Unidades.")
+        print(f"Longitud: {modelo.unidades.loc[0,'Longitud']}")
+        print(f"Fuerza: {modelo.unidades.loc[0,'Fuerza']}")
+        divideBar()     
+    
+    while True:
+        show_units()
+        if not modelo.cargas_Puntuales.empty:
+            print("\nCargas puntules actuales:\n")
+            print(modelo.cargas_Puntuales.loc[:,~modelo.cargas_Puntuales.columns.isin([""])])
+        else:
+            print("\nNo hay cargas puntuales en la base de datos.")
+        
+        print("\n¿Qué desea hacer?\n")
+        print("\t1. Nueva carga puntual.")
+        
+        if not modelo.cargas_Puntuales.empty:
+            print("\t2. Modificar carga puntual existente.")
+            print("\t3. Eliminar carga puntual existenste.")
+        
+        print("\n0. Volver.")
+        
+        match input("\nIngrese una opción: "):
+            case "1":
+                os.system("cls")
+                show_units()
+                modelo.add_cargapuntual()
+                os.system("cls")
+            case "2":
+                if not modelo.cargas_Puntuales.empty:
+                    os.system("cls")
+                    show_units()
+                    modelo.edit_cargapuntual()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opción ingresada.\n\n")
+            case "3":
+                if not modelo.elementos.empty:
+                    os.system("cls")
+                    show_units()
+                    modelo.delete_cargapuntual()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opción ingresada.\n\n")
+            case "0":
+                return modelo
+            case _:
+                print("Error: no se reconoce la opción ingresada.\n\n")
 
 def cargas_distribuidas_settings(modelo):
     #TODO: Menu de Cargas distribuidas

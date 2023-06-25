@@ -42,7 +42,9 @@ CARGAS_PUNTUALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                                  "Valor": pd.Series(dtype="float"),
                                  "Direccion": pd.Series(dtype="str"),
                                  "Nodo" : pd.Series(dtype="str"),
+                                 "ID_n" : pd.Series(dtype="int"),
                                  "Elemento": pd.Series(dtype="str"),
+                                 "ID_e": pd.Series(dtype="int"),
                                  "Distancia": pd.Series(dtype="float")})
 
 CARGAS_DISTRIBUIDAS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
@@ -611,8 +613,7 @@ class model():
 
     # Cargas puntales
     def add_cargapuntual(self) -> None: 
-        carga_puntual = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "Elemento": [], "Distancia": []}
-        # FIXME: Agregar campos para ID nodo y ID elemento 
+        carga_puntual = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "ID_n": [], "Elemento": [], "ID_e": [], "Distancia": []}
         print("\nNuevo elemento.")
         
         try:
@@ -624,33 +625,25 @@ class model():
         if not (nombre):
             nombre = f"Elemento {index}"
             
-        valor = input(f"\nIngrese el valor de la carga ({self.unidades.loc[0,'Fuerza']}): ") #FIXME: Enviar a calculos como una funcion 
+        carga = calc.get_carga(self.unidades) 
+        valor = carga[0]
+        direccion = carga[1]
         
-        direccion = input(f"Ingrese la dirección de la carga (X o Y) : ") #FIXME: Enviar a modulo calculos como funcion
+        ubicacion = calc.get_ubicacionCarga(self.nodos, self.elementos, self.unidades)
         
-        # FIXME: el tipo de carga se puede refactorizar como un submenú en el modulo de calculos
-        
-        confirmacion = confirmation("\n¿La carga está ubicada en un nodo?")
-        if confirmacion:
-            nodo = calc.set_nodo(self.nodos)
-        else: 
-            confirmacion =confirmacion("\n¿La carga está ubicada en un elemento?")
-            if confirmacion:
-                elemento = calc.set_elemento(self.elementos)
-                
-                # FIXME: cuando se refactorice enviar este bloque de codigo para calculos
-                print(f"\nEl nodo i del elemento {elemento[0]} es: {nodo[0]} ")
-                distancia = input("\nIngrese la distancia de la carga respecto al nodo i del elemento: ")
-            else:
-                print("\nNo se selecciono una ubicación para la carga\n")
-                print("\t0. Volver")
-                return False #FIXME: Borrar return innecesario
+        id_n = ubicacion[0][0]
+        nodo = ubicacion[0][1]
+        id_e = ubicacion[1][0]
+        elemento = ubicacion [1][1]
+        distancia = ubicacion[1][2]
         
         carga_puntual["Nombre"].append(nombre)
         carga_puntual["Valor"].append(valor)
         carga_puntual["Direccion"].append(direccion)
         carga_puntual["Nodo"].append(nodo)
+        carga_puntual["ID_n"].append(id_n)
         carga_puntual["Elemento"].append(elemento)
+        carga_puntual["ID_e"].append(id_e)
         carga_puntual["Distancia"].append(distancia)
         
         new_cargaP = pd.DataFrame(carga_puntual, index=[index])
@@ -661,8 +654,7 @@ class model():
         print("\nCargas puntuales actuales: \n")
         print(self.cargas_Puntuales)
         
-        carga_puntual = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "Elemento": [], "Distancia": []}
-        # FIXME: Agregar campos para ID nodo y ID elemento 
+        carga_puntual = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "ID_n": [], "Elemento": [], "ID_e": [], "Distancia": []}
 
         indexes = self.cargas_Puntuales.index.values.tolist()
         index = get_index(indexes)
@@ -672,42 +664,37 @@ class model():
         
         nombre = input(f"\nNombre ({self.cargas_Puntuales.loc[index, 'Nombre']}): ") or self.cargas_Puntuales.loc[index, 'Nombre']
         
-        #FIXME: Refactorizar con la funcion implementada en add 
-        # Como solucion a estos inputs se puede volver a llamar la funcion para obtener carga y dirección pero colocandole un argumento para saber que es edicion
+        last_carga = (self.cargas_Puntuales.loc[index,'Valor'],self.cargas_Puntuales.loc[index, 'Direccion'])
+        confirmacion = confirmation( "\n¿Mantener valores?")
+        if confirmacion:
+            carga = calc.get_carga(self.unidades, last_carga, True)
+        else:
+            carga = last_carga
         
-        valor = input(f"\nValor ({self.cargas_Puntuales.loc[index,'Valor']} {self.unidades.loc[0],'Fuerza'}): ") or self.cargas_Puntuales.loc[index,'Valor']
-        direccion = input(f"\nDireccion ({self.cargas_Puntuales.loc[index, 'Direcccion']}): ") or self.cargas_Puntuales.loc[index, 'Direccion']
-        
-        last_node = self.cargas_Puntuales.loc[index,"Nodo"]
-        last_elemento = self.cargas_Puntuales[index,"Elemento"]
-        
-        #FIXME: Refactorizar con la funcion implementada en add
+        valor = carga[0]
+        direccion = carga[1]
+
+        last_ubicacion = ((self.cargas_Puntuales.loc[index, 'ID_n'],self.cargas_Puntuales.loc[index, 'Nodo']),(self.cargas_Puntuales.loc[index, 'ID_e'],self.cargas_Puntuales.loc[index, 'Elemento'],self.cargas_Puntuales.loc[index, 'Distancia']))
         
         confirmacion = confirmation("¿Quiere editar la ubicacion de la carga?")
-        if confirmacion:
-            confirmacion = confirmation("\n¿La carga está ubicada en un nodo?")
-            if confirmacion:
-                nodo = calc.set_nodo(self.nodos)
-            else: 
-                confirmacion =confirmacion("\n¿La carga está ubicada en un elemento?")
-                if confirmacion:
-                    elemento = calc.set_elemento(self.elementos)
-                    
-                    print(f"\nEl nodo i del elemento {elemento[0]} es: {nodo[0]} ")
-                    distancia = input("\nIngrese la distancia de la carga respecto al nodo i del elemento: ")
-                else:
-                    print("\nNo se selecciono una ubicación para la carga\n")
-                    print("\t0. Volver")
-                    return False
+        if confirmacion: 
+            ubicacion = calc.get_ubicacionCarga(self.nodos, self.elementos, self.unidades, last_ubicacion[0][0], last_ubicacion[1][0], True)
         else :
-            nodo = last_node
-            elemento = last_elemento                
+            ubicacion = last_ubicacion
             
+        id_n = ubicacion[0][0]
+        nodo = ubicacion[0][1]
+        id_e = ubicacion[1][0]
+        elemento = ubicacion [1][1]
+        distancia = ubicacion[1][2]
+        
         carga_puntual["Nombre"].append(nombre)
         carga_puntual["Valor"].append(valor)
         carga_puntual["Direccion"].append(direccion)
         carga_puntual["Nodo"].append(nodo)
+        carga_puntual["ID_n"].append(id_n)
         carga_puntual["Elemento"].append(elemento)
+        carga_puntual["ID_e"].append(id_e)
         carga_puntual["Distancia"].append(distancia)
         
         self.cargas_Puntuales = self.cargas_Puntuales.drop(self.cargas_Puntuales.index[index])
@@ -728,6 +715,9 @@ class model():
             self.cargas_Puntuales = self.cargas_Puntuales.drop(self.cargas_Puntuales.index[index])
 
     # Cargas Distribuidas
+    
+    
+    # Momentos
     
     
 if __name__ == "__main__":

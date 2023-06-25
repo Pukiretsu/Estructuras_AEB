@@ -282,7 +282,53 @@ def get_support(structureType, edit=False):
                         print("\nApoyo no válido.")
             
 # Sistema de cargas puntuales
-def set_nodo(nodo, ID_n = None, edit = False):
+def get_carga(units, last_carga = None, edit = False):
+    if edit:
+        valor = intInput(f"\nIngrese el valor de la carga ({last_carga [0]})({units.loc[0,'Fuerza']}): ")
+    else:
+        valor = intInput(f"\nIngrese el valor de la carga ({units.loc[0,'Fuerza']}): ")
+    
+    while True:
+        print("\nDirección la dirección de la carga : ")
+        print("\n\t1. X")
+        print("\n\t2. Y")
+        
+        if edit:
+            seleccion = intInput(f"\nSeleccione la direccion de la carga ({last_carga [1]}): ")
+        else :
+            seleccion = intInput("\nSeleccione la direccion de la carga: ")
+                
+        match seleccion:
+            case 1:
+                direccion = "X"
+                break
+            case 2:
+                direccion = "Y"
+                break
+            case _:
+                print("\nOpción incorrecta")
+    
+    return (valor, direccion)
+        
+def get_ubicacionCarga(nodo, elemento, units, ID_n = None, ID_e = None, last_distancia = None, edit =False):
+    while True:
+        print("\nUbicación de la carga puntual.")
+        print("\n\t1. En el nodo.")
+        print("\n\t2. En el elemento.")
+        match intInput("\nSeleccione la ubicación de la carga: "):
+            case 1:
+                ubicacion_n = set_nodoCarga(nodo, ID_n, edit)
+                ubicacion_e = (False,False,False)
+                break
+            case 2:
+                ubicacion_e = set_elementoCarga(elemento, units, last_distancia, ID_e, edit)
+                ubicacion_n = (False,False)
+                break
+            case _:
+                print("\nOpción incorrecta")
+    return (ubicacion_n, ubicacion_e)
+
+def set_nodoCarga(nodo, ID_n = None, edit = False):
     if not nodo.empty:   
         print("\nNodos actuales:\n")
         print(nodo)
@@ -299,30 +345,35 @@ def set_nodo(nodo, ID_n = None, edit = False):
         return (index,nodo.loc[index,'Nombre'])
     else: 
         print("\nNo se encuentran nodos en la base de datos.\n")
-        print("\t0. Volver")
-        input("Seleciona una opción: ")
-        return False
+        input("Presione enter para continuar.")
+        return (False,False)
    
-def set_elemento(elemento,  last_elemento = None, edit = False):
+def set_elementoCarga(elemento, units, last_distancia = None, ID_e = None, edit = False):
     if not elemento.empty:
         print("\nElementos actuales:\n")
         print(elemento)
         index_list = elemento.index.values.tolist()
         
         if edit: 
-            index = get_index(index_list,f"\nSeleccione el id del elemento en el cual está ubicada la carga({last_elemento[0]}): ", True, last_elemento[0])
+            index = get_index(index_list,f"\nSeleccione el id del elemento en el cual está ubicada la carga({ID_e}): ", True, ID_e)
         else:
             index = get_index(index_list,f"\nSelecccione el id del elemento en el cual está ubicada la carga: ")
             
         print(f"\nElemento seleccionado id[{index}]: ")
         print(elemento.loc[[index]])
         
-        return (index,elemento.loc["Nombre"])
+        print(f"\nEl nodo i del elemento {elemento.loc[index,'Nombre']} es: {elemento.loc[index,'Nodo i']} ")
+         
+        if edit: 
+            distancia = floatInput(f"\nIngrese la distancia de la carga respecto al nodo i del elemento ({last_distancia})({units.loc[0,'Longitud']}): ")
+        else:    
+            distancia = floatInput(f"\nIngrese la distancia de la carga respecto al nodo i del elemento ({units.loc[0,'Longitud']}): ")
+        
+        return (index,elemento.loc[index,"Nombre"],distancia)
     else: 
         print("\nNo se encuentran elementos en la base de datos.\n")
-        print("\t0. Volver")
-        input("Seleciona una opción: ")
-        return False
+        input("Presione enter para continuar.")
+        return (False,False,False)
     
 # Sistema de unidades:
 

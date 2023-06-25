@@ -812,7 +812,7 @@ def get_Transformacion_GL(structureType, ang):
                                      ,[       0      ,      0      , 0 ,       0      ,      0      , 1 ]])
     return Global_Local
 
-def get_rigidez_Global(structureType, Nnodos, rigidez_local ):
+def consolidación_RigidezGLobal(structureType, Nnodos, results):
     match structureType:
         case "Cercha":
             index = Nnodos * 2
@@ -827,8 +827,8 @@ def get_rigidez_Global(structureType, Nnodos, rigidez_local ):
     matriz_Global.index += 1
     matriz_Global.columns = matriz_Global.index
     
-    for elemento in rigidez_local.keys():
-        dataf_K = rigidez_local[elemento]["k rigidez local"]
+    for elemento in results.keys():
+        dataf_K = results["Elementos"][elemento]["k rigidez local"]
         for index in dataf_K.index:
             for column in dataf_K.columns:
                 matriz_Global.loc[index,column] = matriz_Global.loc[index,column] + dataf_K.loc[index,column]
@@ -868,7 +868,7 @@ def get_g_libertad_list(nodos, ID_I, ID_J, structureType):
         
 def calculos(elementos, nodos, materiales, secciones, units, structureType):
     print("Calculando estructura...")
-    matrices_Result = dict()
+    matrices_Result = {"Elementos": dict(), "Matriz Global": [], "Vector_Cargas": []}
     
     fac_longitud = get_conversion_longitud(units.loc[0, "Longitud"], "m")
     fac_Fuerza = get_conversion_fuerza(units.loc[0, "Fuerza"], "kN")
@@ -904,19 +904,20 @@ def calculos(elementos, nodos, materiales, secciones, units, structureType):
         k_rigidez.index = grados_libertad
         k_rigidez.columns = k_rigidez.index
         
-        matrices_Result[f"{nombre_Elemento}"] = {"rigidez": k_p, "TGL": TGL, "k rigidez local": k_rigidez}
+        matrices_Result["Elementos"][f"{nombre_Elemento}"] = {"rigidez": k_p, "TGL": TGL, "k rigidez local": k_rigidez}
     
     print("Matrices Globales [✅]")
     
     # Consolidacion de matrices globales.
     
-    matrices_Result["Matriz Global"] = None
+    nnodos = len(nodos.index)
+    matriz_global = consolidación_RigidezGLobal(structureType, nnodos, matrices_Result)
     
-    return matrices_Result
+    matrices_Result["Matriz Global"] = matriz_global
+    
+    print(matriz_global)
+    print("Matriz de rigidez global [✅]")
+    return matrices_Result 
 
 if __name__ == "__main__":
-    #matriz_global = get_rigidez_Global(estrutura, 4, matrices_Result)
-    
-    #print("\nMatriz Global:\n")
-    #print(matriz_global)
     pass

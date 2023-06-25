@@ -50,8 +50,8 @@ CARGAS_PUNTUALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
 CARGAS_DISTRIBUIDAS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                                     "Carga i": pd.Series(dtype="float"),
                                     "Carga f": pd.Series(dtype="float"),
-                                    "Direccion": pd.Series(dtype="str"),
                                     "Elemento": pd.Series(dtype="str"),
+                                    "ID_e": pd.Series(dtype="int"),
                                     "Distancia i": pd.Series(dtype="float"),
                                     "Distancia f": pd.Series(dtype="float")})
 
@@ -623,7 +623,7 @@ class model():
     # Cargas puntales
     def add_cargapuntual(self) -> None: 
         carga_puntual = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "ID_n": [], "Elemento": [], "ID_e": [], "Distancia": []}
-        print("\nNuevo elemento.")
+        print("\nNueva carga puntual.")
         
         try:
             index = max(self.cargas_Puntuales.index) + 1
@@ -632,9 +632,9 @@ class model():
         
         nombre = input("\nIngrese un nombre para la carga puntual (En blanco nombre por defecto): ")
         if not (nombre):
-            nombre = f"Elemento {index}"
+            nombre = f"Carga puntual {index}"
             
-        carga = calc.get_carga(self.unidades) 
+        carga = calc.get_cargaP(self.unidades) 
         valor = carga[0]
         direccion = carga[1]
         
@@ -724,7 +724,47 @@ class model():
             self.cargas_Puntuales = self.cargas_Puntuales.drop([index])
 
     # Cargas Distribuidas
+    def add_cargadistribuida(self) -> None:
+        carga_distribuida = {"Nombre": [], "Carga i": [], "Carga f": [], "Direcccion": [], "Elemento": [], "ID_e": [], "Distancia i": [], "Distancia f": []}
+        print("\nNueva carga distribuida")
+        
+        try:
+            index = max(self.cargas_Distribuidas.index) + 1
+        except:
+            index = len(self.cargas_Distribuidas.index) 
+            
+        nombre = input("\nIngrese un nombre para la carga distribuida (En blanco nombre por defecto):")
+        if not (nombre):
+            nombre = f"Carga distribuida {index}"
+            
+        carga = calc.get_cargaD(self.unidades)
+        carga_i = carga[0]
+        carga_f = carga[1]
+        
+        ubicacion = calc.set_elementoCD(self.elementos, self.unidades)
+        
+        id_e = ubicacion[0][0]
+        elemento = ubicacion[0][1]
+        distancia_i = ubicacion[0][2]
+        distancia_f = ubicacion[0][3]
+        
+        carga_distribuida["Nombre"].append(nombre)
+        carga_distribuida["Carga i"].append(carga_i)
+        carga_distribuida["Carga f"].append(carga_f)
+        carga_distribuida["Elemento"].append(elemento)
+        carga_distribuida["ID_e"].append(id_e)
+        carga_distribuida["Distancia i"].append(distancia_i)
+        carga_distribuida["Distancia f"].append(distancia_f)
+        
+        
+    def edit_cargadistribuida(self) -> None:
+        carga_distribuida = {"Nombre": [], "Carga i": [], "Carga f": [], "Direcccion": [], "Elemento": [], "ID_e": [], "Distancia i": [], "Distancia f": []}
+        
+        
+        pass
     
+    def delete_cargadistribuida(self) -> None:
+        pass
     
     # Momentos
     

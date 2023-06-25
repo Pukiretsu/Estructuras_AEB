@@ -211,7 +211,7 @@ class model():
                 case _:
                     pass
         
-        self.unidades = self.unidades.drop(self.unidades.index[0])
+        self.unidades = self.unidades.drop([0])
         new_units = pd.DataFrame(units)
         self.unidades = pd.concat([self.unidades, new_units])
 
@@ -315,7 +315,7 @@ class model():
         node["Soporte"] = soporte[0]
         node["Restriccion"] = soporte[1]
         
-        self.nodos = self.nodos.drop(self.nodos.index[index])
+        self.nodos = self.nodos.drop([index])
         new_node = pd.DataFrame(node, index=[index])
         
         self.nodos = pd.concat([self.nodos,new_node])
@@ -341,7 +341,8 @@ class model():
         
             confirmacion = confirmation(f"Confirmar eliminación {self.nodos.loc[index,'Nombre']} id:{index}")
             if confirmacion:
-                self.nodos = self.nodos.drop(self.nodos.index[index])
+                print(self.nodos)
+                self.nodos = self.nodos.drop([index])
      
     # Elementos
     def add_element(self) -> None:
@@ -449,7 +450,7 @@ class model():
         elemento["ID Sec"].append(seccion[0])
         elemento["Seccion"].append(seccion[1])
         
-        self.elementos = self.elementos.drop(self.elementos.index[index])
+        self.elementos = self.elementos.drop([index])
         new_element = pd.DataFrame(elemento, index=[index])
         
         self.elementos = pd.concat([self.elementos,new_element])
@@ -467,7 +468,7 @@ class model():
         
         confirmacion = confirmation(f"Confirmar eliminación {self.elementos.loc[index,'Nombre']} id:{index}")
         if confirmacion: 
-            self.elementos = self.elementos.drop(self.elementos.index[index])
+            self.elementos = self.elementos.drop([index])
 
     # Secciones
     def add_section(self) -> None:
@@ -516,7 +517,7 @@ class model():
         section["Area"].append(sectionCalcs[0])
         section["Inercia"].append(sectionCalcs[1])
         
-        self.secciones = self.secciones.drop(self.secciones.index[index])
+        self.secciones = self.secciones.drop([index])
         new_Sect = pd.DataFrame(section, index=[index])
         
         self.secciones = pd.concat([self.secciones,new_Sect])
@@ -540,7 +541,7 @@ class model():
             
             confirmacion = confirmation(f"Confirmar eliminación {self.secciones.loc[index,'Nombre']} id:{index}")
             if confirmacion:
-                self.secciones = self.secciones.drop(self.secciones.index[index])
+                self.secciones = self.secciones.drop([index])
 
     # Materiales
     def add_material(self) -> None:
@@ -585,7 +586,7 @@ class model():
         material["Nombre"].append(nombre)
         material["Modulo Young"].append(moduloY)
         
-        self.materiales = self.materiales.drop(self.materiales.index[index])
+        self.materiales = self.materiales.drop([index])
         new_Mate = pd.DataFrame(material, index=[index])
         
         self.materiales = pd.concat([self.materiales,new_Mate])
@@ -609,7 +610,7 @@ class model():
             
             confirmacion = confirmation(f"Confirmar eliminación {self.materiales.loc[index,'Nombre']} id:{index}")
             if confirmacion:
-                self.materiales = self.materiales.drop(self.materiales.index[index])
+                self.materiales = self.materiales.drop([index])
 
     # Cargas puntales
     def add_cargapuntual(self) -> None: 
@@ -697,7 +698,7 @@ class model():
         carga_puntual["ID_e"].append(id_e)
         carga_puntual["Distancia"].append(distancia)
         
-        self.cargas_Puntuales = self.cargas_Puntuales.drop(self.cargas_Puntuales.index[index])
+        self.cargas_Puntuales = self.cargas_Puntuales.drop([index])
         new_cargaP = pd.DataFrame(carga_puntual, index=[index])
         
         self.cargas_Puntuales = pd.concat([self.cargas_Puntuales,new_cargaP])
@@ -712,7 +713,7 @@ class model():
         
         confirmacion = confirmation(f"Confirmar eliminación {self.cargas_Puntuales.loc[index,'Nombre']} id:{index}")
         if confirmacion: 
-            self.cargas_Puntuales = self.cargas_Puntuales.drop(self.cargas_Puntuales.index[index])
+            self.cargas_Puntuales = self.cargas_Puntuales.drop([index])
 
     # Cargas Distribuidas
     

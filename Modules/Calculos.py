@@ -751,7 +751,7 @@ def get_Transformacion_GL(structureType, ang):
             Global_Local = np.array( [ np.cos(ang) , np.sin(ang) ,      0      ,      0      ]
                                     ,[      0      ,      0      , np.cos(ang) , np.sin(ang) ])
         case "Viga":
-            return 1
+            return np.identity(4)
         case "Portico":
             Global_Local = np.array([ [  np.cos(ang) , np.sin(ang) , 0 ,       0      ,      0      , 0 ]
                                      ,[ -np.sin(ang) , np.cos(ang) , 0 ,       0      ,      0      , 0 ]
@@ -760,32 +760,106 @@ def get_Transformacion_GL(structureType, ang):
                                      ,[       0      ,      0      , 0 , -np.sin(ang) , np.cos(ang) , 0 ]
                                      ,[       0      ,      0      , 0 ,       0      ,      0      , 1 ]])
     return Global_Local
-if __name__ == "__main__":
-    E = 27805574.98
-    A = 0.25
-    I = 0.005208333
-    L = 5
-    ang = 2.214297436
 
+def get_rigidez_Global(structureType, Nnodos, rigidez_local ):
+    match structureType:
+        case "Cercha":
+            index = Nnodos * 2
+        case "Viga":
+            index = Nnodos * 2
+        case "Portico":
+            index = Nnodos * 3
     
-    estrutura = "Portico"
-    k_p = pd.DataFrame(get_rigidez_local(estrutura,L,A,E,I))
-    TGL = pd.DataFrame(get_Transformacion_GL(estrutura,ang))
-    TLG = TGL.transpose()
+    matriz_Global = np.zeros((index,index), dtype="float64")
+    matriz_Global = pd.DataFrame(matriz_Global)
     
-    k_rigidez = (TLG.dot(k_p)).dot(TGL)
+    matriz_Global.index += 1
+    matriz_Global.columns = matriz_Global.index
     
-    """ print("K':\n")
-    print(k_p)
-    print("TGL:\n")
-    print(TGL)
-    print("TLG:\n")
-    print(TLG)
+    for elemento in rigidez_local.keys():
+        dataf_K = rigidez_local[elemento]["k rigidez local"]
+        for index in dataf_K.index:
+            for column in dataf_K.columns:
+                matriz_Global.loc[index,column] = matriz_Global.loc[index,column] + dataf_K.loc[index,column]
     
-    print("\n\nK_elemento:")
-    print(k_rigidez)
-     """
-    matriz_global = np.zeros((6,6), dtype="float64")
+    return matriz_Global
+
+def get_g_libertad_list(nodos, ID_I, ID_J, structureType):
+    match structureType:
+        case "Cercha":
+            u_i = nodos.loc[ID_I, "U"]
+            v_i = nodos.loc[ID_I, "V"]
+            
+            u_j = nodos.loc[ID_J, "U"]
+            v_j = nodos.loc[ID_J, "V"]
+            
+            return (u_i,v_i,u_j,v_j)
+        
+        case "Viga":
+            u_i = nodos.loc[ID_I, "U"]
+            phi_i = nodos.loc[ID_I, "Phi"]
+            
+            u_j = nodos.loc[ID_J, "U"]
+            phi_j = nodos.loc[ID_J, "Phi"]
+            
+            return (u_i,phi_i,u_j,phi_j)
+        
+        case "Portico":
+            u_i = nodos.loc[ID_I, "U"]
+            v_i = nodos.loc[ID_I, "V"]
+            phi_i = nodos.loc[ID_I, "Phi"]
     
+            u_j = nodos.loc[ID_J, "U"]
+            v_j = nodos.loc[ID_J, "V"]
+            phi_j = nodos.loc[ID_J, "Phi"]
+
+            return (u_i,v_i,phi_i,u_j,v_j,phi_j)
+        
+def get_Elemento_Results(elementos, nodos, materiales, secciones, units, structureType):
+    matrices_Result = dict()
     
-    print(matriz_global)
+    fac_longitud = get_conversion_longitud(units.loc[0, "Longitud"], "m")
+    fac_Fuerza = get_conversion_fuerza(units.loc[0, "Fuerza"], "kN")
+    fac_Esfuerzo = get_conversion_esfuerzo(units.loc[0, "Esfuerzo"], "Kpa")
+    fac_angulo = get_conversion_angulo(units.loc[0, "Angulo"], "Kpa")
+    
+    for index in elementos.index:
+        
+        nombre_Elemento = elementos.loc[index, "Nombre"]
+        
+        Longitud = elementos.loc[index, "Longitud"] * fac_longitud
+        Angulo = elementos.loc[index, "Angulo"] * fac_angulo
+        
+        ID_Seccion = elementos.loc[index, "ID Sec"]
+        Area = secciones.loc[ID_Seccion, "Area"] * fac_longitud ** 2
+        Inercia = secciones.loc[ID_Seccion, "Inercia"] * fac_longitud ** 4
+        
+        ID_Material = elementos.loc[index, "ID Mat"] 
+        Mod_Elasticidad = materiales.loc[ID_Material, "Modulo Young"] ** fac_Esfuerzo
+        
+        ID_ni = elementos.loc[index, "ID ni"]
+        ID_nj = elementos.loc[index, "ID nj"]
+        
+        grados_libertad = get_g_libertad_list(nodos,ID_ni,ID_nj, structureType)
+        
+        k_p = pd.DataFrame(get_rigidez_local(structureType, Longitud, Area, Mod_Elasticidad, Inercia))
+        TGL = pd.DataFrame(get_Transformacion_GL(structureType, Angulo))
+        TLG = TGL.transpose()
+        k_rigidez = (TLG.dot(k_p)).dot(TGL)
+        
+        k_rigidez.index = grados_libertad
+        k_rigidez.columns = k_rigidez.index
+        
+        matrices_Result[f"{nombre_Elemento}"] = {"rigidez": k_p, "TGL": TGL, "k rigidez local": k_rigidez}
+        for elemento in matrices_Result.keys():
+                print(f"\n{elemento}:\n")
+                print(matrices_Result[elemento]["k rigidez local"])
+        
+    return matrices_Result
+
+if __name__ == "__main__":
+    #matriz_global = get_rigidez_Global(estrutura, 4, matrices_Result)
+    
+    #print("\nMatriz Global:\n")
+    #print(matriz_global)
+    pass

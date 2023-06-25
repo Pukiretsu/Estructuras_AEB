@@ -405,6 +405,13 @@ def model_settings(modelo):
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")
 
+# Calculo de la estructura
+
+def model_calculate(modelo):
+    modelo.calculate()
+    return modelo
+    
+
 # Menú del modelo
 
 def model_system(modelo):
@@ -428,8 +435,7 @@ def model_system(modelo):
                 #TODO Punto de entrada Información estructura.
                 pass
             case "3": 
-                #TODO Punto de entrada Computar estructura.
-                pass
+                modelo = model_calculate(modelo)
             case "4": 
                 #TODO Punto de entrada Resultados.
                 pass

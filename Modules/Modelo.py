@@ -103,6 +103,7 @@ class model():
         self.cargas_Puntuales = CARGAS_PUNTUALES
         self.cargas_Distribuidas = CARGAS_DISTRIBUIDAS
         self.momentos = MOMENTOS
+        self.resultados = None
 
     #Carga y descarga de modelos
     def load_model(self, path) -> None:
@@ -558,7 +559,7 @@ class model():
         if not (nombre):
             nombre = f"Material {index}"
 
-        moduloY = input(f"\nIngresar el modulo de Young ({self.unidades.loc[0,'Esfuerzo']}): ")
+        moduloY = calc.get_moduloYoung(self.unidades)
         
         # Consolidación de entrada
         
@@ -581,7 +582,14 @@ class model():
         print(self.materiales.loc[[index]])
         
         nombre = input(f"\nNombre ({self.materiales.loc[index,'Nombre']}): ") or self.materiales.loc[index,'Nombre']
-        moduloY = input(f"\nModulo Young ({self.materiales.loc[index,'Modulo Young']} {self.unidades.loc[0,'Esfuerzo']}): ") or self.materiales.loc[index,'Modulo Young']
+        
+        last_moduloY = self.materiales.loc[index,'Modulo Young']
+        
+        confirm = confirmation("\n¿Modificar el modulo de young?")
+        if confirm:
+            moduloY = calc.get_moduloYoung(self.unidades,last_moduloY,True) or last_moduloY
+        else:
+            moduloY = last_moduloY
         
         material["Nombre"].append(nombre)
         material["Modulo Young"].append(moduloY)
@@ -721,8 +729,10 @@ class model():
     # Momentos
     
     
-if __name__ == "__main__":
-    model = model()
-    model.add_section()
-    print(model.secciones)
+    # Calculos de estructura
+    def calculate(self) -> None:
+        self.resultados = calc.calculos(self.elementos,self.nodos,self.materiales,self.secciones,self.unidades,self.tipo_estructura)
+
+if __name__ == "__main__": 
+    pass
     

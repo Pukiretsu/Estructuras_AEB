@@ -282,6 +282,7 @@ def get_support(structureType, edit=False):
                         print("\nApoyo no válido.")
             
 # Sistema de cargas puntuales
+
 def get_carga(units, last_carga = None, edit = False):
     if edit:
         valor = intInput(f"\nIngrese el valor de la carga ({last_carga [0]})({units.loc[0,'Fuerza']}): ")
@@ -547,13 +548,13 @@ def get_conversion_angulo(unit_in, unit_out):
         case "°":
             match unit_out:
                 case "rad":
-                    return (mt.pi)/180
+                    return (np.pi)/180
                 case _:
                     return 1
         case "rad":
             match unit_out:
                 case "°":
-                    return 180/(mt.pi)
+                    return 180/(np.pi)
                 case _:
                     return 1
                 
@@ -565,7 +566,7 @@ def unit_Longitud():
         print("\t3. Milimetros. (mm)")
         print("\t4. Pulgadas. (in)")
         print("\t5. Pies. (ft)")
-        print("\t6. Volver.") # Siempre es la ultima
+        print("\t0. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):
                 case "1": 
@@ -578,7 +579,7 @@ def unit_Longitud():
                     return "in"
                 case "5": 
                     return "ft"
-                case "6":
+                case "0":
                     return False
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
@@ -590,7 +591,7 @@ def unit_Fuerza():
         print("\t2. Newton. (N)")
         print("\t3. Libra fuerza. (lbf)")
         print("\t4. KiloLibra fuerza. (kipf)")
-        print("\t5. Volver.") # Siempre es la ultima
+        print("\n0. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):
                 case "1": 
@@ -601,7 +602,7 @@ def unit_Fuerza():
                     return "lbf"
                 case "4": 
                     return "kipf"
-                case "5":
+                case "0":
                     return False
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
@@ -615,7 +616,7 @@ def unit_Esfuerzo():
         print("\t4. Pascales. (pa)")
         print("\t5. Libra por pulgada cuadrada. (psi)")
         print("\t6. Kilolibra por pulgada cuadrada. (Kpsi)")
-        print("\t7. Volver.") # Siempre es la ultima
+        print("\t0. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):
                 case "1": 
@@ -630,7 +631,7 @@ def unit_Esfuerzo():
                     return "psi"
                 case "6": 
                     return "Kpsi"
-                case "7":
+                case "0":
                     return False
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
@@ -640,14 +641,14 @@ def unit_Grados():
         print("\n\tGrados.")
         print("\t1. Sexagesimal. (°)")
         print("\t2. Radianes. (rad)")
-        print("\t3. Volver.") # Siempre es la ultima
+        print("\n0. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):
                 case "1": 
                     return "°"
                 case "2": 
                     return "rad"
-                case "3":
+                case "0":
                     return False
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
@@ -660,7 +661,7 @@ def get_units():
         print("\t2. Fuerza.")
         print("\t3. Esfuerzo.")
         print("\t4. Angulo.")
-        print("\t5. Volver.")
+        print("\n0. Volver.")
         
         match input("\nSeleccione el tipo de Unidad: "):
                 case "1": 
@@ -671,14 +672,26 @@ def get_units():
                     return ("E",unit_Esfuerzo())
                 case "4":
                     return ("G",unit_Grados())
-                case "5":
-                    return "N"
+                case "0":
+                    return ("N", False)
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
 
+# Material
+
+def get_moduloYoung(units,last_mod = None, edit = False):
+    if edit:
+        modulo = floatInput(f"\nIngresar el modulo de Young ({last_mod} {units.loc[0,'Esfuerzo']}): ")
+    else:
+        modulo = input(f"\nIngresar el modulo de Young ({units.loc[0,'Esfuerzo']}): ")
+        if modulo:
+            modulo =  float()
+    
+    return modulo
+        
 # Calculos de sección
 
-def get_section_calcs(units,edit=False):
+def get_section_calcs(units, edit=False):
     while True:
         print("\n\tSecciones.")
         print("\t1. Rectangular.")
@@ -815,13 +828,16 @@ def get_g_libertad_list(nodos, ID_I, ID_J, structureType):
 
             return (u_i,v_i,phi_i,u_j,v_j,phi_j)
         
-def get_Elemento_Results(elementos, nodos, materiales, secciones, units, structureType):
+def calculos(elementos, nodos, materiales, secciones, units, structureType):
+    print("Calculando estructura...")
     matrices_Result = dict()
     
     fac_longitud = get_conversion_longitud(units.loc[0, "Longitud"], "m")
     fac_Fuerza = get_conversion_fuerza(units.loc[0, "Fuerza"], "kN")
     fac_Esfuerzo = get_conversion_esfuerzo(units.loc[0, "Esfuerzo"], "Kpa")
-    fac_angulo = get_conversion_angulo(units.loc[0, "Angulo"], "Kpa")
+    fac_angulo = get_conversion_angulo(units.loc[0, "Angulo"], "rad")
+    
+    # Calculo de matrices de rigidez locales y transformacion a globales
     
     for index in elementos.index:
         
@@ -851,10 +867,13 @@ def get_Elemento_Results(elementos, nodos, materiales, secciones, units, structu
         k_rigidez.columns = k_rigidez.index
         
         matrices_Result[f"{nombre_Elemento}"] = {"rigidez": k_p, "TGL": TGL, "k rigidez local": k_rigidez}
-        for elemento in matrices_Result.keys():
-                print(f"\n{elemento}:\n")
-                print(matrices_Result[elemento]["k rigidez local"])
-        
+    
+    print("Matrices Globales [✅]")
+    
+    # Consolidacion de matrices globales.
+    
+    matrices_Result["Matriz Global"] = None
+    
     return matrices_Result
 
 if __name__ == "__main__":

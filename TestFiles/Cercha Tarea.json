@@ -1,0 +1,294 @@
+{
+      "Model-meta": {
+            "STRUCTURETYPE": "Cercha",
+            "Date_Saved": "26-06-23",
+            "Model_Name": "Cercha Tarea"
+      },
+      "UNIDADES": [
+            {
+                  "Longitud": "m",
+                  "Fuerza": "kN",
+                  "Esfuerzo": "Gpa",
+                  "Angulo": "\u00b0"
+            }
+      ],
+      "NODOS": [
+            {
+                  "Nombre": "Nodo 1",
+                  "Coordenada x": 14.0,
+                  "Coordenada y": 2.0,
+                  "U": 1,
+                  "V": 2,
+                  "Phi": null,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "Nodo 2",
+                  "Coordenada x": 7.0,
+                  "Coordenada y": 1.0,
+                  "U": 3,
+                  "V": 4,
+                  "Phi": null,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "Nodo 3",
+                  "Coordenada x": 21.0,
+                  "Coordenada y": 1.0,
+                  "U": 5,
+                  "V": 6,
+                  "Phi": null,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "Nodo 4",
+                  "Coordenada x": 7.0,
+                  "Coordenada y": 0.0,
+                  "U": 7,
+                  "V": 8,
+                  "Phi": null,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "Nodo 5",
+                  "Coordenada x": 21.0,
+                  "Coordenada y": 0.0,
+                  "U": 9,
+                  "V": 10,
+                  "Phi": null,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "Nodo 6",
+                  "Coordenada x": 14.0,
+                  "Coordenada y": 0.0,
+                  "U": 11,
+                  "V": 12,
+                  "Phi": null,
+                  "Soporte": true,
+                  "Restriccion": "Y"
+            },
+            {
+                  "Nombre": "Nodo 7",
+                  "Coordenada x": 0.0,
+                  "Coordenada y": 0.0,
+                  "U": 13,
+                  "V": 14,
+                  "Phi": null,
+                  "Soporte": true,
+                  "Restriccion": "XY"
+            },
+            {
+                  "Nombre": "Nodo 8",
+                  "Coordenada x": 28.0,
+                  "Coordenada y": 0.0,
+                  "U": 15,
+                  "V": 16,
+                  "Phi": null,
+                  "Soporte": true,
+                  "Restriccion": "XY"
+            }
+      ],
+      "ELEMENTOS": [
+            {
+                  "Nombre": "1",
+                  "ID ni": 1,
+                  "Nodo i": "Nodo 2",
+                  "ID nj": 0,
+                  "Nodo j": "Nodo 1",
+                  "Longitud": 7.0710678118654755,
+                  "Angulo": 8.130102354155978,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "C Superior"
+            },
+            {
+                  "Nombre": "2",
+                  "ID ni": 2,
+                  "Nodo i": "Nodo 3",
+                  "ID nj": 0,
+                  "Nodo j": "Nodo 1",
+                  "Longitud": 7.0710678118654755,
+                  "Angulo": 171.86989764584402,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "C Superior"
+            },
+            {
+                  "Nombre": "3",
+                  "ID ni": 3,
+                  "Nodo i": "Nodo 4",
+                  "ID nj": 0,
+                  "Nodo j": "Nodo 1",
+                  "Longitud": 7.280109889280518,
+                  "Angulo": 15.945395900922858,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "Parales y Diagonales"
+            },
+            {
+                  "Nombre": "4",
+                  "ID ni": 4,
+                  "Nodo i": "Nodo 5",
+                  "ID nj": 0,
+                  "Nodo j": "Nodo 1",
+                  "Longitud": 7.280109889280518,
+                  "Angulo": 164.05460409907712,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "Parales y Diagonales"
+            },
+            {
+                  "Nombre": "5",
+                  "ID ni": 5,
+                  "Nodo i": "Nodo 6",
+                  "ID nj": 0,
+                  "Nodo j": "Nodo 1",
+                  "Longitud": 2.0,
+                  "Angulo": 90.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "Parales y Diagonales"
+            },
+            {
+                  "Nombre": "6",
+                  "ID ni": 3,
+                  "Nodo i": "Nodo 4",
+                  "ID nj": 5,
+                  "Nodo j": "Nodo 6",
+                  "Longitud": 7.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 1,
+                  "Seccion": "C Inferior"
+            },
+            {
+                  "Nombre": "7",
+                  "ID ni": 5,
+                  "Nodo i": "Nodo 6",
+                  "ID nj": 4,
+                  "Nodo j": "Nodo 5",
+                  "Longitud": 7.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 1,
+                  "Seccion": "C Inferior"
+            },
+            {
+                  "Nombre": "8",
+                  "ID ni": 6,
+                  "Nodo i": "Nodo 7",
+                  "ID nj": 3,
+                  "Nodo j": "Nodo 4",
+                  "Longitud": 7.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 1,
+                  "Seccion": "C Inferior"
+            },
+            {
+                  "Nombre": "9",
+                  "ID ni": 4,
+                  "Nodo i": "Nodo 5",
+                  "ID nj": 7,
+                  "Nodo j": "Nodo 8",
+                  "Longitud": 7.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 1,
+                  "Seccion": "C Inferior"
+            },
+            {
+                  "Nombre": "10",
+                  "ID ni": 6,
+                  "Nodo i": "Nodo 7",
+                  "ID nj": 1,
+                  "Nodo j": "Nodo 2",
+                  "Longitud": 7.0710678118654755,
+                  "Angulo": 8.130102354155978,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "C Superior"
+            },
+            {
+                  "Nombre": "11",
+                  "ID ni": 7,
+                  "Nodo i": "Nodo 8",
+                  "ID nj": 2,
+                  "Nodo j": "Nodo 3",
+                  "Longitud": 7.0710678118654755,
+                  "Angulo": 171.86989764584402,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "C Superior"
+            },
+            {
+                  "Nombre": "12",
+                  "ID ni": 3,
+                  "Nodo i": "Nodo 4",
+                  "ID nj": 1,
+                  "Nodo j": "Nodo 2",
+                  "Longitud": 1.0,
+                  "Angulo": 90.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "Parales y Diagonales"
+            },
+            {
+                  "Nombre": "13",
+                  "ID ni": 4,
+                  "Nodo i": "Nodo 5",
+                  "ID nj": 2,
+                  "Nodo j": "Nodo 3",
+                  "Longitud": 1.0,
+                  "Angulo": 90.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "Parales y Diagonales"
+            }
+      ],
+      "MATERIALES": [
+            {
+                  "Nombre": "Acero",
+                  "Modulo Young": 200.0
+            }
+      ],
+      "SECCIONES": [
+            {
+                  "Nombre": "C Superior",
+                  "Area": 0.005076,
+                  "Inercia": 1.6887852000000003e-05
+            },
+            {
+                  "Nombre": "C Inferior",
+                  "Area": 0.001536,
+                  "Inercia": 2.3633920000000003e-06
+            },
+            {
+                  "Nombre": "Parales y Diagonales",
+                  "Area": 0.001044,
+                  "Inercia": 1.3185720000000002e-06
+            }
+      ],
+      "CARGAS_PUNTUALES": [],
+      "CARGAS_DISTRIBUIDAS": [],
+      "MOMENTOS": []
+}

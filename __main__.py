@@ -1,8 +1,14 @@
 import os
 import Modules.Modelo as mod
+import pandas as pd
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from datetime import date
+
+
+# Configuraciones para display
+
+pd.set_eng_float_format(accuracy=2)
 
 # Miscelaneos
 
@@ -512,6 +518,8 @@ def model_settings(modelo):
 # Calculo de la estructura
 
 def model_calculate(modelo):
+    os.system("cls")
+    
     modelo.calculate()
     return modelo
     

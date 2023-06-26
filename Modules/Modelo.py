@@ -259,8 +259,8 @@ class model():
                 node["V"].append(gdl[1])
                 node["Phi"].append(None)
             case "Viga":
-                node["U"].append(gdl[0])
-                node["V"].append(None)
+                node["U"].append(None)
+                node["V"].append(gdl[0])
                 node["Phi"].append(gdl[1])
             case "Portico":
                 node["U"].append(gdl[0])
@@ -310,8 +310,8 @@ class model():
                 node["V"].append(gdl[1])
                 node["Phi"].append(None)
             case "Viga":
-                node["U"].append(gdl[0])
-                node["V"].append(None)
+                node["U"].append(None)
+                node["V"].append(gdl[0])
                 node["Phi"].append(gdl[1])
             case "Portico":
                 node["U"].append(gdl[0])

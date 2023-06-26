@@ -1,7 +1,7 @@
 {
       "Model-meta": {
             "STRUCTURETYPE": "Portico",
-            "Date_Saved": "25-06-23",
+            "Date_Saved": "26-06-23",
             "Model_Name": "Portico Tarea"
       },
       "UNIDADES": [
@@ -30,8 +30,8 @@
                   "U": 6,
                   "V": 4,
                   "Phi": 5,
-                  "Soporte": false,
-                  "Restriccion": ""
+                  "Soporte": true,
+                  "Restriccion": "X"
             },
             {
                   "Nombre": "3",

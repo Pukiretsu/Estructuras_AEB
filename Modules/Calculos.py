@@ -207,9 +207,9 @@ def get_grados_Libertad(structureType):
             v =     intInput("\nIngrese el grado de libertad v del nodo: ")
             return (u,v)
         case "Viga":
-            u =     intInput("\nIngrese el grado de libertad u del nodo: ")
+            v =     intInput("\nIngrese el grado de libertad u del nodo: ")
             phi =   intInput("\nIngrese el grado de libertad phi del nodo: ")
-            return (u,phi)
+            return (v,phi)
         case "Portico":
             u =     intInput("\nIngrese el grado de libertad u del nodo: ")
             v =     intInput("\nIngrese el grado de libertad v del nodo: ")
@@ -375,6 +375,7 @@ def set_elementoCarga(elemento, units, last_distancia = None, ID_e = None, edit 
          
         if edit: 
             distancia = floatInput(f"\nIngrese la distancia de la carga respecto al nodo i del elemento ({last_distancia})({units.loc[0,'Longitud']}): ")
+            #TODO: Verificacion de la distancia
         else:    
             distancia = floatInput(f"\nIngrese la distancia de la carga respecto al nodo i del elemento ({units.loc[0,'Longitud']}): ")
         
@@ -930,13 +931,13 @@ def get_g_libertad_list(nodos, ID_I, ID_J, structureType):
             return (u_i,v_i,u_j,v_j)
         
         case "Viga":
-            u_i = nodos.loc[ID_I, "U"]
+            v_i = nodos.loc[ID_I, "V"]
             phi_i = nodos.loc[ID_I, "Phi"]
             
-            u_j = nodos.loc[ID_J, "U"]
+            v_j = nodos.loc[ID_J, "V"]
             phi_j = nodos.loc[ID_J, "Phi"]
             
-            return (u_i,phi_i,u_j,phi_j)
+            return (v_i,phi_i,v_j,phi_j)
         
         case "Portico":
             u_i = nodos.loc[ID_I, "U"]

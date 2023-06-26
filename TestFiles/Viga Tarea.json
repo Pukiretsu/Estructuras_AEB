@@ -17,8 +17,8 @@
                   "Nombre": "Nodo 1",
                   "Coordenada x": 5.0,
                   "Coordenada y": 0.0,
-                  "U": 6,
-                  "V": null,
+                  "U": null,
+                  "V": 6,
                   "Phi": 3,
                   "Soporte": true,
                   "Restriccion": "XY"
@@ -27,8 +27,8 @@
                   "Nombre": "Nodo 2",
                   "Coordenada x": 7.0,
                   "Coordenada y": 0.0,
-                  "U": 1,
-                  "V": null,
+                  "U": null,
+                  "V": 1,
                   "Phi": 2,
                   "Soporte": false,
                   "Restriccion": ""
@@ -37,8 +37,8 @@
                   "Nombre": "Nodo 3",
                   "Coordenada x": 0.0,
                   "Coordenada y": 0.0,
-                  "U": 5,
-                  "V": null,
+                  "U": null,
+                  "V": 5,
                   "Phi": 4,
                   "Soporte": true,
                   "Restriccion": "XY"
@@ -85,7 +85,18 @@
                   "Inercia": 6.667e-05
             }
       ],
-      "CARGAS_PUNTUALES": [],
+      "CARGAS_PUNTUALES": [
+            {
+                  "Nombre": "Carga puntual 0",
+                  "Valor": -10.0,
+                  "Direccion": "Y",
+                  "Nodo": "Nodo 2",
+                  "ID_n": 1,
+                  "Elemento": false,
+                  "ID_e": 0,
+                  "Distancia": false
+            }
+      ],
       "CARGAS_DISTRIBUIDAS": [],
       "MOMENTOS": []
 }

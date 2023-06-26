@@ -114,6 +114,16 @@
             }
       ],
       "CARGAS_PUNTUALES": [],
-      "CARGAS_DISTRIBUIDAS": [],
+      "CARGAS_DISTRIBUIDAS": [
+            {
+                  "Nombre": "Distribuida Elemento C",
+                  "Carga i": 10.0,
+                  "Carga f": 10.0,
+                  "Elemento": "C",
+                  "ID_e": 2,
+                  "Distancia i": 0.0,
+                  "Distancia f": 10.0
+            }
+      ],
       "MOMENTOS": []
 }

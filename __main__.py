@@ -366,7 +366,7 @@ def cargas_distribuidas_settings(modelo):
                 else:
                     print("Error: no se reconoce la opción ingresada.\n\n")
             case "3":
-                if not modelo.cagas_Distribuidas.empty:
+                if not modelo.cargas_Distribuidas.empty:
                     os.system("cls")
                     show_units()
                     modelo.delete_cargadistribuida()

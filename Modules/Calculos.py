@@ -388,11 +388,11 @@ def set_elementoCarga(elemento, units, last_distancia = None, ID_e = None, edit 
 # Sistema de cargas distribuidas:
 def get_cargaD(units, last_carga_i = None, last_carga_f = None, edit = False):
     if edit:
-        valor_i = intInput(f"\nINgrese el valor de la carga inicial ({last_carga_i [0]})({units.loc[0,'Fuerza']}): ")
-        valor_f = intInput(f"\nINgrese el valor de la carga finial ({last_carga_f [0]})({units.loc[0,'Fuerza']}): ")
+        valor_i = intInput(f"\nINgrese el valor de la carga inicial ({last_carga_i [0]} {units.loc[0,'Fuerza']}): ")
+        valor_f = intInput(f"\nINgrese el valor de la carga finial ({last_carga_f [0]} {units.loc[0,'Fuerza']}): ")
     else:
-        valor_i = intInput(f"\nIngrese el valor de la carga inicial ({units.loc[0,'Fuerza']}): ")
-        valor_f = intInput(f"\nIngrese el valor de la carga final ({units.loc[0,'Fuerza']}): ")
+        valor_i = intInput(f"\nIngrese el valor de la carga inicial ({units.loc[0,'Fuerza']}/{units.loc[0,'Longitud']}): ")
+        valor_f = intInput(f"\nIngrese el valor de la carga final ({units.loc[0,'Fuerza']}/{units.loc[0,'Longitud']}): ")
         
     return (valor_i, valor_f)
 
@@ -402,8 +402,8 @@ def set_elementoCD(elemento, units, ID_e = None, last_distancia_i = None, last_d
         print(elemento)
         index_list = elemento.index.values.tolist()
         
-        if edit({ID_e}): 
-            index = get_index(index_list, f"\nSelecione el id del elemento en el cual esta ubicado la carga({ID_e}): ", True,ID_e)
+        if edit: 
+            index = get_index(index_list, f"\nSelecione el id del elemento en el cual esta ubicado la carga ({ID_e}): ", True, ID_e)
         else:
             index = get_index(index_list, f"\nSelecione el id del elemento en el cual esta ubicado la carga: ")
         
@@ -419,7 +419,7 @@ def set_elementoCD(elemento, units, ID_e = None, last_distancia_i = None, last_d
             distancia_i = floatInput(f"\nIngrese la distancia de la carga inicial respecto al nodo i del elemento ({units.loc[0,'Longitud']}): ")
             distancia_f = floatInput(f"\nIngrese la distancia de la carga final respecto al nodo i del elemento ({units.loc[0,'Longitud']}): ")
 
-        return (index,elemento.loc[index,"Nombre", distancia_i, distancia_f])
+        return (index,elemento.loc[index,"Nombre"], distancia_i, distancia_f)
     else: 
         print("\nNo se encuentran elementos en la base de datos.\n")
         input("Presione enter para continuar.")

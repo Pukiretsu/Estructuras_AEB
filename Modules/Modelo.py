@@ -729,7 +729,7 @@ class model():
 
     # Cargas Distribuidas
     def add_cargadistribuida(self) -> None:
-        carga_distribuida = {"Nombre": [], "Carga i": [], "Carga f": [], "Direcccion": [], "Elemento": [], "ID_e": [], "Distancia i": [], "Distancia f": []}
+        carga_distribuida = {"Nombre": [], "Carga i": [], "Carga f": [], "Elemento": [], "ID_e": [], "Distancia i": [], "Distancia f": []}
         print("\nNueva carga distribuida")
         
         try:
@@ -742,15 +742,15 @@ class model():
             nombre = f"Carga distribuida {index}"
             
         carga = calc.get_cargaD(self.unidades)
-        carga_i = carga[0][0]
-        carga_f = carga[0][1]
+        carga_i = carga[0]
+        carga_f = carga[1]
         
         ubicacion = calc.set_elementoCD(self.elementos, self.unidades)
         
-        id_e = ubicacion[0][0]
-        elemento = ubicacion[0][1]
-        distancia_i = ubicacion[0][2]
-        distancia_f = ubicacion[0][3]
+        id_e = ubicacion[0]
+        elemento = ubicacion[1]
+        distancia_i = ubicacion[2]
+        distancia_f = ubicacion[3]
         
         carga_distribuida["Nombre"].append(nombre)
         carga_distribuida["Carga i"].append(carga_i)
@@ -760,7 +760,7 @@ class model():
         carga_distribuida["Distancia i"].append(distancia_i)
         carga_distribuida["Distancia f"].append(distancia_f)
         
-        new_cargaD = pd.DataFrame(carga_distribuida, index=[index])
+        new_cargaD = pd.DataFrame(carga_distribuida)
         
         self.cargas_Distribuidas = pd.concat([self.cargas_Distribuidas,new_cargaD])
         
@@ -768,7 +768,7 @@ class model():
         print("\nCargas distribuidas actuales: \n")
         print(self.cargas_Distribuidas)
         
-        carga_distribuida = {"Nombre": [], "Carga i": [], "Carga f": [], "Direcccion": [], "Elemento": [], "ID_e": [], "Distancia i": [], "Distancia f": []}
+        carga_distribuida = {"Nombre": [], "Carga i": [], "Carga f": [], "Elemento": [], "ID_e": [], "Distancia i": [], "Distancia f": []}
         
         indexes = self.cargas_Distribuidas.index.values.tolist()
         index = get_index(indexes)
@@ -778,27 +778,27 @@ class model():
         
         nombre = input(f"\nNombre ({self.cargas_Distribuidas.loc[index, 'Nombre']}): ") or self.cargas_Distribuidas.loc[index, 'Nombre']
 
-        last_cargas = (self.cargas_Distribuidas.loc[index, 'Carga i', self.cargas_Distribuidas.loc[index, 'Carga f']])
+        last_cargas = (self.cargas_Distribuidas.loc[index, 'Carga i'], self.cargas_Distribuidas.loc[index, 'Carga f'])
         confirmacion = confirmation("\n¿Cambiar los valores de la carga?")
         if confirmacion:
             cargas = calc.get_cargaD(self.unidades, last_cargas, True)
         else:
             cargas = last_cargas
             
-        carga_i = cargas[0][0]
-        carga_f = cargas[0][1]
+        carga_i = cargas[0]
+        carga_f = cargas[1]
         
-        last_ubicacion = ((self.cargas_Distribuidas.loc[index, 'ID_e'], self.cargas_Distribuidas.loc[index,'Elemento']), (self.cargas_Distribuidas.loc[index, 'Distancia i'], self.cargas_Distribuidas.loc[index, 'Distancia f']))
+        last_ubicacion = (self.cargas_Distribuidas.loc[index, 'ID_e'], self.cargas_Distribuidas.loc[index,'Elemento'], self.cargas_Distribuidas.loc[index, 'Distancia i'], self.cargas_Distribuidas.loc[index, 'Distancia f'])
         confirmacion = confirmation("\n¿Quiere editar la ubicación de la carga?")
         if confirmacion:
-            ubicacion = calc.set_elementoCD(self.elementos, self.unidades, last_ubicacion[0][0], last_ubicacion[1][0], True)
+            ubicacion = calc.set_elementoCD(self.elementos, self.unidades, last_ubicacion[0], last_ubicacion[2],last_ubicacion[3], True)
         else: 
             ubicacion = last_ubicacion
         
-        id_e = ubicacion[0][0]
-        elemento = ubicacion[0][1]
-        distancia_i = ubicacion[0][2]
-        distancia_f = ubicacion[0][3]
+        id_e = ubicacion[0]
+        elemento = ubicacion[1]
+        distancia_i = ubicacion[2]
+        distancia_f = ubicacion[3]
         
         carga_distribuida["Nombre"].append(nombre)
         carga_distribuida["Carga i"].append(carga_i)
@@ -818,7 +818,7 @@ class model():
         print("\nCargas distribuidas actuales: \n")
         print(self.cargas_Distribuidas)
         
-        indexes = self.cargas_Puntuales.index.values.tolist()
+        indexes = self.cargas_Distribuidas.index.values.tolist()
         index = get_index(indexes)
         
         confirmacion = confirmation(f"Confirmar eliminación {self.cargas_Distribuidas.loc[index,'Nombre']} id:{index}")

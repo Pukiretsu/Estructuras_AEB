@@ -291,7 +291,7 @@ def get_cargaP(units, last_carga = None, edit = False):
     while True:
         print("\nDirección la dirección de la carga : ")
         print("\n\t1. X")
-        print("\n\t2. Y")
+        print("\t2. Y")
         
         if edit:
             seleccion = intInput(f"\nSeleccione la direccion de la carga ({last_carga [1]}): ")
@@ -386,7 +386,7 @@ def get_cargaD(units, last_carga_i = None, last_carga_f = None, edit = False):
         
     return (valor_i, valor_f)
 
-def set_elementoCD(elemento, units, ID_e = None, last_distancia_i = None,  last_distancia_f = None, edit = False):
+def set_elementoCD(elemento, units, ID_e = None, last_distancia_i = None, last_distancia_f = None, edit = False):
     if not elemento.empty:
         print("\nElementos actuales: \n")
         print(elemento)
@@ -416,8 +416,78 @@ def set_elementoCD(elemento, units, ID_e = None, last_distancia_i = None,  last_
         return (False,False,False,False)
 
 # Sistema de momentos:
-def get_momento(units, last_carga = None, edit = False):
-    pass
+def get_momento(units, last_momento = None, edit = False):
+    if edit:
+        valor = intInput(f"\nIngrese el valor del momento ({last_momento [0]})({units.loc[0,'Fuerza']}): ")
+    else:
+        valor = intInput(f"\nIngrese el valor del momento ({units.loc[0,'Fuerza']}): ")
+    
+    return valor
+    
+def get_ubicacionmomento(nodo, elemento, units, ID_n = None, ID_e = None, last_distancia = None, edit = False):
+    while True:
+        print("\nUbicación del momento.")
+        print("\n\t1. En el nodo.")
+        print("\n\t2. En el elemento.")
+        match intInput("\nSeleccione la ubicación del momento: "):
+            case 1:
+                ubicacion_n = set_nodoM(nodo, ID_n, edit)
+                ubicacion_e = (False,False,False)
+                break
+            case 2:
+                ubicacion_e = set_elementoM(elemento, units, last_distancia, ID_e, edit)
+                ubicacion_n = (False,False)
+                break
+            case _:
+                print("\nOpción incorrecta")
+    return (ubicacion_n, ubicacion_e) 
+
+def set_nodoM(nodo, ID_n = None, edit = False):
+    if not nodo.empty:   
+        print("\nNodos actuales:\n")
+        print(nodo)
+        index_list = nodo.index.values.tolist()
+        
+        if edit:
+            index = get_index(index_list,f"\nSeleccione el id del nodo en el que está ubicado el momento({ID_n}): ", edit, ID_n)
+        else:
+            index = get_index(index_list,"\nSeleccione el id del nodo en el que está ubicado el momento: ")
+
+        print(f"\nNodo selecionado id [{index}]: ") 
+        print(nodo.loc[[index]])
+        
+        return (index,nodo.loc[index,'Nombre'])
+    else: 
+        print("\nNo se encuentran nodos en la base de datos.\n")
+        input("Presione enter para continuar.")
+        return (False,False)
+    
+def set_elementoM(elemento, units, last_distancia = None, ID_e = None, edit = False):
+    if not elemento.empty:
+        print("\nElementos actuales:\n")
+        print(elemento)
+        index_list = elemento.index.values.tolist()
+        
+        if edit: 
+            index = get_index(index_list,f"\nSeleccione el id del elemento en el cual está ubicado el momento({ID_e}): ", True, ID_e)
+        else:
+            index = get_index(index_list,f"\nSelecccione el id del elemento en el cual está ubicado el momento: ")
+            
+        print(f"\nElemento seleccionado id[{index}]: ")
+        print(elemento.loc[[index]])
+        
+        print(f"\nEl nodo i del elemento {elemento.loc[index,'Nombre']} es: {elemento.loc[index,'Nodo i']} ")
+         
+        if edit: 
+            distancia = floatInput(f"\nIngrese la distancia del momento respecto al nodo i del elemento ({last_distancia})({units.loc[0,'Longitud']}): ")
+        else:    
+            distancia = floatInput(f"\nIngrese la distancia del momento respecto al nodo i del elemento ({units.loc[0,'Longitud']}): ")
+        
+        return (index,elemento.loc[index,"Nombre"],distancia)
+    else: 
+        print("\nNo se encuentran elementos en la base de datos.\n")
+        input("Presione enter para continuar.")
+        return (False,False,False)
 
 # Sistema de unidades:
 def get_conversion_longitud(unit_in, unit_out):

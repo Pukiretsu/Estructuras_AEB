@@ -304,7 +304,7 @@ def cargas_puntuales_settings(modelo):
                 else:
                     print("Error: no se reconoce la opción ingresada.\n\n")
             case "3":
-                if not modelo.elementos.empty:
+                if not modelo.cargas_Puntuales.empty:
                     os.system("cls")
                     show_units()
                     modelo.delete_cargapuntual()
@@ -317,12 +317,116 @@ def cargas_puntuales_settings(modelo):
                 print("Error: no se reconoce la opción ingresada.\n\n")
 
 def cargas_distribuidas_settings(modelo):
-    #TODO: Menu de Cargas distribuidas
-    pass
+    os.system("cls")
+    
+    def show_units():
+        divideBar()     
+        print("Cargas distibuidas.")
+        divideBar()     
+        print("Unidades.")
+        print(f"Longitud: {modelo.unidades.loc[0,'Longitud']}")
+        print(f"Fuerza: {modelo.unidades.loc[0,'Fuerza']}")
+        divideBar()     
+    
+    while True:
+        show_units()
+        if not modelo.cargas_Distribuidas.empty:
+            print("\nCargas distribuidas actuales:\n")
+            print(modelo.cargas_Distribuidas.loc[:,~modelo.cargas_Distribuidas.columns.isin([""])])
+        else:
+            print("\nNo hay cargas distribuidas en la base de datos.")
+        
+        print("\n¿Qué desea hacer?\n")
+        print("\t1. Nueva carga distribuida.")
+        
+        if not modelo.cargas_Distribuidas.empty:
+            print("\t2. Modificar carga distribuida existente.")
+            print("\t3. Eliminar carga distribuida existenste.")
+        
+        print("\n0. Volver.")
+        
+        match input("\nIngrese una opción: "):
+            case "1":
+                os.system("cls")
+                show_units()
+                modelo.add_cargadistribuida()
+                os.system("cls")
+            case "2":
+                if not modelo.cargas_Distribuidas.empty:
+                    os.system("cls")
+                    show_units()
+                    modelo.edit_cargadistribuida()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opción ingresada.\n\n")
+            case "3":
+                if not modelo.cagas_Distribuidas.empty:
+                    os.system("cls")
+                    show_units()
+                    modelo.delete_cargadistribuida()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opción ingresada.\n\n")
+            case "0":
+                return modelo
+            case _:
+                print("Error: no se reconoce la opción ingresada.\n\n")
 
 def momentos_settings(modelo):
-    #TODO: Menu de momentos
-    pass
+    os.system("cls")
+    
+    def show_units():
+        divideBar()     
+        print("Momentos.")
+        divideBar()     
+        print("Unidades.")
+        print(f"Longitud: {modelo.unidades.loc[0,'Longitud']}")
+        print(f"Fuerza: {modelo.unidades.loc[0,'Fuerza']}")
+        divideBar()     
+    
+    while True:
+        show_units()
+        if not modelo.momentos.empty:
+            print("\nMomentos actuales:\n")
+            print(modelo.momentos.loc[:,~modelo.momentos.columns.isin([""])])
+        else:
+            print("\nNo hay momentos en la base de datos.")
+        
+        print("\n¿Qué desea hacer?\n")
+        print("\t1. Nuevo momento puntual.")
+        
+        if not modelo.momentos.empty:
+            print("\t2. Modificar momento existente.")
+            print("\t3. Eliminar momento existenste.")
+        
+        print("\n0. Volver.")
+        
+        match input("\nIngrese una opción: "):
+            case "1":
+                os.system("cls")
+                show_units()
+                modelo.add_momento()
+                os.system("cls")
+            case "2":
+                if not modelo.momentos.empty:
+                    os.system("cls")
+                    show_units()
+                    modelo.edit_momento()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opción ingresada.\n\n")
+            case "3":
+                if not modelo.momentos.empty:
+                    os.system("cls")
+                    show_units()
+                    modelo.delete_momento()
+                    os.system("cls")
+                else:
+                    print("Error: no se reconoce la opción ingresada.\n\n")
+            case "0":
+                return modelo
+            case _:
+                print("Error: no se reconoce la opción ingresada.\n\n")
 
 def units_settings(modelo):
     os.system("cls")

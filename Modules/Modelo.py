@@ -57,7 +57,6 @@ CARGAS_DISTRIBUIDAS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
 
 MOMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                          "Valor": pd.Series(dtype="float"),
-                         "Direccion": pd.Series(dtype="str"),
                          "Nodo" : pd.Series(dtype="str"),
                          "ID_n" : pd.Series(dtype="int"),
                          "Elemento": pd.Series(dtype="str"),
@@ -154,7 +153,7 @@ class model():
             self.elementos.loc[idx,"Longitud"] = self.elementos.loc[idx, "Longitud"] * (factor_conversion)
 
     def convert_Fuerza(self, factor_conversion) -> None:
-        pass
+        pass #TODO
     
     def convert_Esfuerzo(self, factor_conversion) -> None:
         # Modulo young
@@ -680,7 +679,7 @@ class model():
         if confirmacion:
             carga = calc.get_cargaP(self.unidades, last_carga, True)
         else:
-            carga = last_carga
+            carga = last_carga  
         
         valor = carga[0]
         direccion = carga[1]
@@ -824,8 +823,8 @@ class model():
     
     # Momentos
     def add_momento(self) -> None:
-        momento = {"Nombre": [], "Valor": [], "Direccion": [], "Nodo": [], "ID_n": [], "Elemento": [], "ID_e": [], "Distancia": []}
-        print("\nNueo momento.") 
+        momento = {"Nombre": [], "Valor": [], "Nodo": [], "ID_n": [], "Elemento": [], "ID_e": [], "Distancia": []}
+        print("\nNuevo momento.") 
         
         try:
             index = max(self.momentos.index) + 1
@@ -837,13 +836,88 @@ class model():
             nombre = f"Momento {index}"
             
         carga = calc.get_momento(self.unidades)
+        valor = carga[0]
         
+        ubicacion = calc.get_ubicacionmomento(self.nodos, self.elementos, self.unidades)
+        
+        id_n = ubicacion[0][0]
+        nodo = ubicacion[0][1]
+        id_e = ubicacion[1][0]
+        elemento = ubicacion [1][1]
+        distancia = ubicacion[1][2]
+        
+        momento["Nombre"].append(nombre)
+        momento["Valor"].append(valor)
+        momento["Nodo"].append(nodo)
+        momento["ID_n"].append(id_n)
+        momento["Elemento"].append(elemento)
+        momento["ID_e"].append(id_e)
+        momento["Distancia"].append(distancia)
+        
+        new_momento = pd.DataFrame(momento, index = [index])
+        
+        self.momentos = pd.concat([self.momentos, new_momento])
     
     def edit_momento(self) -> None:
-        pass
+        print("\nMomentos actuales: \n")
+        print(self.momentos)
+        
+        momento = {"Nombre": [], "Valor": [], "Nodo": [], "ID_n": [], "Elemento": [], "ID_e": [], "Distancia": []}
+        
+        indexes = self.momentos.index.values.tolist()
+        index = get_index(indexes)
+        
+        print(f"\nMomento seleccionado id: [{index}]")
+        print(self.momentos.loc[[index]])
     
+        nombre = input(f"\nNombre ({self.momentos.loc[index, 'Nombre']}): ") or self.momentos.loc[index, 'Nombre']
+    
+        last_carga = self.momentos.loc[index,'Valor']
+        confirmacion = confirmation( "\n¿Cambiar el valor del momento?")
+        if confirmacion:
+            carga = calc.get_momento(self.unidades, last_carga, True)
+        else:
+            carga = last_carga
+        
+        valor = carga[0]
+        
+        last_ubicacion = ((self.momentos.loc[index, 'ID_n'],self.momentos.loc[index, 'Nodo']),(self.momentos.loc[index, 'ID_e'],self.momentos.loc[index, 'Elemento'],self.momentos.loc[index, 'Distancia']))
+        confirmacion = confirmation("¿Quiere editar la ubicacion del momento?")
+        if confirmacion: 
+            ubicacion = calc.get_ubicacionmomento(self.nodos, self.elementos, self.unidades, last_ubicacion[0][0], last_ubicacion[1][0], True)
+        else :
+            ubicacion = last_ubicacion
+            
+        id_n = ubicacion[0][0]
+        nodo = ubicacion[0][1]
+        id_e = ubicacion[1][0]
+        elemento = ubicacion [1][1]
+        distancia = ubicacion[1][2]
+        
+        momento["Nombre"].append(nombre)
+        momento["Valor"].append(valor)
+        momento["Nodo"].append(nodo)
+        momento["ID_n"].append(id_n)
+        momento["Elemento"].append(elemento)
+        momento["ID_e"].append(id_e)
+        momento["Distancia"].append(distancia)
+        
+        self.momentos = self.momentos.drop([index])
+        new_momento = pd.DataFrame(momento, index=[index])
+        
+        self.momentos = pd.concat([self.momentos,new_momento])
+        self.momentos = self.momentos.sort_index()
+        
     def delete_momento(self) -> None:
-        pass
+        print("\nMomentos actuales: \n")
+        print(self.momentos)
+        
+        indexes = self.momentos.index.values.tolist()
+        index = get_index(indexes)
+        
+        confirmacion = confirmation(f"Confirmar eliminación {self.momentos.loc[index,'Nombre']} id:{index}")
+        if confirmacion: 
+            self.momentos = self.momentos.drop([index])
     
     # Calculos de estructura
     def calculate(self) -> None:

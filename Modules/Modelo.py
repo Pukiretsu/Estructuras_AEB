@@ -3,6 +3,10 @@ import json
 import Modules.Calculos as calc
 import os
 
+# Configuraciones para display
+
+pd.set_eng_float_format(accuracy=2)
+
 # Definicion de dataframes en el contexto
 
 UNIDADES = pd.DataFrame({"Longitud": ["m"],

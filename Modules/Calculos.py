@@ -1,6 +1,11 @@
 import pandas as pd
 import numpy as np
 import math as mt 
+import test as show
+
+# Configuraciones para display
+
+pd.set_eng_float_format(accuracy=2)
 
 def intInput (message) -> int:
     while True:
@@ -179,12 +184,15 @@ def set_coords(previousCoords=None,edit=False):
                 case "1": 
                     coord_x = floatInput("Coordenada x del nodo: ")
                     coord_y = previousCoords[1]
+                    break
                 case "2": 
                     coord_x = previousCoords[0]
                     coord_y = floatInput("Coordenada y del nodo: ")
+                    break
                 case "3":
                     coord_x = floatInput("Coordenada x del nodo: ")
                     coord_y = floatInput("Coordenada y del nodo: ")
+                    break
                 case "4":
                     return False
                 case _:
@@ -727,7 +735,7 @@ def get_moduloYoung(units,last_mod = None, edit = False):
     else:
         modulo = input(f"\nIngresar el modulo de Young ({units.loc[0,'Esfuerzo']}): ")
         if modulo:
-            modulo =  float()
+            modulo =  float(modulo)
     
     return modulo
         
@@ -831,7 +839,7 @@ def consolidación_RigidezGLobal(structureType, Nnodos, results):
     matriz_Global.index += 1
     matriz_Global.columns = matriz_Global.index
     
-    for elemento in results.keys():
+    for elemento in results["Elementos"].keys():
         dataf_K = results["Elementos"][elemento]["k rigidez local"]
         for index in dataf_K.index:
             for column in dataf_K.columns:
@@ -921,6 +929,7 @@ def calculos(elementos, nodos, materiales, secciones, units, structureType):
     
     print(matriz_global)
     print("Matriz de rigidez global [✅]")
+    
     return matrices_Result 
 
 if __name__ == "__main__":

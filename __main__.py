@@ -347,7 +347,7 @@ def cargas_distribuidas_settings(modelo):
         
         if not modelo.cargas_Distribuidas.empty:
             print("\t2. Modificar carga distribuida existente.")
-            print("\t3. Eliminar carga distribuida existenste.")
+            print("\t3. Eliminar carga distribuida existente.")
         
         print("\n0. Volver.")
         

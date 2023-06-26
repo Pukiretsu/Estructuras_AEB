@@ -426,11 +426,12 @@ def set_elementoCD(elemento, units, ID_e = None, last_distancia_i = None, last_d
         return (False,False,False,False)
 
 # Sistema de momentos:
+
 def get_momento(units, last_momento = None, edit = False):
     if edit:
-        valor = intInput(f"\nIngrese el valor del momento ({last_momento [0]})({units.loc[0,'Fuerza']}): ")
+        valor = floatInput(f"\nIngrese el valor del momento ({last_momento})({units.loc[0,'Fuerza']}): ")
     else:
-        valor = intInput(f"\nIngrese el valor del momento ({units.loc[0,'Fuerza']}): ")
+        valor = floatInput(f"\nIngrese el valor del momento ({units.loc[0,'Fuerza']}): ")
     
     return valor
     
@@ -459,7 +460,7 @@ def set_nodoM(nodo, ID_n = None, edit = False):
         index_list = nodo.index.values.tolist()
         
         if edit:
-            index = get_index(index_list,f"\nSeleccione el id del nodo en el que está ubicado el momento({ID_n}): ", edit, ID_n)
+            index = get_index(index_list,f"\nSeleccione el id del nodo en el que está ubicado el momento ({ID_n}): ", edit, ID_n)
         else:
             index = get_index(index_list,"\nSeleccione el id del nodo en el que está ubicado el momento: ")
 
@@ -988,9 +989,6 @@ def calculos(elementos, nodos, materiales, secciones, units, structureType):
         k_rigidez.index = grados_libertad
         k_rigidez.columns = k_rigidez.index
         
-        print (f"\nElemento: {nombre_Elemento} Angulo: {Angulo}")
-        print(k_rigidez)
-        
         matrices_Result["Elementos"][f"{nombre_Elemento}"] = {"rigidez": k_p, "TGL": TGL, "k rigidez local": k_rigidez}
     
     print("Matrices Globales [✅]")
@@ -1002,7 +1000,6 @@ def calculos(elementos, nodos, materiales, secciones, units, structureType):
     
     matrices_Result["Matriz Global"] = matriz_global
     
-    print(matriz_global)
     print("Matriz de rigidez global [✅]")
     
     return matrices_Result 

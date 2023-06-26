@@ -157,12 +157,12 @@ class model():
             self.elementos.loc[idx,"Longitud"] = self.elementos.loc[idx, "Longitud"] * (factor_conversion)
 
     def convert_Fuerza(self, factor_conversion) -> None:
-        pass #TODO
+        pass #TODO Añadir las cargas
     
     def convert_Esfuerzo(self, factor_conversion) -> None:
         # Modulo young
         for idx in self.materiales.index:
-            self.materiales.loc[idx,"Modulo Young"] = self.materiales.loc[idx,"Modulo Young"]*factor_conversion #BUG HAY PROBLEMA CON LA CONVERSION
+            self.materiales.loc[idx,"Modulo Young"] = self.materiales.loc[idx,"Modulo Young"] * factor_conversion
     
     def convert_Angulo(self, factor_conversion) -> None:
         # Grados de elementos
@@ -839,8 +839,8 @@ class model():
         if not (nombre):
             nombre = f"Momento {index}"
             
-        carga = calc.get_momento(self.unidades)
-        valor = carga[0]
+        carga_momento = calc.get_momento(self.unidades)
+        valor = carga_momento
         
         ubicacion = calc.get_ubicacionmomento(self.nodos, self.elementos, self.unidades)
         

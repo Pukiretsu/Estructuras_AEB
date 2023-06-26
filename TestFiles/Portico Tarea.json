@@ -125,5 +125,15 @@
                   "Distancia f": 10.0
             }
       ],
-      "MOMENTOS": []
+      "MOMENTOS": [
+            {
+                  "Nombre": "Momento nodo 1",
+                  "Valor": 10.0,
+                  "Nodo": "1",
+                  "ID_n": 0,
+                  "Elemento": false,
+                  "ID_e": 0,
+                  "Distancia": 0.0
+            }
+      ]
 }

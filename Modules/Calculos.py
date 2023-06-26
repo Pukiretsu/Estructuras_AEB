@@ -5,7 +5,8 @@ import test as show
 
 # Configuraciones para display
 
-pd.set_eng_float_format(accuracy=2)
+pd.set_option('display.float_format', '{:.1f}'.format)
+
 
 def intInput (message) -> int:
     while True:
@@ -113,10 +114,10 @@ def get_angulo(longitud,delta_x,delta_y,units):
         if delta_y >= 0:
             angulo = np.arcsin(seno)
         elif delta_y < 0:
-            angulo = (3/2 * np.pi) - np.arcsin(seno)
+            angulo = (2 * np.pi) + np.arcsin(seno)
     if delta_x < 0:
         if delta_y > 0:
-            angulo = (np.pi/2) -  np.arcsin(seno)
+            angulo = (np.pi) + np.arcsin(seno)
         elif delta_y <= 0:
             angulo = (np.pi) + np.arcsin(seno)
     else: 
@@ -881,8 +882,8 @@ def get_rigidez_local(structureType, L, A, E, I):
 def get_Transformacion_GL(structureType, ang):
     match structureType:
         case "Cercha":
-            Global_Local = np.array( [ np.cos(ang) , np.sin(ang) ,      0      ,      0      ]
-                                    ,[      0      ,      0      , np.cos(ang) , np.sin(ang) ])
+            Global_Local = np.array([ [ np.cos(ang) , np.sin(ang) ,      0      ,      0      ]
+                                     ,[      0      ,      0      , np.cos(ang) , np.sin(ang) ]])
         case "Viga":
             return np.identity(4)
         case "Portico":
@@ -971,7 +972,7 @@ def calculos(elementos, nodos, materiales, secciones, units, structureType):
         Inercia = secciones.loc[ID_Seccion, "Inercia"] * fac_longitud ** 4
         
         ID_Material = elementos.loc[index, "ID Mat"] 
-        Mod_Elasticidad = materiales.loc[ID_Material, "Modulo Young"] ** fac_Esfuerzo
+        Mod_Elasticidad = materiales.loc[ID_Material, "Modulo Young"] * fac_Esfuerzo
         
         ID_ni = elementos.loc[index, "ID ni"]
         ID_nj = elementos.loc[index, "ID nj"]
@@ -985,6 +986,9 @@ def calculos(elementos, nodos, materiales, secciones, units, structureType):
         
         k_rigidez.index = grados_libertad
         k_rigidez.columns = k_rigidez.index
+        
+        print (f"\nElemento: {nombre_Elemento} Angulo: {Angulo}")
+        print(k_rigidez)
         
         matrices_Result["Elementos"][f"{nombre_Elemento}"] = {"rigidez": k_p, "TGL": TGL, "k rigidez local": k_rigidez}
     

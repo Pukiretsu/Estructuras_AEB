@@ -5,7 +5,7 @@ import os
 
 # Configuraciones para display
 
-pd.set_eng_float_format(accuracy=2)
+pd.set_option('display.float_format', '{:.1f}'.format)
 
 # Definicion de dataframes en el contexto
 

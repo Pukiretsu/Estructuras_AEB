@@ -362,9 +362,9 @@ def model_settings(modelo):
         print("\nEstructura:")
         divideBar()
         print("\t1. Nodos.")
-        print("\t2. Elementos.")
-        print("\t3. Secciones.")
-        print("\t4. Materiales.")
+        print("\t2. Secciones.")
+        print("\t3. Materiales.")
+        print("\t4. Elementos.")
         
         print("\nCargas:")
         divideBar()
@@ -380,14 +380,14 @@ def model_settings(modelo):
             case "1":
                 modelo = nodos_settings(modelo)
                 os.system("cls")
-            case "2":        
-                modelo = elementos_settings(modelo)
-                os.system("cls")
-            case "3":
+            case "2":
                 modelo = secciones_settings(modelo)
                 os.system("cls")
-            case "4":
+            case "3":
                 modelo = materiales_settings(modelo)
+                os.system("cls")
+            case "4":        
+                modelo = elementos_settings(modelo)
                 os.system("cls")
             case "5":
                 modelo = cargas_settings(modelo)

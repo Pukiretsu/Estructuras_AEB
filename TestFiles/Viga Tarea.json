@@ -85,18 +85,26 @@
                   "Inercia": 6.667e-05
             }
       ],
-      "CARGAS_PUNTUALES": [
+      "CARGAS": [
             {
-                  "Nombre": "Carga puntual 0",
-                  "Valor": -10.0,
-                  "Direccion": "Y",
-                  "Nodo": "Nodo 2",
-                  "ID_n": 1,
-                  "Elemento": false,
-                  "ID_e": 0,
-                  "Distancia": false
+                  "ID_Elem": 0,
+                  "Elemento": "1",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 1,
+                  "Elemento": "2",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
             }
-      ],
-      "CARGAS_DISTRIBUIDAS": [],
-      "MOMENTOS": []
+      ]
 }

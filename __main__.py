@@ -115,7 +115,7 @@ def elementos_settings(modelo):
         show_units()
         if not modelo.elementos.empty:
             print("\nElementos actuales:\n")
-            print(modelo.elementos.loc[:,~modelo.elementos.columns.isin(["ID ni", "ID nj", "ID Mat", "ID Sec"])])
+            print(modelo.elementos.loc[:,~modelo.elementos.columns.isin(["ID ni", "ID nj", "ID Mat", "ID Sec", "ID_cargas"])])
         else:
             print("\nNo hay Elementos en la base de datos.")
         
@@ -279,10 +279,20 @@ def cargas_settings(modelo):
         divideBar()     
     
     while True:
+        pd.set_option('display.float_format', '{:.2f}'.format)
         show_units()
         if not modelo.cargas.empty:
             print("\nCargas Locales actuales:\n")
-            print(modelo.cargas.loc[:,~modelo.cargas.columns.isin(["ID_Elem"])])
+            match modelo.tipo_estructura:
+                case "Cercha":
+                    print(modelo.cargas.loc[:,~modelo.cargas.columns.isin(["ID_Elem", "N_i", "N_j", "V_i", "M_i", "V_j", "M_j"])])
+                    pass
+                case "Viga":
+                    print(modelo.cargas.loc[:,~modelo.cargas.columns.isin(["ID_Elem", "N_i", "N_j"])])
+                    pass
+                case "Portico":
+                    print(modelo.cargas.loc[:,~modelo.cargas.columns.isin(["ID_Elem"])])
+                    
         else:
             print("\nNo hay cargas puntuales en la base de datos.")
         
@@ -312,6 +322,7 @@ def cargas_settings(modelo):
                 else:
                     print("Error: no se reconoce la opción ingresada.\n\n")
             case "0":
+                pd.set_option('display.float_format', '{:.1f}'.format)
                 return modelo
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")

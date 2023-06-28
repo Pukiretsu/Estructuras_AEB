@@ -33,7 +33,8 @@ ELEMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                           "ID Mat": pd.Series(dtype="int64"),
                           "Material": pd.Series(dtype="str"),
                           "ID Sec": pd.Series(dtype="int64"),
-                          "Seccion": pd.Series(dtype="str")}) 
+                          "Seccion": pd.Series(dtype="str"),
+                          "ID_cargas": pd.Series(dtype="int")}) 
 
 MATERIALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                            "Modulo Young": pd.Series(dtype="float")})
@@ -42,30 +43,14 @@ SECCIONES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                           "Area": pd.Series(dtype="float"), 
                           "Inercia": pd.Series(dtype="float")})
 
-CARGAS_PUNTUALES = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
-                                 "Valor": pd.Series(dtype="float"),
-                                 "Direccion": pd.Series(dtype="str"),
-                                 "Nodo" : pd.Series(dtype="str"),
-                                 "ID_n" : pd.Series(dtype="int"),
-                                 "Elemento": pd.Series(dtype="str"),
-                                 "ID_e": pd.Series(dtype="int"),
-                                 "Distancia": pd.Series(dtype="float")})
-
-CARGAS_DISTRIBUIDAS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
-                                    "Carga i": pd.Series(dtype="float"),
-                                    "Carga f": pd.Series(dtype="float"),
-                                    "Elemento": pd.Series(dtype="str"),
-                                    "ID_e": pd.Series(dtype="int"),
-                                    "Distancia i": pd.Series(dtype="float"),
-                                    "Distancia f": pd.Series(dtype="float")})
-
-MOMENTOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
-                         "Valor": pd.Series(dtype="float"),
-                         "Nodo" : pd.Series(dtype="str"),
-                         "ID_n" : pd.Series(dtype="int"),
-                         "Elemento": pd.Series(dtype="str"),
-                         "ID_e": pd.Series(dtype="int"),
-                         "Distancia": pd.Series(dtype="float")})
+CARGAS = pd.DataFrame({"ID_Elem": pd.Series(dtype="int"),
+                       "Elemento": pd.Series(dtype="str"),
+                       "N_i": pd.Series(dtype="float"),
+                       "V_i": pd.Series(dtype="float"),
+                       "M_i": pd.Series(dtype="float"),
+                       "N_j": pd.Series(dtype="float"),
+                       "V_j": pd.Series(dtype="float"),
+                       "M_j": pd.Series(dtype="float")})
 
 # Funciones de soporte
 
@@ -105,9 +90,7 @@ class model():
         self.elementos = ELEMENTOS
         self.materiales = MATERIALES
         self.secciones = SECCIONES
-        self.cargas_Puntuales = CARGAS_PUNTUALES
-        self.cargas_Distribuidas = CARGAS_DISTRIBUIDAS
-        self.momentos = MOMENTOS
+        self.cargas = CARGAS
         self.resultados = None
 
     #Carga y descarga de modelos
@@ -122,9 +105,7 @@ class model():
         self.elementos              = pd.concat([self.elementos, pd.json_normalize(data, record_path = ["ELEMENTOS"])])
         self.materiales             = pd.concat([self.materiales, pd.json_normalize(data, record_path = ["MATERIALES"])])
         self.secciones              = pd.concat([self.secciones, pd.json_normalize(data, record_path = ["SECCIONES"])]) 
-        self.cargas_Puntuales       = pd.concat([self.cargas_Puntuales, pd.json_normalize(data, record_path = ["CARGAS_PUNTUALES"])]) 
-        self.cargas_Distribuidas    = pd.concat([self.cargas_Distribuidas, pd.json_normalize(data, record_path = ["CARGAS_DISTRIBUIDAS"])]) 
-        self.momentos               = pd.concat([self.momentos, pd.json_normalize(data, record_path = ["MOMENTOS"])]) 
+        self.cargas                 = pd.concat([self.cargas, pd.json_normalize(data, record_path = ["CARGAS"])]) 
 
     def save_model(self, path, date) -> None:
         file = os.path.basename(path)
@@ -139,9 +120,7 @@ class model():
                 'ELEMENTOS':            self.elementos.to_dict('records'),
                 'MATERIALES':           self.materiales.to_dict('records'),
                 'SECCIONES':            self.secciones.to_dict('records'),
-                'CARGAS_PUNTUALES':     self.cargas_Puntuales.to_dict('records'),
-                'CARGAS_DISTRIBUIDAS':  self.cargas_Distribuidas.to_dict('records'),
-                'MOMENTOS':             self.momentos.to_dict('records')}
+                'CARGAS':               self.cargas.to_dict('records')}
         
         with open(path, "w") as f:
             json.dump(data,f,indent=6)
@@ -155,9 +134,23 @@ class model():
         # Distancia de elementos
         for idx in self.elementos.index:
             self.elementos.loc[idx,"Longitud"] = self.elementos.loc[idx, "Longitud"] * (factor_conversion)
+        # Distancia carga puntual
+        for idx in self.cargas_Puntuales.index:
+            self.cargas_Puntuales.loc[idx,"Distancia"] = self.cargas_Puntuales.loc[idx,"Distancia"] * (factor_conversion)
+        # Distancia Cargas distribuidas
+        for idx in self.cargas_Distribuidas.index:
+            self.cargas_Distribuidas.loc[idx,"Distancia i"] = self.cargas_Distribuidas.loc[idx,"Distancia i"] * (factor_conversion)
+            self.cargas_Distribuidas.loc[idx,"Distancia f"] = self.cargas_Distribuidas.loc[idx,"Distancia f"] * (factor_conversion)
 
     def convert_Fuerza(self, factor_conversion) -> None:
-        pass #TODO Añadir las cargas
+        # cargas puntuales
+        for idx in self.cargas_Puntuales.index:
+            self.cargas_Puntuales.loc[idx,"Valor"] = self.cargas_Puntuales.loc[idx,"Valor"] * (factor_conversion)
+        
+        # Cargas distribuidas
+        for idx in self.cargas_Distribuidas.index:
+            self.cargas_Distribuidas.loc[idx,"Carga i"] = self.cargas_Distribuidas.loc[idx,"Carga i"] * (factor_conversion)
+            self.cargas_Distribuidas.loc[idx,"Carga j"] = self.cargas_Distribuidas.loc[idx,"Carga j"] * (factor_conversion)
     
     def convert_Esfuerzo(self, factor_conversion) -> None:
         # Modulo young
@@ -352,7 +345,7 @@ class model():
      
     # Elementos
     def add_element(self) -> None:
-        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "Longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": []}
+        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "Longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": [], "ID_cargas" : []}
         
         print("\nNuevo elemento.")
         
@@ -388,6 +381,9 @@ class model():
         elemento["Material"].append(material[1])
         elemento["ID Sec"].append(seccion[0])
         elemento["Seccion"].append(seccion[1])
+        
+        # Vector de carga local vacio
+        elemento["ID_cargas"] = self.new_carga(index, nombre)
         
         new_element = pd.DataFrame(elemento, index=[index])
         
@@ -455,7 +451,9 @@ class model():
         elemento["Material"].append(material[1])
         elemento["ID Sec"].append(seccion[0])
         elemento["Seccion"].append(seccion[1])
-        
+
+        elemento["ID_cargas"] = self.reset_cargas(self.elementos.loc["ID_cargas"],)
+
         self.elementos = self.elementos.drop([index])
         new_element = pd.DataFrame(elemento, index=[index])
         
@@ -474,7 +472,10 @@ class model():
         
         confirmacion = confirmation(f"Confirmar eliminación {self.elementos.loc[index,'Nombre']} id:{index}")
         if confirmacion: 
+            self.cargas = self.cargas.drop([index])
+            self.cargas = self.cargas.sort_index() 
             self.elementos = self.elementos.drop([index])
+            self.elementos = self.elementos.sort_index() 
 
     # Secciones
     def add_section(self) -> None:
@@ -624,6 +625,68 @@ class model():
             confirmacion = confirmation(f"Confirmar eliminación {self.materiales.loc[index,'Nombre']} id:{index}")
             if confirmacion:
                 self.materiales = self.materiales.drop([index])
+
+    # Cargas
+    
+    def new_carga(self, id_elem, name_elem) -> int:
+        elemento = {"ID_Elem": [],"Elemento" : [], "N_i" : [], "V_i" : [], "M_i" : [], "N_j" : [], "V_j" : [], "M_j" : []}
+        
+        try:
+            index = max(self.elementos.index) + 1
+        except:
+            index = len(self.elementos.index)
+        
+        elemento["ID_Elem"] = id_elem
+        elemento["Elemento"] = name_elem
+        elemento["N_i"] = 0
+        elemento["V_i"] = 0
+        elemento["M_i"] = 0
+        elemento["N_j"] = 0
+        elemento["V_j"] = 0
+        elemento["M_j"] = 0
+        
+        new_load = pd.DataFrame(elemento, index=[index])
+        
+        self.cargas = pd.concat([self.cargas, new_load])
+        return index
+    
+    def add_cargas(self) -> None:
+        print("\nCargas locales actuales: \n")
+        print(self.cargas)
+        elemento = {"ID_Elem": [],"Elemento" : [], "N_i" : [], "V_i" : [], "M_i" : [], "N_j" : [], "V_j" : [], "M_j" : []}
+        # TODO: Implementar suma de cargas y que el usuario elija.
+    
+    def reset_cargas(self, id_carga = None, manual = False) -> None:
+        elemento = {"ID_Elem": [],"Elemento" : [], "N_i" : [], "V_i" : [], "M_i" : [], "N_j" : [], "V_j" : [], "M_j" : []}
+        if manual:
+            print("\nCargas locales actuales: \n")
+            print(self.cargas)
+            indexes = self.cargas.index.values.tolist()
+            index = get_index(indexes)
+        else:
+            index = id_carga
+        
+        elemento["ID_Elem"] = self.cargas.loc[index, "ID_Elem"]
+        elemento["Elemento"] = self.cargas.loc[index, "Elemento"]
+        elemento["N_i"] = 0
+        elemento["V_i"] = 0
+        elemento["M_i"] = 0
+        elemento["N_j"] = 0
+        elemento["V_j"] = 0
+        elemento["M_j"] = 0
+        
+        reseted_loads = pd.DataFrame(elemento, index=[index])
+        
+        if manual:
+            conf = confirmation(f"¿Confirmar el reseteo de las cargas de {elemento['Elemento']}?.")
+            if conf:
+                self.cargas = self.cargas.drop([index])
+                self.cargas = pd.concat([self.cargas, reseted_loads])
+                self.cargas = self.cargas.sort_index()
+        else:
+            self.cargas = self.cargas.drop([index])
+            self.cargas = pd.concat([self.cargas, reseted_loads])
+            self.cargas = self.cargas.sort_index()
 
     # Cargas puntales
     def add_cargapuntual(self) -> None: 

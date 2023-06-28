@@ -1,0 +1,67 @@
+{
+      "Model-meta": {
+            "STRUCTURETYPE": "Viga",
+            "Date_Saved": "28-06-23",
+            "Model_Name": "Test"
+      },
+      "UNIDADES": [
+            {
+                  "Longitud": "m",
+                  "Fuerza": "kN",
+                  "Esfuerzo": "mpa",
+                  "Angulo": "\u00b0"
+            }
+      ],
+      "NODOS": [
+            {
+                  "Nombre": "Nodo 0",
+                  "Coordenada x": 1.0,
+                  "Coordenada y": 2.0,
+                  "U": null,
+                  "V": 1,
+                  "Phi": 2,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "Nodo 1",
+                  "Coordenada x": 1.0,
+                  "Coordenada y": 2.0,
+                  "U": null,
+                  "V": 12,
+                  "Phi": 1,
+                  "Soporte": false,
+                  "Restriccion": ""
+            }
+      ],
+      "ELEMENTOS": [
+            {
+                  "Nombre": "Elemento 0",
+                  "ID ni": 1,
+                  "Nodo i": "Nodo 1",
+                  "ID nj": 0,
+                  "Nodo j": "Nodo 0",
+                  "Longitud": 0.0,
+                  "Angulo": NaN,
+                  "ID Mat": false,
+                  "Material": false,
+                  "ID Sec": null,
+                  "Seccion": false,
+                  "ID_cargas": 0
+            }
+      ],
+      "MATERIALES": [],
+      "SECCIONES": [],
+      "CARGAS": [
+            {
+                  "ID_Elem": 0,
+                  "Elemento": "Elemento 0",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            }
+      ]
+}

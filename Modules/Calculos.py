@@ -289,6 +289,11 @@ def get_support(structureType, edit=False):
                             print("Apoyo no válido")
                     case _:
                         print("\nApoyo no válido.")
+
+# Sistema de cargas
+
+def get_Cargas_Locales():
+    pass
             
 # Sistema de cargas puntuales
 def get_cargaP(units, last_carga = None, edit = False):
@@ -1001,6 +1006,8 @@ def calculos(elementos, nodos, materiales, secciones, units, structureType):
     matrices_Result["Matriz Global"] = matriz_global
     
     print("Matriz de rigidez global [✅]")
+    
+    # Obtener vectores de carga local y Global
     
     return matrices_Result 
 

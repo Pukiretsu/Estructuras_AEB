@@ -11,7 +11,7 @@ pd.set_option('display.float_format', '{:.1f}'.format)
 
 UNIDADES = pd.DataFrame({"Longitud": ["m"],
                          "Fuerza": ["kN"],
-                         "Esfuerzo": ["mpa"],
+                         "Esfuerzo": ["Gpa"],
                          "Angulo": ["°"]}) # Se añaden las unidades del SI por defecto
 
 NODOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),

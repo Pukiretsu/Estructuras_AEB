@@ -172,7 +172,7 @@ def set_seccion(seccion, last_seccion = None, edit = False):
     
 # Sistema de nodos
 
-def set_coords(previousCoords=None,edit=False):
+def set_coords(previousCoords = None, edit = False):
     if not edit:
         coord_x = floatInput("Coordenada x del nodo: ")
         coord_y = floatInput("Coordenada y del nodo: ")
@@ -1036,8 +1036,8 @@ def consolidación_RigidezGLobal(structureType, Nnodos, results):
     
     return matriz_Global
 
-
-        
+# Calculos totales
+      
 def calculos(elementos, nodos, materiales, secciones, cargas, units, structureType):
     print("Calculando estructura...")
     Results = {"Elementos": dict(), "Matriz Global": [], "Vector Cargas Global": []}
@@ -1047,7 +1047,7 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     fac_Esfuerzo = get_conversion_esfuerzo(units.loc[0, "Esfuerzo"], "Kpa")
     fac_angulo = get_conversion_angulo(units.loc[0, "Angulo"], "rad")
     
-    # Calculo de matrices de rigidez locales y transformacion a globales
+    # Calculo de matrices de rigidez locales y transformacion a globales asi como de vectores globales
     
     for index in elementos.index:
         
@@ -1099,11 +1099,12 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     print("Configuracion de elementos [✅]")
     
     nnodos = len(nodos.index)
+    
     # Consolidacion vectores carga global
     
     vector_global = consolidacion_cargasGlobal(structureType, nnodos, Results)
     Results["Vector Cargas Global"] = vector_global
-    
+    print(vector_global)
     print("Vector de carga global [✅]")
     
     # Consolidacion de matrices globales.
@@ -1112,9 +1113,6 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     Results["Matriz Global"] = matriz_global
     
     print("Matriz de rigidez global [✅]")
-    
-    
-        
     
     
     # TODO: Algoritmo para buscar primer grado de libertad con desplazamiento conocido

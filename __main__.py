@@ -8,7 +8,7 @@ from datetime import date
 
 # Configuraciones para display
 
-pd.set_option('display.float_format', '{:.1f}'.format)
+pd.set_option('display.float_format', '{:.2f}'.format)
 
 # Miscelaneos
 
@@ -34,7 +34,7 @@ def load_model():
     
     model_system(modelo)
 
-def save_model(model):
+def save_model(model: mod.model):
     filename = asksaveasfilename(title="Guardar Modelo",initialfile= model.nombre, defaultextension='.json', filetypes=[("Modelos JSON",".json")])
     
     dt = date.today()
@@ -47,7 +47,7 @@ def save_model(model):
 
 # Configuracion del modelo
 
-def nodos_settings(modelo):
+def nodos_settings(modelo: mod.model):
     os.system("cls")
     
     def showTittle():
@@ -59,7 +59,15 @@ def nodos_settings(modelo):
         showTittle()   
         if not modelo.nodos.empty:
             print("\nNodos actuales:\n")
-            print(modelo.nodos)
+            match modelo.tipo_estructura:
+                case "Cercha":
+                    print(modelo.nodos.loc[:,~modelo.nodos.columns.isin(['Phi'])])
+                    pass
+                case "Viga":
+                    print(modelo.nodos.loc[:,~modelo.nodos.columns.isin(['U'])])
+                    pass
+                case "Portico":
+                    print(modelo.nodos)
         else:
             print("\nNo hay Nodos en la base de datos.")
         
@@ -99,7 +107,7 @@ def nodos_settings(modelo):
             case _:
                 print("Error: no se reconoce la opcion ingresada.\n\n")
 
-def elementos_settings(modelo):
+def elementos_settings(modelo: mod.model):
     os.system("cls")
     
     def show_units():
@@ -155,7 +163,7 @@ def elementos_settings(modelo):
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")
 
-def secciones_settings(modelo):
+def secciones_settings(modelo: mod.model):
     os.system("cls")
     
     def show_units():
@@ -211,7 +219,7 @@ def secciones_settings(modelo):
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")
 
-def materiales_settings(modelo):
+def materiales_settings(modelo: mod.model):
     os.system("cls")
     
     def show_units():
@@ -266,7 +274,7 @@ def materiales_settings(modelo):
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")                
 
-def cargas_settings(modelo):
+def cargas_settings(modelo: mod.model):
     os.system("cls")
     
     def show_units():
@@ -296,7 +304,7 @@ def cargas_settings(modelo):
                     print(modelo.cargas.loc[:,~modelo.cargas.columns.isin(["ID_Elem"])])
                     
         else:
-            print("\nNo hay cargas puntuales en la base de datos.")
+            print("\nNo hay elementos en la base de datos.")
         
         print("\n¿Qué desea hacer?\n")
         
@@ -329,7 +337,7 @@ def cargas_settings(modelo):
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")
 
-def units_settings(modelo):
+def units_settings(modelo: mod.model):
     os.system("cls")
     while True:
         divideBar()      
@@ -352,7 +360,7 @@ def units_settings(modelo):
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")
 
-def model_settings(modelo):
+def model_settings(modelo: mod.model):
     os.system("cls")
     while True:
         print("Configuración modelo.")
@@ -402,7 +410,7 @@ def model_settings(modelo):
 
 # Calculo de la estructura
 
-def model_calculate(modelo):
+def model_calculate(modelo: mod.model):
     os.system("cls")
     
     modelo.calculate()
@@ -410,7 +418,7 @@ def model_calculate(modelo):
 
 # Menú del modelo
 
-def model_system(modelo):
+def model_system(modelo: mod.model):
     while True:
         print(f"Trabajando en: {modelo.nombre}")
         print(f"Tipo de estructura: {modelo.tipo_estructura}")

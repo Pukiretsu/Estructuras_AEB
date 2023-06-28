@@ -348,7 +348,7 @@ def add_Cargas_Locales(longitud, nodos, id_NodoI, id_NodoJ, last_carga, units, s
                 case "2":
                     loads = set_carga_Distribuida(loads, longitud, units)
                 case "3":
-                    loads = set_carga_Triangular(loads, longitud, units)
+                    loads = set_carga_Triangular(loads, longitud, nodos, id_NodoI, id_NodoJ, units)
                 case "4":
                     loads = set_carga_Momento(loads, longitud, id_NodoI, units)
                 case "5":
@@ -471,13 +471,38 @@ def set_carga_Distribuida(loads, longitud , units):
     
     return loads
 
-def set_carga_Triangular(loads, longitud, units):
-    valor = floatInput(f"\nIngrese el valor de la carga ({units.loc[0,'Fuerza']}/{units.loc[0,'Longitud']}): ")  
+def set_carga_Triangular(loads, longitud, nodos, id_NodoI, id_NodoJ, units):
+    while True:
+        print("\nIndique el nodo donde está aplicada la carga.\n")
+        
+        print(f"\t1. Nodo i [{nodos.loc[id_NodoI,'Nombre']}].")
+        print(f"\t2. Nodo j [{nodos.loc[id_NodoJ,'Nombre']}].")
+        
+        print("\n0. Volver.")
+        match input("\nIngrese una opción: "):
+                case "1":
+                    valor = floatInput(f"\nIngrese el valor de la carga ({units.loc[0,'Fuerza']}/{units.loc[0,'Longitud']}): ")
+                    nodo = "i"
+                    break
+                case "2":
+                    valor = floatInput(f"\nIngrese el valor de la carga ({units.loc[0,'Fuerza']}/{units.loc[0,'Longitud']}): ")
+                    nodo = "j"
+                    break
+                case "0":
+                    return loads
+                case _:
+                    print("Error: no se reconoce la opción ingresada.\n")
     
-    loads[1] = loads[1] + (7 * valor * longitud / 20)   # Vi
-    loads[2] = loads[2] + (valor * longitud**2 / 20)    # Mi
-    loads[4] = loads[4] + (3 * valor * longitud / 20)   # Vj
-    loads[5] = loads[5] + ((-valor) * longitud**2 / 30) # Mj
+    if nodo == "i":
+        loads[1] = loads[1] + (7 * valor * longitud / 20)   # Vi
+        loads[2] = loads[2] + (valor * longitud**2 / 20)    # Mi
+        loads[4] = loads[4] + (3 * valor * longitud / 20)   # Vj
+        loads[5] = loads[5] + ((-valor) * longitud**2 / 30) # Mj
+    else:
+        loads[1] = loads[1] + ((-valor) * longitud**2 / 30) # Mi
+        loads[2] = loads[2] + (3 * valor * longitud / 20)   # Vi
+        loads[4] = loads[4] + (7 * valor * longitud / 20)   # Vi
+        loads[5] = loads[5] + (valor * longitud**2 / 20)    # Mj
     
     return loads
 

@@ -650,7 +650,16 @@ class model():
     
     def add_cargas(self) -> None:
         print("\nCargas locales actuales: \n")
-        print(self.cargas)
+        match self.tipo_estructura:
+                case "Cercha":
+                    print(self.cargas.loc[:,~self.cargas.columns.isin(["ID_Elem", "V_i", "M_i", "V_j", "M_j"])])
+                    pass
+                case "Viga":
+                    print(self.cargas.loc[:,~self.cargas.columns.isin(["ID_Elem", "N_i", "N_j"])])
+                    pass
+                case "Portico":
+                    print(self.cargas.loc[:,~self.cargas.columns.isin(["ID_Elem"])])
+                    
         elemento = {"ID_Elem": [],"Elemento" : [], "N_i" : [], "V_i" : [], "M_i" : [], "N_j" : [], "V_j" : [], "M_j" : []}
         
         indexes = self.cargas.index.values.tolist()
@@ -662,6 +671,7 @@ class model():
         units = self.unidades
         longitud = self.elementos.loc[elemento["ID_Elem"], "Longitud"]
         id_ni = self.elementos.loc[elemento["ID_Elem"], "ID ni"]
+        id_nj = self.elementos.loc[elemento["ID_Elem"], "ID nj"]
         
         N_i= self.cargas.loc[index,'N_i']
         V_i= self.cargas.loc[index,'V_i']
@@ -671,7 +681,7 @@ class model():
         M_j= self.cargas.loc[index,'M_j']
         last_cargas = [N_i, V_i, M_i, N_j, V_j, M_j]
         
-        cargas_locales = calc.add_Cargas_Locales(longitud, id_ni, last_cargas, units, self.tipo_estructura)
+        cargas_locales = calc.add_Cargas_Locales(longitud, self.nodos, id_ni, id_nj, last_cargas, units, self.tipo_estructura)
         
         elemento["N_i"] = cargas_locales[0]
         elemento["V_i"] = cargas_locales[1]

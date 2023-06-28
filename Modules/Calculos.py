@@ -294,15 +294,17 @@ def get_support(structureType, edit=False):
 
 # Sistema de cargas
 
-def add_Cargas_Locales(longitud, id_NodoI, last_carga, units, structureType):
+def add_Cargas_Locales(longitud, nodos, id_NodoI, id_NodoJ, last_carga, units, structureType):
     def print_loads(loads):
         
         system("cls")
         print("Vector de carga local actual:\n")
         match structureType:
             case "Cercha":
-                print(f"Ni: {loads[0]} {units.loc[0,'Fuerza']}")
-                print(f"Nj: {loads[3]} {units.loc[0,'Fuerza']}")
+                print(f"Nodo i x: {loads[0]} {units.loc[0,'Fuerza']}")
+                print(f"Nodo i y: {loads[1]} {units.loc[0,'Fuerza']}")
+                print(f"Nodo j x: {loads[3]} {units.loc[0,'Fuerza']}")
+                print(f"Nodo j y: {loads[4]} {units.loc[0,'Fuerza']}")
             case "Viga":
                 print(f"Vi: {loads[1]} {units.loc[0,'Fuerza']}")
                 print(f"Mi: {loads[2]} {units.loc[0,'Fuerza']}.{units.loc[0,'Longitud']}")
@@ -334,7 +336,7 @@ def add_Cargas_Locales(longitud, id_NodoI, last_carga, units, structureType):
         if structureType == "Cercha":
             match input("\nIngrese una opción: "):
                 case "1":
-                    loads = set_carga_manual(loads, units, structureType)
+                    loads = set_carga_nodo(loads, nodos, id_NodoI, id_NodoJ, units)
                 case "0":
                     break
                 case _:
@@ -367,6 +369,61 @@ def validate_longitud(longitud, message):
             print(f"Error, La distancia no puede ser mayor a la longitud ({longitud}) del elemento ")
     return long_carga
 
+def set_carga_nodo(loads, nodos, id_NodoI, id_NodoJ, units):
+    
+    def direction():
+     while True:
+        print("\nIndique la dirección de la carga.\n")
+        
+        print(f"\t1. x")
+        print(f"\t2. y.")
+        
+        match input("\nIngrese una opción: "):
+                case "1":
+                    return "x"
+                case "2":
+                    return "y"
+                case _:
+                    print("Error: no se reconoce la opción ingresada.\n")    
+    
+    while True:
+        print("\nIndique el nodo donde está aplicada la carga.\n")
+        
+        print(f"\t1. Nodo i [{nodos.loc[id_NodoI,'Nombre']}].")
+        print(f"\t2. Nodo j [{nodos.loc[id_NodoJ,'Nombre']}].")
+        
+        print("\n0. Volver.")
+        match input("\nIngrese una opción: "):
+                case "1":
+                    valor = floatInput(f"\nIngrese el valor de la carga ({units.loc[0,'Fuerza']}): ")
+                    direccion = direction()
+                    nodo = "i"
+
+                    break
+                case "2":
+                    valor = floatInput(f"\nIngrese el valor de la carga ({units.loc[0,'Fuerza']}): ")
+                    direccion = direction()
+                    nodo = "j"
+                    break
+                case "0":
+                    return loads
+                case _:
+                    print("Error: no se reconoce la opción ingresada.\n")
+    
+    # Setear dirección y nodo
+    if nodo == "i":
+        if direccion == "x":
+            loads[0] = loads[0] + valor
+        else:
+            loads[1] = loads[1] + valor
+    else:
+        if direccion == "x":
+            loads[3] = loads[3] + valor
+        else:
+            loads[4] = loads[4] + valor
+    
+    return loads
+        
 def set_carga_manual(loads, units, structureType):
     print("\nIndique el valor a añadir.\n")
     match structureType:

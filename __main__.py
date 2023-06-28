@@ -329,7 +329,6 @@ def cargas_settings(modelo):
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")
 
-
 def units_settings(modelo):
     os.system("cls")
     while True:
@@ -407,8 +406,7 @@ def model_calculate(modelo):
     os.system("cls")
     
     modelo.calculate()
-    return modelo
-    
+    return modelo  
 
 # Menú del modelo
 

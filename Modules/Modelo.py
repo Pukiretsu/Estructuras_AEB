@@ -231,7 +231,7 @@ class model():
         
         nombre = input("\nIngrese un nombre para el nodo (En blanco nombre por defecto): ")
         if not (nombre):
-            nombre = f"Nodo {index}"
+            nombre = f"Nodo {index+1}"
 
         coordenadas = calc.set_coords()
         gdl = calc.get_grados_Libertad(self.tipo_estructura)
@@ -356,7 +356,7 @@ class model():
         
         nombre = input("\nIngrese un nombre para el elemento (En blanco nombre por defecto): ")
         if not (nombre):
-            nombre = f"Elemento {index}"
+            nombre = f"Elemento {index+1}"
             
         nodos = calc.set_nodos(self.nodos) 
         
@@ -393,7 +393,7 @@ class model():
         print("\nElementos actuales: \n")
         print(self.elementos)
 
-        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "Longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": []}
+        elemento = {"Nombre": [], "ID ni": [], "Nodo i": [], "ID nj": [], "Nodo j": [], "Longitud": [], "Angulo": [], "ID Mat": [], "Material": [], "ID Sec": [], "Seccion": [], "ID_cargas" : []}
 
         indexes = self.elementos.index.values.tolist()
         index = get_index(indexes)
@@ -452,12 +452,14 @@ class model():
         elemento["ID Sec"].append(seccion[0])
         elemento["Seccion"].append(seccion[1])
 
-        elemento["ID_cargas"] = self.reset_cargas(self.elementos.loc["ID_cargas"],)
-
+        elemento["ID_cargas"] = self.elementos.loc[index, "ID_cargas"]
+        
+        self.reset_cargas(elemento["ID_cargas"])
+        
         self.elementos = self.elementos.drop([index])
         new_element = pd.DataFrame(elemento, index=[index])
         
-        self.elementos = pd.concat([self.elementos,new_element])
+        self.elementos = pd.concat([self.elementos, new_element])
         self.elementos = self.elementos.sort_index() 
             
     def delete_element(self) -> None:
@@ -488,7 +490,7 @@ class model():
         
         nombre = input("\nIngrese un nombre para la sección (En blanco nombre por defecto): ")
         if not (nombre):
-            nombre = f"Seccion {index}"
+            nombre = f"Seccion {index+1}"
             
         sectionCalcs = calc.get_section_calcs(self.unidades.loc[0,"Longitud"])
         
@@ -561,7 +563,7 @@ class model():
         
         nombre = input("\nIngrese un nombre para el material (En blanco nombre por defecto): ")
         if not (nombre):
-            nombre = f"Material {index}"
+            nombre = f"Material {index+1}"
 
         moduloY = calc.get_moduloYoung(self.unidades)
         
@@ -730,7 +732,7 @@ class model():
 
     # Calculos de estructura
     def calculate(self) -> None:
-        self.resultados = calc.calculos(self.elementos,self.nodos,self.materiales,self.secciones,self.unidades,self.tipo_estructura)
+        self.resultados = calc.calculos(self.elementos,self.nodos,self.materiales,self.secciones, self.cargas, self.unidades, self.tipo_estructura)
 
 if __name__ == "__main__": 
     pass

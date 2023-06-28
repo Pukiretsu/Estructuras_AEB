@@ -8,7 +8,7 @@
             {
                   "Longitud": "m",
                   "Fuerza": "kN",
-                  "Esfuerzo": "mpa",
+                  "Esfuerzo": "Gpa",
                   "Angulo": "\u00b0"
             }
       ],
@@ -96,32 +96,335 @@
       ],
       "ELEMENTOS": [
             {
-                  "Nombre": "1",
+                  "Nombre": "Elemento 1",
                   "ID ni": 0,
                   "Nodo i": "1",
                   "ID nj": 1,
                   "Nodo j": "2",
                   "Longitud": 2.0,
                   "Angulo": 0.0,
-                  "ID Mat": false,
-                  "Material": false,
-                  "ID Sec": null,
-                  "Seccion": false,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "Cinf",
                   "ID_cargas": 0
+            },
+            {
+                  "Nombre": "Elemento 2",
+                  "ID ni": 1,
+                  "Nodo i": "2",
+                  "ID nj": 2,
+                  "Nodo j": "3",
+                  "Longitud": 2.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "Cinf",
+                  "ID_cargas": 1
+            },
+            {
+                  "Nombre": "Elemento 3",
+                  "ID ni": 2,
+                  "Nodo i": "3",
+                  "ID nj": 3,
+                  "Nodo j": "4",
+                  "Longitud": 2.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "Cinf",
+                  "ID_cargas": 2
+            },
+            {
+                  "Nombre": "Elemento 4",
+                  "ID ni": 3,
+                  "Nodo i": "4",
+                  "ID nj": 4,
+                  "Nodo j": "5",
+                  "Longitud": 2.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "Cinf",
+                  "ID_cargas": 3
+            },
+            {
+                  "Nombre": "Elemento 5",
+                  "ID ni": 5,
+                  "Nodo i": "6",
+                  "ID nj": 6,
+                  "Nodo j": "7",
+                  "Longitud": 2.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 1,
+                  "Seccion": "CSup",
+                  "ID_cargas": 4
+            },
+            {
+                  "Nombre": "Elemento 6",
+                  "ID ni": 6,
+                  "Nodo i": "7",
+                  "ID nj": 7,
+                  "Nodo j": "8",
+                  "Longitud": 2.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 1,
+                  "Seccion": "CSup",
+                  "ID_cargas": 5
+            },
+            {
+                  "Nombre": "Elemento 7",
+                  "ID ni": 0,
+                  "Nodo i": "1",
+                  "ID nj": 5,
+                  "Nodo j": "6",
+                  "Longitud": 2.23606797749979,
+                  "Angulo": 26.56505117707799,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "DyP",
+                  "ID_cargas": 6
+            },
+            {
+                  "Nombre": "Elemento 8",
+                  "ID ni": 1,
+                  "Nodo i": "2",
+                  "ID nj": 5,
+                  "Nodo j": "6",
+                  "Longitud": 1.0,
+                  "Angulo": 90.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "DyP",
+                  "ID_cargas": 7
+            },
+            {
+                  "Nombre": "Elemento 9",
+                  "ID ni": 2,
+                  "Nodo i": "3",
+                  "ID nj": 5,
+                  "Nodo j": "6",
+                  "Longitud": 2.23606797749979,
+                  "Angulo": 153.434948822922,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "DyP",
+                  "ID_cargas": 8
+            },
+            {
+                  "Nombre": "Elemento 10",
+                  "ID ni": 2,
+                  "Nodo i": "3",
+                  "ID nj": 6,
+                  "Nodo j": "7",
+                  "Longitud": 1.0,
+                  "Angulo": 90.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "DyP",
+                  "ID_cargas": 9
+            },
+            {
+                  "Nombre": "Elemento 11",
+                  "ID ni": 2,
+                  "Nodo i": "3",
+                  "ID nj": 7,
+                  "Nodo j": "8",
+                  "Longitud": 2.23606797749979,
+                  "Angulo": 26.56505117707799,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "DyP",
+                  "ID_cargas": 10
+            },
+            {
+                  "Nombre": "Elemento 12",
+                  "ID ni": 3,
+                  "Nodo i": "4",
+                  "ID nj": 7,
+                  "Nodo j": "8",
+                  "Longitud": 1.0,
+                  "Angulo": 90.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "DyP",
+                  "ID_cargas": 11
+            },
+            {
+                  "Nombre": "Elemento 13",
+                  "ID ni": 4,
+                  "Nodo i": "5",
+                  "ID nj": 7,
+                  "Nodo j": "8",
+                  "Longitud": 2.23606797749979,
+                  "Angulo": 153.434948822922,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 2,
+                  "Seccion": "DyP",
+                  "ID_cargas": 12
             }
       ],
-      "MATERIALES": [],
+      "MATERIALES": [
+            {
+                  "Nombre": "Acero",
+                  "Modulo Young": 200.0
+            }
+      ],
       "SECCIONES": [
             {
                   "Nombre": "Cinf",
                   "Area": 0.25,
                   "Inercia": 0.005208333333333333
+            },
+            {
+                  "Nombre": "CSup",
+                  "Area": 0.12,
+                  "Inercia": 0.0016000000000000005
+            },
+            {
+                  "Nombre": "DyP",
+                  "Area": 0.18,
+                  "Inercia": 0.0053999999999999986
             }
       ],
       "CARGAS": [
             {
                   "ID_Elem": 0,
-                  "Elemento": "1",
+                  "Elemento": "Elemento 1",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 1,
+                  "Elemento": "Elemento 2",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 2,
+                  "Elemento": "Elemento 3",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 3,
+                  "Elemento": "Elemento 4",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 4,
+                  "Elemento": "Elemento 5",
+                  "N_i": 0.0,
+                  "V_i": -8.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": -15.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 5,
+                  "Elemento": "Elemento 6",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": -5.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 6,
+                  "Elemento": "Elemento 7",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 7,
+                  "Elemento": "Elemento 8",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 8,
+                  "Elemento": "Elemento 9",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 9,
+                  "Elemento": "Elemento 10",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 10,
+                  "Elemento": "Elemento 11",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 11,
+                  "Elemento": "Elemento 12",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            },
+            {
+                  "ID_Elem": 12,
+                  "Elemento": "Elemento 13",
                   "N_i": 0.0,
                   "V_i": 0.0,
                   "M_i": 0.0,

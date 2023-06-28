@@ -860,6 +860,8 @@ def inercia_custom(units) -> float:
 
 ###  Caculos de estructuras ###
 
+# Matrices
+
 def get_rigidez_local(structureType, L, A, E, I):
     match structureType:
         case "Cercha":
@@ -896,28 +898,7 @@ def get_Transformacion_GL(structureType, ang):
                                      ,[       0      ,      0      , 0 ,       0      ,      0      , 1 ]])
     return Global_Local
 
-def consolidación_RigidezGLobal(structureType, Nnodos, results):
-    match structureType:
-        case "Cercha":
-            index = Nnodos * 2
-        case "Viga":
-            index = Nnodos * 2
-        case "Portico":
-            index = Nnodos * 3
-    
-    matriz_Global = np.zeros((index,index), dtype="float64")
-    matriz_Global = pd.DataFrame(matriz_Global)
-    
-    matriz_Global.index += 1
-    matriz_Global.columns = matriz_Global.index
-    
-    for elemento in results["Elementos"].keys():
-        dataf_K = results["Elementos"][elemento]["k rigidez local"]
-        for index in dataf_K.index:
-            for column in dataf_K.columns:
-                matriz_Global.loc[index,column] = matriz_Global.loc[index,column] + dataf_K.loc[index,column]
-    
-    return matriz_Global
+# Grados de libertad
 
 def get_g_libertad_list(nodos, ID_I, ID_J, structureType):
     match structureType:
@@ -949,10 +930,92 @@ def get_g_libertad_list(nodos, ID_I, ID_J, structureType):
             phi_j = nodos.loc[ID_J, "Phi"]
 
             return (u_i,v_i,phi_i,u_j,v_j,phi_j)
+
+# Cargas
+
+def get_cargas_locales(loads, structureType):
+    N_i = loads[0]
+    V_i = loads[1]
+    M_i = loads[2]
+    N_j = loads[3]
+    V_j = loads[4]
+    M_j = loads[5]
+    
+    match structureType:
+        case "Cercha":
+            local_loads = (N_i, V_i, N_j, V_j)
+            return pd.Series(local_loads)        
+        case "Viga":
+            local_loads = (V_i, M_i, V_j, M_j)
+            return pd.Series(local_loads)        
+        case "Portico":
+            local_loads = (N_i, V_i, M_i, N_j, V_j, M_j)
+            return pd.Series(local_loads)        
+
+def get_cargas_global(structureType, cargas_loc, TLG, GDL):
+    match structureType:
+        case "Cercha":
+            cargas_globales = cargas_loc
+        case "Viga":
+            cargas_globales = cargas_loc
+        case "Portico":
+            cargas_globales = TLG.dot(cargas_loc)
+
+    cargas_globales.index = GDL
+    
+    return cargas_globales
+    
+# Consolidaciones
+
+def consolidacion_cargasGlobal(structureType, Nnodos, results ):
+    match structureType:
+        case "Cercha":
+            index = Nnodos * 2
+        case "Viga":
+            index = Nnodos * 2
+        case "Portico":
+            index = Nnodos * 3
+            
+    vector_Global = np.zeros((index), dtype="float64")
+    vector_Global = pd.DataFrame(vector_Global, columns=['Q'])
+    
+    vector_Global.index += 1
+
+    for elemento in results["Elementos"].keys():
+        dataf_q = results["Elementos"][elemento]["Carga local"]
+        for index in dataf_q.index:
+            vector_Global.loc[index, 'Q'] = vector_Global.loc[index, 'Q'] + dataf_q.loc[index]
+    
+    return vector_Global
+            
+def consolidación_RigidezGLobal(structureType, Nnodos, results):
+    match structureType:
+        case "Cercha":
+            index = Nnodos * 2
+        case "Viga":
+            index = Nnodos * 2
+        case "Portico":
+            index = Nnodos * 3
+    
+    matriz_Global = np.zeros((index,index), dtype="float64")
+    matriz_Global = pd.DataFrame(matriz_Global)
+    
+    matriz_Global.index += 1
+    matriz_Global.columns = matriz_Global.index
+    
+    for elemento in results["Elementos"].keys():
+        dataf_K = results["Elementos"][elemento]["k rigidez local"]
+        for index in dataf_K.index:
+            for column in dataf_K.columns:
+                matriz_Global.loc[index,column] = matriz_Global.loc[index,column] + dataf_K.loc[index,column]
+    
+    return matriz_Global
+
+
         
-def calculos(elementos, nodos, materiales, secciones, units, structureType):
+def calculos(elementos, nodos, materiales, secciones, cargas, units, structureType):
     print("Calculando estructura...")
-    matrices_Result = {"Elementos": dict(), "Matriz Global": [], "Vector_Cargas": []}
+    Results = {"Elementos": dict(), "Matriz Global": [], "Vector Cargas Global": []}
     
     fac_longitud = get_conversion_longitud(units.loc[0, "Longitud"], "m")
     fac_Fuerza = get_conversion_fuerza(units.loc[0, "Fuerza"], "kN")
@@ -988,23 +1051,46 @@ def calculos(elementos, nodos, materiales, secciones, units, structureType):
         k_rigidez.index = grados_libertad
         k_rigidez.columns = k_rigidez.index
         
-        matrices_Result["Elementos"][f"{nombre_Elemento}"] = {"rigidez": k_p, "TGL": TGL, "k rigidez local": k_rigidez}
+        ID_loads = elementos.loc[index,"ID_cargas"]
+        
+        N_i = cargas.loc[ID_loads,"N_i"] * fac_Fuerza
+        V_i = cargas.loc[ID_loads,"V_i"] * fac_Fuerza
+        M_i = cargas.loc[ID_loads,"M_i"] * fac_Fuerza / fac_longitud
+        N_j = cargas.loc[ID_loads,"N_j"] * fac_Fuerza
+        V_j = cargas.loc[ID_loads,"V_j"] * fac_Fuerza
+        M_j = cargas.loc[ID_loads,"M_j"] * fac_Fuerza / fac_longitud
+        
+        loads = (N_i, V_i, M_i, N_j, V_j, M_j)
+        cargas_locales = get_cargas_locales(loads,structureType)
+                
+        cargas_Globales = get_cargas_global(structureType, cargas_locales, TLG, grados_libertad)
+        Results["Elementos"][f"{index}"] = {"Nombre": nombre_Elemento, 
+                                            "rigidez": k_p, 
+                                            "TGL": TGL, 
+                                            "k rigidez local": k_rigidez, 
+                                            "Carga local": cargas_locales, 
+                                            "Carga Global": cargas_Globales}
     
-    print("Matrices Globales [✅]")
+    print("Configuracion de elementos [✅]")
+    
+    nnodos = len(nodos.index)
+    # Consolidacion vectores carga global
+    
+    vector_global = consolidacion_cargasGlobal(structureType, nnodos, Results)
+    Results["Vector Cargas Global"] = vector_global
+    
+    print("Vector de carga global [✅]")
     
     # Consolidacion de matrices globales.
     
-    nnodos = len(nodos.index)
-    matriz_global = consolidación_RigidezGLobal(structureType, nnodos, matrices_Result)
-    
-    matrices_Result["Matriz Global"] = matriz_global
+    matriz_global = consolidación_RigidezGLobal(structureType, nnodos, Results)
+    Results["Matriz Global"] = matriz_global
     
     print("Matriz de rigidez global [✅]")
     
-    # TODO: vectores de carga global
-    # Obtener vectores de carga local y Global
     
-    # TODO: Consolidar vectores de carga global
+        
+    
     
     # TODO: Algoritmo para buscar primer grado de libertad con desplazamiento conocido
     # Tal vez con las restricciones
@@ -1015,7 +1101,7 @@ def calculos(elementos, nodos, materiales, secciones, units, structureType):
     
     # TODO: Hallar y consolidar AIF
      
-    return matrices_Result 
+    return Results 
 
 if __name__ == "__main__":
     pass

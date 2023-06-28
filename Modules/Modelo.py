@@ -652,11 +652,11 @@ class model():
         print("\nCargas locales actuales: \n")
         match self.tipo_estructura:
                 case "Cercha":
-                    print(self.cargas.loc[:,~self.cargas.columns.isin(["ID_Elem", "V_i", "M_i", "V_j", "M_j"])])
-                    pass
+                    cercha_df = self.cargas.copy()
+                    cercha_df.rename(columns = {'N_i':'Xi', 'N_j':'Xj', 'V_i':'Yi', 'V_j':'Yj'}, inplace=True)
+                    print(cercha_df.loc[:,~cercha_df.columns.isin(["ID_Elem", "M_i", "M_j"])])
                 case "Viga":
                     print(self.cargas.loc[:,~self.cargas.columns.isin(["ID_Elem", "N_i", "N_j"])])
-                    pass
                 case "Portico":
                     print(self.cargas.loc[:,~self.cargas.columns.isin(["ID_Elem"])])
                     

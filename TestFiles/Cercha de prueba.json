@@ -1,0 +1,133 @@
+{
+      "Model-meta": {
+            "STRUCTURETYPE": "Cercha",
+            "Date_Saved": "28-06-23",
+            "Model_Name": "Cercha de prueba"
+      },
+      "UNIDADES": [
+            {
+                  "Longitud": "m",
+                  "Fuerza": "kN",
+                  "Esfuerzo": "mpa",
+                  "Angulo": "\u00b0"
+            }
+      ],
+      "NODOS": [
+            {
+                  "Nombre": "1",
+                  "Coordenada x": 0.0,
+                  "Coordenada y": 0.0,
+                  "U": 15,
+                  "V": 16,
+                  "Phi": null,
+                  "Soporte": true,
+                  "Restriccion": "XY"
+            },
+            {
+                  "Nombre": "2",
+                  "Coordenada x": 2.0,
+                  "Coordenada y": 0.0,
+                  "U": 7,
+                  "V": 8,
+                  "Phi": null,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "3",
+                  "Coordenada x": 4.0,
+                  "Coordenada y": 0.0,
+                  "U": 11,
+                  "V": 12,
+                  "Phi": null,
+                  "Soporte": true,
+                  "Restriccion": "Y"
+            },
+            {
+                  "Nombre": "4",
+                  "Coordenada x": 6.0,
+                  "Coordenada y": 0.0,
+                  "U": 9,
+                  "V": 10,
+                  "Phi": null,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "5",
+                  "Coordenada x": 8.0,
+                  "Coordenada y": 0.0,
+                  "U": 13,
+                  "V": 14,
+                  "Phi": null,
+                  "Soporte": true,
+                  "Restriccion": "XY"
+            },
+            {
+                  "Nombre": "6",
+                  "Coordenada x": 2.0,
+                  "Coordenada y": 1.0,
+                  "U": 1,
+                  "V": 2,
+                  "Phi": null,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "7",
+                  "Coordenada x": 4.0,
+                  "Coordenada y": 1.0,
+                  "U": 3,
+                  "V": 4,
+                  "Phi": null,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "8",
+                  "Coordenada x": 6.0,
+                  "Coordenada y": 1.0,
+                  "U": 5,
+                  "V": 6,
+                  "Phi": null,
+                  "Soporte": false,
+                  "Restriccion": ""
+            }
+      ],
+      "ELEMENTOS": [
+            {
+                  "Nombre": "1",
+                  "ID ni": 0,
+                  "Nodo i": "1",
+                  "ID nj": 1,
+                  "Nodo j": "2",
+                  "Longitud": 2.0,
+                  "Angulo": 0.0,
+                  "ID Mat": false,
+                  "Material": false,
+                  "ID Sec": null,
+                  "Seccion": false,
+                  "ID_cargas": 0
+            }
+      ],
+      "MATERIALES": [],
+      "SECCIONES": [
+            {
+                  "Nombre": "Cinf",
+                  "Area": 0.25,
+                  "Inercia": 0.005208333333333333
+            }
+      ],
+      "CARGAS": [
+            {
+                  "ID_Elem": 0,
+                  "Elemento": "1",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 0.0,
+                  "M_j": 0.0
+            }
+      ]
+}

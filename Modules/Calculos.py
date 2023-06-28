@@ -494,7 +494,7 @@ def set_carga_Momento(loads, longitud, id_NodoI, units):
     loads[1] = loads[1] + (6 * (-valor) * a * b / longitud**3)                  # Vi
     loads[2] = loads[2] + (valor * b / longitud) * ((3 * b / longitud) - 2)     # Mi
     loads[4] = loads[4] + (6 * valor * a * b / longitud**3)                     # Vj
-    loads[5] = loads[5] + ((-valor) * a / longitud) * (2 - (3 * a / longitud))     # Mj
+    loads[5] = loads[5] + ((-valor) * a / longitud) * (2 - (3 * a / longitud))  # Mj
     
     return loads
 

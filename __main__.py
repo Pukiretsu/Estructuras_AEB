@@ -279,6 +279,7 @@ def cargas_settings(modelo):
         divideBar()     
     
     while True:
+        pd.set_option('display.float_format', '{:.2f}'.format)
         show_units()
         if not modelo.cargas.empty:
             print("\nCargas Locales actuales:\n")
@@ -312,6 +313,7 @@ def cargas_settings(modelo):
                 else:
                     print("Error: no se reconoce la opción ingresada.\n\n")
             case "0":
+                pd.set_option('display.float_format', '{:.1f}'.format)
                 return modelo
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")

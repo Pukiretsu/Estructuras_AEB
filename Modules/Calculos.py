@@ -295,11 +295,10 @@ def get_support(structureType, edit=False):
 # Sistema de cargas
 
 def add_Cargas_Locales(longitud, id_NodoI, last_carga, units, structureType):
-    # TODO: Testear todas estas caracteristicas 
     def print_loads(loads):
         
-        print("Vector de carga local actual:")
         system("cls")
+        print("Vector de carga local actual:\n")
         match structureType:
             case "Cercha":
                 print(f"Ni: {loads[0]} {units.loc[0,'Fuerza']}")
@@ -323,15 +322,15 @@ def add_Cargas_Locales(longitud, id_NodoI, last_carga, units, structureType):
         print_loads(loads)
         print("\nAgregar cargas.\n")
         if structureType == "Cercha":
-            print("\n 1. Manualmente.")
+            print("\t 1. Manualmente.")
         else:    
-            print("\n 1. Puntual.")
-            print("\n 2. Distribuida.")
-            print("\n 3. Triangular.")
-            print("\n 4. Momento.")
-            print("\n 5. Manualmente.")
+            print("\t 1. Puntual.")
+            print("\t 2. Distribuida.")
+            print("\t 3. Triangular.")
+            print("\t 4. Momento.")
+            print("\t 5. Manualmente.")
         
-        print("0. Volver.")
+        print("\n0. Volver.")
         if structureType == "Cercha":
             match input("\nIngrese una opción: "):
                 case "1":
@@ -438,7 +437,7 @@ def set_carga_Momento(loads, longitud, id_NodoI, units):
     loads[1] = loads[1] + (6 * (-valor) * a * b / longitud**3)                  # Vi
     loads[2] = loads[2] + (valor * b / longitud) * ((3 * b / longitud) - 2)     # Mi
     loads[4] = loads[4] + (6 * valor * a * b / longitud**3)                     # Vj
-    loads[5] = loads[5] + (valor * a / longitud) * (2 - (3 * a / longitud))     # Mj
+    loads[5] = loads[5] + ((-valor) * a / longitud) * (2 - (3 * a / longitud))     # Mj
     
     return loads
 

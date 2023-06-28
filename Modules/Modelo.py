@@ -473,9 +473,7 @@ class model():
         confirmacion = confirmation(f"Confirmar eliminación {self.elementos.loc[index,'Nombre']} id:{index}")
         if confirmacion: 
             self.cargas = self.cargas.drop([index])
-            self.cargas = self.cargas.sort_index() 
             self.elementos = self.elementos.drop([index])
-            self.elementos = self.elementos.sort_index() 
 
     # Secciones
     def add_section(self) -> None:
@@ -654,7 +652,38 @@ class model():
         print("\nCargas locales actuales: \n")
         print(self.cargas)
         elemento = {"ID_Elem": [],"Elemento" : [], "N_i" : [], "V_i" : [], "M_i" : [], "N_j" : [], "V_j" : [], "M_j" : []}
-        # TODO: Implementar suma de cargas y que el usuario elija.
+        
+        indexes = self.cargas.index.values.tolist()
+        index = get_index(indexes)
+        
+        elemento["ID_Elem"] = self.cargas.loc[index, "ID_Elem"]
+        elemento["Elemento"] = self.cargas.loc[index, "Elemento"]
+        
+        units = self.unidades
+        longitud = self.elementos.loc[elemento["ID_Elem"], "Longitud"]
+        id_ni = self.elementos.loc[elemento["ID_Elem"], "ID ni"]
+        
+        N_i= self.cargas.loc[index,'N_i']
+        V_i= self.cargas.loc[index,'V_i']
+        M_i= self.cargas.loc[index,'M_i']
+        N_j= self.cargas.loc[index,'N_j']
+        V_j= self.cargas.loc[index,'V_j']
+        M_j= self.cargas.loc[index,'M_j']
+        last_cargas = [N_i, V_i, M_i, N_j, V_j, M_j]
+        
+        cargas_locales = calc.add_Cargas_Locales(longitud, id_ni, last_cargas, units, self.tipo_estructura)
+        
+        elemento["N_i"] = cargas_locales[0]
+        elemento["V_i"] = cargas_locales[1]
+        elemento["M_i"] = cargas_locales[2]
+        elemento["N_j"] = cargas_locales[3]
+        elemento["V_j"] = cargas_locales[4]
+        elemento["M_j"] = cargas_locales[5]
+        
+        new_cargas_locales = pd.DataFrame(elemento, index=[index])
+        
+        self.cargas = self.cargas.drop([index])
+        self.cargas = pd.concat([self.cargas, new_cargas_locales])
     
     def reset_cargas(self, id_carga = None, manual = False) -> None:
         elemento = {"ID_Elem": [],"Elemento" : [], "N_i" : [], "V_i" : [], "M_i" : [], "N_j" : [], "V_j" : [], "M_j" : []}

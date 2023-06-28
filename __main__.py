@@ -407,24 +407,20 @@ def model_system(modelo):
         print("\n¿Qué desea hacer?:\n")
         
         print("\t1. Configurar estructura.")
-        print("\t2. Información de la estructura.")
-        print("\t3. Computar estructura.")
-        print("\t4. Resultados.")
-        print("\t5. Guardar estructura.")
+        print("\t2. Computar estructura.")
+        print("\t3. Resultados.")
+        print("\t4. Guardar estructura.")
         print("\n0. Volver.")
         
         match input("\nIngrese una opción: "):
             case "1":
                 modelo = model_settings(modelo)
             case "2": 
-                #TODO Punto de entrada Información estructura.
-                pass
-            case "3": 
                 modelo = model_calculate(modelo)
-            case "4": 
+            case "3": 
                 #TODO Punto de entrada Resultados.
                 pass
-            case "5": 
+            case "4": 
                 save_model(modelo)
             case "0":
                 os.system("cls")

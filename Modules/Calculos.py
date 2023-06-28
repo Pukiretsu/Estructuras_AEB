@@ -1,11 +1,13 @@
 import pandas as pd
 import numpy as np
 import math as mt 
-import test as show
+from os import system
 
 # Configuraciones para display
 
 pd.set_option('display.float_format', '{:.1f}'.format)
+
+
 
 
 def intInput (message) -> int:
@@ -292,220 +294,156 @@ def get_support(structureType, edit=False):
 
 # Sistema de cargas
 
-def get_Cargas_Locales():
-    pass
-            
-# Sistema de cargas puntuales
-def get_cargaP(units, last_carga = None, edit = False):
-    if edit:
-        valor = intInput(f"\nIngrese el valor de la carga ({last_carga [0]})({units.loc[0,'Fuerza']}): ")
-    else:
-        valor = intInput(f"\nIngrese el valor de la carga ({units.loc[0,'Fuerza']}): ")
+def add_Cargas_Locales(longitud, id_NodoI, last_carga, units, structureType):
+    # TODO: Testear todas estas caracteristicas 
+    def print_loads(loads):
+        
+        print("Vector de carga local actual:")
+        system("cls")
+        match structureType:
+            case "Cercha":
+                print(f"Ni: {loads[0]} {units.loc[0,'Fuerza']}")
+                print(f"Nj: {loads[3]} {units.loc[0,'Fuerza']}")
+            case "Viga":
+                print(f"Vi: {loads[1]} {units.loc[0,'Fuerza']}")
+                print(f"Mi: {loads[2]} {units.loc[0,'Fuerza']}.{units.loc[0,'Longitud']}")
+                print(f"Vj: {loads[4]} {units.loc[0,'Fuerza']}")
+                print(f"Mj: {loads[5]} {units.loc[0,'Fuerza']}.{units.loc[0,'Longitud']}")
+            case "Portico":
+                print(f"Ni: {loads[0]} {units.loc[0,'Fuerza']}")
+                print(f"Vi: {loads[1]} {units.loc[0,'Fuerza']}")
+                print(f"Mi: {loads[2]} {units.loc[0,'Fuerza']}.{units.loc[0,'Longitud']}")
+                print(f"Nj: {loads[3]} {units.loc[0,'Fuerza']}")
+                print(f"Vj: {loads[4]} {units.loc[0,'Fuerza']}")
+                print(f"Mj: {loads[5]} {units.loc[0,'Fuerza']}.{units.loc[0,'Longitud']}")
+    
+    loads = last_carga
     
     while True:
-        print("\nDirección la dirección de la carga : ")
-        print("\n\t1. X")
-        print("\t2. Y")
+        print_loads(loads)
+        print("\nAgregar cargas.\n")
+        if structureType == "Cercha":
+            print("\n 1. Manualmente.")
+        else:    
+            print("\n 1. Puntual.")
+            print("\n 2. Distribuida.")
+            print("\n 3. Triangular.")
+            print("\n 4. Momento.")
+            print("\n 5. Manualmente.")
         
-        if edit:
-            seleccion = intInput(f"\nSeleccione la direccion de la carga ({last_carga [1]}): ")
-        else :
-            seleccion = intInput("\nSeleccione la direccion de la carga: ")
-                
-        match seleccion:
-            case 1:
-                direccion = "X"
-                break
-            case 2:
-                direccion = "Y"
-                break
-            case _:
-                print("\nOpción incorrecta")
-    
-    return (valor, direccion)
-        
-def get_ubicacionCarga(nodo, elemento, units, ID_n = None, ID_e = None, last_distancia = None, edit =False):
+        print("0. Volver.")
+        if structureType == "Cercha":
+            match input("\nIngrese una opción: "):
+                case "1":
+                    loads = set_carga_manual(loads, units, structureType)
+                case "0":
+                    break
+                case _:
+                    print("Error: no se reconoce la opción ingresada.\n")
+        else:    
+            match input("\nIngrese una opción: "):
+                case "1":
+                    loads = set_carga_Puntual(loads, longitud, id_NodoI,units)
+                case "2":
+                    loads = set_carga_Distribuida(loads, longitud, units)
+                case "3":
+                    loads = set_carga_Triangular(loads, longitud, units)
+                case "4":
+                    loads = set_carga_Momento(loads, longitud, id_NodoI, units)
+                case "5":
+                    loads = set_carga_manual(loads,units,structureType)
+                case "0":
+                    break
+                case _:
+                    print("Error: no se reconoce la opción ingresada.\n")
+
+    return loads
+
+def validate_longitud(longitud, message):
     while True:
-        print("\nUbicación de la carga puntual.")
-        print("\n\t1. En el nodo.")
-        print("\n\t2. En el elemento.")
-        match intInput("\nSeleccione la ubicación de la carga: "):
-            case 1:
-                ubicacion_n = set_nodoCarga(nodo, ID_n, edit)
-                ubicacion_e = (False,False,False)
-                break
-            case 2:
-                ubicacion_e = set_elementoCarga(elemento, units, last_distancia, ID_e, edit)
-                ubicacion_n = (False,False)
-                break
-            case _:
-                print("\nOpción incorrecta")
-    return (ubicacion_n, ubicacion_e)
-
-def set_nodoCarga(nodo, ID_n = None, edit = False):
-    if not nodo.empty:   
-        print("\nNodos actuales:\n")
-        print(nodo)
-        index_list = nodo.index.values.tolist()
-        
-        if edit:
-            index = get_index(index_list,f"\nSeleccione el id del nodo en el que está ubicada la carga({ID_n}): ", edit, ID_n)
+        long_carga = floatInput(message)
+        if long_carga < longitud:
+            break
         else:
-            index = get_index(index_list,"\nSeleccione el id del nodo en el que está ubicada la carga: ")
+            print(f"Error, La distancia no puede ser mayor a la longitud ({longitud}) del elemento ")
+    return long_carga
 
-        print(f"\nNodo selecionado id [{index}]: ") 
-        print(nodo.loc[[index]])
-        
-        return (index,nodo.loc[index,'Nombre'])
-    else: 
-        print("\nNo se encuentran nodos en la base de datos.\n")
-        input("Presione enter para continuar.")
-        return (False,False)
-   
-def set_elementoCarga(elemento, units, last_distancia = None, ID_e = None, edit = False):
-    if not elemento.empty:
-        print("\nElementos actuales:\n")
-        print(elemento)
-        index_list = elemento.index.values.tolist()
-        
-        if edit: 
-            index = get_index(index_list,f"\nSeleccione el id del elemento en el cual está ubicada la carga({ID_e}): ", True, ID_e)
-        else:
-            index = get_index(index_list,f"\nSelecccione el id del elemento en el cual está ubicada la carga: ")
-            
-        print(f"\nElemento seleccionado id[{index}]: ")
-        print(elemento.loc[[index]])
-        
-        print(f"\nEl nodo i del elemento {elemento.loc[index,'Nombre']} es: {elemento.loc[index,'Nodo i']} ")
-         
-        if edit: 
-            distancia = floatInput(f"\nIngrese la distancia de la carga respecto al nodo i del elemento ({last_distancia})({units.loc[0,'Longitud']}): ")
-            #TODO: Verificacion de la distancia
-        else:    
-            distancia = floatInput(f"\nIngrese la distancia de la carga respecto al nodo i del elemento ({units.loc[0,'Longitud']}): ")
-        
-        return (index,elemento.loc[index,"Nombre"],distancia)
-    else: 
-        print("\nNo se encuentran elementos en la base de datos.\n")
-        input("Presione enter para continuar.")
-        return (False,False,False)
+def set_carga_manual(loads, units, structureType):
+    print("\nIndique el valor a añadir.\n")
+    match structureType:
+            case "Cercha":
+                loads[0] = loads[0] + floatInput(f"Ni ({loads[0]} {units.loc[0,'Fuerza']}): ")
+                loads[3] = loads[3] + floatInput(f"Nj ({loads[3]} {units.loc[0,'Fuerza']}): ")
+            case "Viga":
+                loads[1] = loads[1] + floatInput(f"Vi ({loads[1]} {units.loc[0,'Fuerza']}): ")
+                loads[2] = loads[2] + floatInput(f"Mi ({loads[2]} {units.loc[0,'Fuerza']}.{units.loc[0,'Longitud']}): ")
+                loads[4] = loads[4] + floatInput(f"Vj ({loads[4]} {units.loc[0,'Fuerza']}): ")
+                loads[5] = loads[5] + floatInput(f"Mj ({loads[5]} {units.loc[0,'Fuerza']}.{units.loc[0,'Longitud']}): ")
+            case "Portico":
+                loads[0] = loads[0] + floatInput(f"Ni ({loads[0]} {units.loc[0,'Fuerza']}): ")
+                loads[1] = loads[1] + floatInput(f"Vi ({loads[1]} {units.loc[0,'Fuerza']}): ")
+                loads[2] = loads[2] + floatInput(f"Mi ({loads[2]} {units.loc[0,'Fuerza']}.{units.loc[0,'Longitud']}): ")
+                loads[3] = loads[3] + floatInput(f"Nj ({loads[3]} {units.loc[0,'Fuerza']}): ")
+                loads[4] = loads[4] + floatInput(f"Vj ({loads[4]} {units.loc[0,'Fuerza']}): ")
+                loads[5] = loads[5] + floatInput(f"Mj ({loads[5]} {units.loc[0,'Fuerza']}.{units.loc[0,'Longitud']}): ")
+    return loads
+
+def set_carga_Puntual(loads, longitud, id_NodoI, units):
+    valor = floatInput(f"\nIngrese el valor de la carga ({units.loc[0,'Fuerza']}): ")  
     
-# Sistema de cargas distribuidas:
-def get_cargaD(units, last_carga_i = None, last_carga_f = None, edit = False):
-    if edit:
-        valor_i = intInput(f"\nINgrese el valor de la carga inicial ({last_carga_i [0]} {units.loc[0,'Fuerza']}): ")
-        valor_f = intInput(f"\nINgrese el valor de la carga finial ({last_carga_f [0]} {units.loc[0,'Fuerza']}): ")
-    else:
-        valor_i = intInput(f"\nIngrese el valor de la carga inicial ({units.loc[0,'Fuerza']}/{units.loc[0,'Longitud']}): ")
-        valor_f = intInput(f"\nIngrese el valor de la carga final ({units.loc[0,'Fuerza']}/{units.loc[0,'Longitud']}): ")
-        
-    return (valor_i, valor_f)
-
-def set_elementoCD(elemento, units, ID_e = None, last_distancia_i = None, last_distancia_f = None, edit = False):
-    if not elemento.empty:
-        print("\nElementos actuales: \n")
-        print(elemento)
-        index_list = elemento.index.values.tolist()
-        
-        if edit: 
-            index = get_index(index_list, f"\nSelecione el id del elemento en el cual esta ubicado la carga ({ID_e}): ", True, ID_e)
-        else:
-            index = get_index(index_list, f"\nSelecione el id del elemento en el cual esta ubicado la carga: ")
-        
-        print(f"\nElemento selecionado id [{index}]: ")
-        print(elemento.loc[[index]])
-        
-        print(f"\nEl nodo i del elemento {elemento.loc[index, 'Nombre']} es: {elemento.loc[index, 'Nodo i']} ")
-        
-        if edit: 
-            distancia_i = floatInput(f"\nIngrese la distancia de la carga inicial respecto al nodo i del elemento ({last_distancia_i})({units.loc[0,'Longitud']}): ")
-            distancia_f = floatInput(f"\nIngrese la distancia de la carga final respecto al nodo i del elemento ({last_distancia_f})({units.loc[0,'Longitud']}): ")
-        else:    
-            distancia_i = floatInput(f"\nIngrese la distancia de la carga inicial respecto al nodo i del elemento ({units.loc[0,'Longitud']}): ")
-            distancia_f = floatInput(f"\nIngrese la distancia de la carga final respecto al nodo i del elemento ({units.loc[0,'Longitud']}): ")
-
-        return (index,elemento.loc[index,"Nombre"], distancia_i, distancia_f)
-    else: 
-        print("\nNo se encuentran elementos en la base de datos.\n")
-        input("Presione enter para continuar.")
-        return (False,False,False,False)
-
-# Sistema de momentos:
-
-def get_momento(units, last_momento = None, edit = False):
-    if edit:
-        valor = floatInput(f"\nIngrese el valor del momento ({last_momento})({units.loc[0,'Fuerza']}): ")
-    else:
-        valor = floatInput(f"\nIngrese el valor del momento ({units.loc[0,'Fuerza']}): ")
+    print(f"\nEl nodo i del elemento es: {id_NodoI}")
+    print(f"\nLa longitud del elemento es: {longitud} {units.loc[0,'Longitud']}")
     
-    return valor
+    distancia = validate_longitud(longitud, f"\nIngrese la distancia al nodo i ({units.loc[0,'Longitud']}): ")
+    a = distancia
+    b = longitud - distancia
     
-def get_ubicacionmomento(nodo, elemento, units, ID_n = None, ID_e = None, last_distancia = None, edit = False):
-    while True:
-        print("\nUbicación del momento.")
-        print("\n\t1. En el nodo.")
-        print("\n\t2. En el elemento.")
-        match intInput("\nSeleccione la ubicación del momento: "):
-            case 1:
-                ubicacion_n = set_nodoM(nodo, ID_n, edit)
-                ubicacion_e = (False,False,False)
-                break
-            case 2:
-                ubicacion_e = set_elementoM(elemento, units, last_distancia, ID_e, edit)
-                ubicacion_n = (False,False)
-                break
-            case _:
-                print("\nOpción incorrecta")
-    return (ubicacion_n, ubicacion_e) 
-
-def set_nodoM(nodo, ID_n = None, edit = False):
-    if not nodo.empty:   
-        print("\nNodos actuales:\n")
-        print(nodo)
-        index_list = nodo.index.values.tolist()
-        
-        if edit:
-            index = get_index(index_list,f"\nSeleccione el id del nodo en el que está ubicado el momento ({ID_n}): ", edit, ID_n)
-        else:
-            index = get_index(index_list,"\nSeleccione el id del nodo en el que está ubicado el momento: ")
-
-        print(f"\nNodo selecionado id [{index}]: ") 
-        print(nodo.loc[[index]])
-        
-        return (index,nodo.loc[index,'Nombre'])
-    else: 
-        print("\nNo se encuentran nodos en la base de datos.\n")
-        input("Presione enter para continuar.")
-        return (False,False)
+    loads[1] = loads[1] + (valor * b**2 / longitud**2) * (3 - 2 * (b / longitud))   # Vi
+    loads[2] = loads[2] + (valor * a * b**2) / longitud**2                          # Mi
+    loads[4] = loads[4] + (valor * a**2 / longitud**2) * (3 - 2 * (a / longitud))   # Vj
+    loads[5] = loads[5] + ((-valor) * a**2 * b) / longitud**2                       # Mj
     
-def set_elementoM(elemento, units, last_distancia = None, ID_e = None, edit = False):
-    if not elemento.empty:
-        print("\nElementos actuales:\n")
-        print(elemento)
-        index_list = elemento.index.values.tolist()
-        
-        if edit: 
-            index = get_index(index_list,f"\nSeleccione el id del elemento en el cual está ubicado el momento({ID_e}): ", True, ID_e)
-        else:
-            index = get_index(index_list,f"\nSelecccione el id del elemento en el cual está ubicado el momento: ")
-            
-        print(f"\nElemento seleccionado id[{index}]: ")
-        print(elemento.loc[[index]])
-        
-        print(f"\nEl nodo i del elemento {elemento.loc[index,'Nombre']} es: {elemento.loc[index,'Nodo i']} ")
-         
-        if edit: 
-            distancia = floatInput(f"\nIngrese la distancia del momento respecto al nodo i del elemento ({last_distancia})({units.loc[0,'Longitud']}): ")
-        else:    
-            distancia = floatInput(f"\nIngrese la distancia del momento respecto al nodo i del elemento ({units.loc[0,'Longitud']}): ")
-        
-        return (index,elemento.loc[index,"Nombre"],distancia)
-    else: 
-        print("\nNo se encuentran elementos en la base de datos.\n")
-        input("Presione enter para continuar.")
-        return (False,False,False)
+    return loads
+
+def set_carga_Distribuida(loads, longitud , units):
+    valor = floatInput(f"\nIngrese el valor de la carga ({units.loc[0,'Fuerza']}/{units.loc[0,'Longitud']}): ")  
+    
+    loads[1] = loads[1] + (valor * longitud / 2)        # Vi
+    loads[2] = loads[2] + (valor * longitud**2 / 12)    # Mi
+    loads[4] = loads[4] + (valor * longitud / 2)        # Vj
+    loads[5] = loads[5] + ((-valor) * longitud**2 / 12) # Mj
+    
+    return loads
+
+def set_carga_Triangular(loads, longitud, units):
+    valor = floatInput(f"\nIngrese el valor de la carga ({units.loc[0,'Fuerza']}/{units.loc[0,'Longitud']}): ")  
+    
+    loads[1] = loads[1] + (7 * valor * longitud / 20)   # Vi
+    loads[2] = loads[2] + (valor * longitud**2 / 20)    # Mi
+    loads[4] = loads[4] + (3 * valor * longitud / 20)   # Vj
+    loads[5] = loads[5] + ((-valor) * longitud**2 / 30) # Mj
+    
+    return loads
+
+def set_carga_Momento(loads, longitud, id_NodoI, units):
+    valor = floatInput(f"\nIngrese el valor del momento ({units.loc[0,'Fuerza']}.{units.loc[0,'Longitud']}): ")  
+    
+    print(f"\nEl nodo i del elemento es: {id_NodoI}")
+    print(f"\nLa longitud del elemento es: {longitud} {units.loc[0,'Longitud']}")
+    
+    distancia = validate_longitud(longitud, f"\nIngrese la distancia al nodo i ({units.loc[0,'Longitud']}): ")
+    a = distancia
+    b = longitud - distancia
+    
+    loads[1] = loads[1] + (6 * (-valor) * a * b / longitud**3)                  # Vi
+    loads[2] = loads[2] + (valor * b / longitud) * ((3 * b / longitud) - 2)     # Mi
+    loads[4] = loads[4] + (6 * valor * a * b / longitud**3)                     # Vj
+    loads[5] = loads[5] + (valor * a / longitud) * (2 - (3 * a / longitud))     # Mj
+    
+    return loads
 
 # Sistema de unidades:
+
 def get_conversion_longitud(unit_in, unit_out):
     match unit_in: 
         case "m":
@@ -1007,8 +945,20 @@ def calculos(elementos, nodos, materiales, secciones, units, structureType):
     
     print("Matriz de rigidez global [✅]")
     
+    # TODO: vectores de carga global
     # Obtener vectores de carga local y Global
     
+    # TODO: Consolidar vectores de carga global
+    
+    # TODO: Algoritmo para buscar primer grado de libertad con desplazamiento conocido
+    # Tal vez con las restricciones
+    
+    # TODO: Hallar vector de desplazamientos
+    
+    # TODO: Hallar vector de Reacciones
+    
+    # TODO: Hallar y consolidar AIF
+     
     return matrices_Result 
 
 if __name__ == "__main__":

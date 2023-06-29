@@ -336,7 +336,6 @@ def cargas_settings(modelo: mod.model):
                 else:
                     print("Error: no se reconoce la opción ingresada.\n\n")
             case "0":
-                pd.set_option('display.float_format', '{:.1f}'.format)
                 return modelo
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")

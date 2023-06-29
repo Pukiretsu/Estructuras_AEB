@@ -510,6 +510,7 @@ def print_vector_desp(modelo: mod.model):
     
     print(print_df)
     systemWait()
+    os.system("cls")
     
     return modelo
 
@@ -525,7 +526,7 @@ def print_vector_reaciones(modelo: mod.model):
     
     print(print_df)
     systemWait()
-    
+    os.system("cls")
     return modelo
 
 def print_AIF(modelo: mod.model):
@@ -535,6 +536,8 @@ def print_AIF(modelo: mod.model):
     divideBar()
     
     modelo.show_results_by_elemento("AIF")
+    systemWait()
+    os.system("cls")
     
     return modelo
 

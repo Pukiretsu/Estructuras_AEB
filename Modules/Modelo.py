@@ -5,7 +5,7 @@ import os
 
 # Configuraciones para display
 
-pd.set_option('display.float_format', '{:.1f}'.format)
+pd.set_option('display.float_format', '{:.2f}'.format)
 
 # Definicion de dataframes en el contexto
 
@@ -760,10 +760,11 @@ class model():
             
             case "AIF":
                 print(f"\nVector de fuerzas internas de {elemento['Nombre']}:\n")
-                idxs = elemento["Carga Global"].index
-                unds = unidades.loc[idxs,"Carga"]
-                print_df = pd.concat([elemento["Carga Global"], unds], axis=1)
-                print_df.columns = ["Q", ""]
+                labels = calc.get_AIF_Indexes(self.tipo_estructura)
+                unds = pd.DataFrame(calc.get_AIF_units(self.unidades, self.tipo_estructura))
+                print_df = pd.concat([elemento["AIF"], unds], axis=1)
+                print_df.index = labels
+                print_df.columns = ["AIF", ""]
                 print(print_df)
         
 

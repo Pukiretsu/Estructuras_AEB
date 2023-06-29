@@ -5,7 +5,7 @@ from os import system
 
 # Configuraciones para display
 
-pd.set_option('display.float_format', '{:.1f}'.format)
+pd.set_option('display.float_format', '{:.2f}'.format)
 
 
 

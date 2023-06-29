@@ -1030,6 +1030,33 @@ def get_units_per_GDL(nodos, units, structureType):
     unidades_gdl.sort_index()
     return unidades_gdl
 
+def get_AIF_Indexes(structureType):
+    match structureType:
+        case "Cercha":
+            labels = ("Ni", "Vi", "Nj", "Vj")
+            return labels        
+        case "Viga":
+            labels = ("Vi", "Mi", "Vj", "Mj")
+            return labels        
+        case "Portico":
+            labels = ("Ni", "Vi", "Mi", "Nj", "Vj", "Mj")
+            return labels        
+
+def get_AIF_units(units, structureType):
+    Fuerza = units.loc[1,'Fuerza']
+    Longitud = units.loc[1,'Longitud']
+    Momento = f"{Fuerza}.{Longitud}"
+    match structureType:
+        case "Cercha":
+            labels = (Fuerza, Fuerza, Fuerza, Fuerza)
+            return labels        
+        case "Viga":
+            labels = (Fuerza, Momento, Fuerza, Momento)
+            return labels        
+        case "Portico":
+            labels = (Fuerza, Fuerza, Momento, Fuerza, Fuerza, Momento)
+            return labels        
+        
 # Cargas
 
 def get_cargas_locales(loads, structureType):
@@ -1174,11 +1201,12 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     
     nnodos = len(nodos.index)
     
+    unidades_resultados = get_units_per_GDL(nodos, units, structureType)
     # Consolidacion vectores carga global
     
     vector_global = consolidacion_cargasGlobal(structureType, nnodos, Results)
     Results["Vector Cargas Global"] = vector_global
-    print(vector_global)
+
     print("Vector de carga global [✅]")
     
     # Consolidacion de matrices globales.
@@ -1192,7 +1220,6 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     
     indexes = get_indexes_desplazamiento(nodos, structureType)
     
-    unidades_resultados = get_units_per_GDL(nodos, units, structureType)
     unidades_desplazamientos = unidades_resultados["Desplazamiento"]
     unidades_reacciones = unidades_resultados["Reaccion"]
     
@@ -1209,7 +1236,8 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     desplazamientos.columns = ["Desplazamiento", ""]
     
     Results["Desplazamientos"] = desplazamientos
-    print(desplazamientos)
+
+    print("Desplazamientos [✅]")
     
     # Se hallan las reacciones
     
@@ -1226,9 +1254,31 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     
     reacciones = pd.concat([reacciones, unidades_reacciones], axis=1)
     reacciones.columns = ["Reacciones", ""]
-    print(reacciones)
+
+    print("Reacciones [✅]")
     
-    # TODO: Hallar y consolidar AIF
+    # Acciones de fuerzas internas
+    
+    labels = get_AIF_Indexes(structureType)
+    AIF_units = pd.DataFrame(get_AIF_units(units, structureType))
+    
+    for elemento in Results["Elementos"].keys():
+        grados_libertad = Results["Elementos"][elemento]["k rigidez local"].index
+        
+        k_local = Results["Elementos"][elemento]["k rigidez local"].values
+        Q_local = Results["Elementos"][elemento]["Carga Global"].values
+        desplazamientos_locales = desplazamientos.loc[grados_libertad, "Desplazamiento"].values
+        
+        AIF = np.dot(k_local, desplazamientos_locales)
+        AIF = np.subtract(AIF, Q_local)
+        
+        AIF = pd.DataFrame(AIF)
+        AIF = pd.concat([AIF,AIF_units], axis=1)
+        
+        AIF.index = labels
+        AIF.columns = ["AIF", ""]
+      
+    print("Acciones de Fuerzas internas [✅]")
      
     return Results 
 

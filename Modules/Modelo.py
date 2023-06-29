@@ -734,6 +734,30 @@ class model():
     def calculate(self) -> None:
         self.resultados = calc.calculos(self.elementos,self.nodos,self.materiales,self.secciones, self.cargas, self.unidades, self.tipo_estructura)
 
+    def show_results_by_elemento(self, entry):
+        print(" \nElementos del modelo.\n")
+        print(self.elementos.loc[:,~self.elementos.columns.isin(["ID ni", "ID nj", "ID Mat", "ID Sec", "ID_cargas"])])
+        
+        indexes = self.elementos.index.values.tolist()
+        index = get_index(indexes)
+        
+        elemento = self.resultados['Elementos'][str(index)]
+        unidades = self.resultados['unidades_resultados']
+        
+        os.system("cls")
+        match entry:
+            case "k rigidez local":
+                print(f"\nMatriz de rigidez de {elemento['Nombre']}:\n")
+                print(elemento['k rigidez local'])
+            case "Carga Global":
+                print(f"\nVector de carga global de {elemento['Nombre']}:\n")
+                idxs = elemento["Carga Global"].index
+                unds = unidades.loc[idxs,"Carga"]
+                print_df = pd.concat([elemento["Carga Global"], unds], axis=1)
+                print_df.columns = ["Q", ""]
+                print(print_df)
+        
+
 if __name__ == "__main__": 
     pass
     

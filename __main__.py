@@ -12,6 +12,10 @@ pd.set_option('display.float_format', '{:.2f}'.format)
 
 # Miscelaneos
 
+def systemWait():
+    input("\nPresione enter para continuar.")
+    os.system("cls")
+
 def divideBar():
     print("-------------------------------")  
 
@@ -412,9 +416,141 @@ def model_settings(modelo: mod.model):
 
 def model_calculate(modelo: mod.model):
     os.system("cls")
-    
     modelo.calculate()
     return modelo  
+
+# Resultados del calculo
+
+def print_matriz_rigidez(modelo: mod.model):
+    os.system("cls")
+    def showTittle():
+        divideBar()     
+        print("Matriz de rigidez.")
+        divideBar()
+    
+    while True:
+        showTittle()
+        print("\n¿Cual desea ver?\n")
+        
+        print("\t1. Global consolidada.")
+        print("\t2. Elementos.")
+        
+        print("\n0. Volver.")
+        match input("\nIngrese una opción: "):
+            case "1":
+                os.system("cls")
+                showTittle()
+                print("\nMatriz Global.\n")
+                print(modelo.resultados["Matriz Global"])
+                systemWait()
+            case "2":
+                os.system("cls")
+                showTittle()
+                modelo.show_results_by_elemento("k rigidez local")
+                systemWait()
+            case "0":
+                os.system("cls")
+                break
+            case _:
+                print("Error: no se reconoce la opción ingresada.\n\n")
+                os.system("cls") 
+                
+    return modelo
+
+def print_vector_carga(modelo: mod.model):
+    os.system("cls")
+    def showTittle():
+        divideBar()     
+        print("Vectores de carga globales.")
+        divideBar()
+    
+    while True:
+        showTittle()
+        print("\n¿Cual desea ver?\n")
+        
+        print("\t1. Global consolidado.")
+        print("\t2. Elementos.")
+        
+        print("\n0. Volver.")
+        match input("\nIngrese una opción: "):
+            case "1":
+                os.system("cls")
+                showTittle()
+                print("\nCarga Global.\n")
+                
+                unidades = modelo.resultados["unidades_resultados"]["Carga"]
+                vector_print = pd.concat([modelo.resultados["Vector Cargas Global"], unidades], axis = 1)
+                vector_print.columns = ["Q", ""]
+                
+                print(vector_print)
+                systemWait()
+            case "2":
+                os.system("cls")
+                showTittle()
+                modelo.show_results_by_elemento("Carga Global")
+                systemWait()
+            case "0":
+                os.system("cls")
+                break
+            case _:
+                print("Error: no se reconoce la opción ingresada.\n\n")
+                os.system("cls") 
+                
+    return modelo
+
+def print_vector_desp(model: mod.model):
+    # TODO: Mostrar vector de desplazamientos
+    pass
+
+def print_vector_fuerzas(model: mod.model):
+    # TODO: Mostrar vector de desplazamientos
+    pass
+
+def print_vector_desp(model: mod.model):
+    # TODO: Mostrar vector de desplazamientos
+    pass
+
+def model_results(modelo: mod.model):
+    os.system("cls")
+    while True:
+        print("Resumen de calculos.")
+        divideBar()
+        
+        print("\n¿Qué desea ver?:\n")
+        
+        print("\t1. Matriz de rigidez.")
+        print("\t2. Vector de carga.")
+        print("\t3. Vector de desplazamiento.")
+        print("\t4. Vector de reacciones.")
+        print("\t5. Fuerzas internas de los elementos")
+        
+        print("\n\t6. unidades de resultados.")
+        print("\n0. volver")
+
+        match input("\nIngrese una opción: "):
+            case "1":
+                modelo = print_matriz_rigidez(modelo)
+            case "2":
+                modelo = print_vector_carga(modelo)
+            case "3":
+                pass
+            case "4":
+                pass
+            case "5":
+                pass
+            case "6":
+                pass
+            case "0":
+                os.system("cls")
+                break
+            case _:
+                print("Error: no se reconoce la opción ingresada.\n\n")
+                os.system("cls") 
+            
+                
+    return modelo
+
+
 
 # Menú del modelo
 
@@ -437,7 +573,7 @@ def model_system(modelo: mod.model):
             case "2": 
                 modelo = model_calculate(modelo)
             case "3": 
-                #TODO Punto de entrada Resultados.
+                modelo = model_results(modelo)
                 pass
             case "4": 
                 save_model(modelo)
@@ -446,7 +582,7 @@ def model_system(modelo: mod.model):
                 break
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")
-                pass 
+                os.system("cls") 
 
 def main():
     while True:

@@ -657,6 +657,10 @@ def get_conversion_fuerza(unit_in, unit_out):
                     return 0.2248/1000
                 case "kipf":
                     return 0.2248/1000000
+                case "kgf":
+                    return 1000 / 9.81
+                case "ton":
+                    return 1 / 9.81
                 case _:
                     return 1
         case "N": 
@@ -667,6 +671,10 @@ def get_conversion_fuerza(unit_in, unit_out):
                     return 0.2248
                 case "kipf":
                     return 0.2248/1000
+                case "kgf":
+                    return 1/9.81
+                case "ton":
+                    return 1000 * 9.81
                 case _:
                     return 1
         case "lbf":
@@ -677,6 +685,10 @@ def get_conversion_fuerza(unit_in, unit_out):
                     return 4.482
                 case "kipf":
                     return 1/1000
+                case "kgf":
+                    return 2.2046
+                case "ton":
+                    return 1/2204.622
                 case _:
                     return 1
         case "kipf":
@@ -687,8 +699,41 @@ def get_conversion_fuerza(unit_in, unit_out):
                     return 4448.22
                 case "lbf":
                     return 1000
+                case "kgf":
+                    return 1000 / 2.2046
+                case "ton":
+                    return 1/2.2046
                 case _:
                     return 1
+        case "ton":
+            match unit_out:
+                case "kN":
+                    return 9.81
+                case "N": 
+                    return 1/(1000 * 9.81)
+                case "lbf":
+                    return 2204.622
+                case "kipf":
+                    return 2.2046
+                case "kgf":
+                    return 1000
+                case _:
+                    return 1
+        case "kgf":
+            match unit_out:
+                case "kN":
+                    return 9.81/1000 
+                case "N": 
+                    return 9.81
+                case "lbf":
+                    return 1/2.2046
+                case "kipf":
+                    return 2.2046/1000 
+                case "ton":
+                    return 1/1000
+                case _:
+                    return 1
+                     
     
 def get_conversion_angulo(unit_in, unit_out):
     match unit_in:
@@ -738,6 +783,8 @@ def unit_Fuerza():
         print("\t2. Newton. (N)")
         print("\t3. Libra fuerza. (lbf)")
         print("\t4. KiloLibra fuerza. (kipf)")
+        print("\t5. Kilogramo fuerza. (kg)")
+        print("\t6. Tonelada fuerza. (ton)")
         print("\n0. Volver.") # Siempre es la ultima
         
         match input("\nSeleccione el tipo de Unidad: "):
@@ -749,6 +796,10 @@ def unit_Fuerza():
                     return "lbf"
                 case "4": 
                     return "kipf"
+                case "5": 
+                    return "kg"
+                case "6": 
+                    return "ton"
                 case "0":
                     return False
                 case _:
@@ -990,20 +1041,20 @@ def get_indexes_desplazamiento(nodos, structureType):
 def get_units_per_GDL(nodos, units, structureType):
     
     def set_units_GDL(unidades_gdl, idx, conf):
-        unidades = {"Desplazamiento": [], "Reaccion": []} 
+        unidades = {"Desplazamiento": [], "Carga": []} 
         if conf == 1:
             unidades["Desplazamiento"].append(units.loc[1,"Longitud"])
-            unidades["Reaccion"].append(units.loc[1,"Fuerza"])
+            unidades["Carga"].append(units.loc[1,"Fuerza"])
         else:
             unidades["Desplazamiento"].append(units.loc[1,"Angulo"])
-            unidades["Reaccion"].append(f"{units.loc[1,'Fuerza']}.{units.loc[1,'Longitud']}")
+            unidades["Carga"].append(f"{units.loc[1,'Fuerza']}.{units.loc[1,'Longitud']}")
             
         un_df = pd.DataFrame(unidades,index=[idx])
         unidades_gdl = pd.concat([unidades_gdl,un_df])
         return unidades_gdl
     
     unidades_gdl = pd.DataFrame({"Desplazamiento": pd.Series(dtype="str"),
-                                 "Reaccion" : pd.Series(dtype="str")})
+                                 "Carga" : pd.Series(dtype="str")})
     
     match structureType:
         case "Cercha":
@@ -1070,13 +1121,13 @@ def get_cargas_locales(loads, structureType):
     match structureType:
         case "Cercha":
             local_loads = (N_i, V_i, N_j, V_j)
-            return pd.Series(local_loads)        
+            return pd.DataFrame(local_loads)        
         case "Viga":
             local_loads = (V_i, M_i, V_j, M_j)
-            return pd.Series(local_loads)        
+            return pd.DataFrame(local_loads)        
         case "Portico":
             local_loads = (N_i, V_i, M_i, N_j, V_j, M_j)
-            return pd.Series(local_loads)        
+            return pd.DataFrame(local_loads)        
 
 def get_cargas_global(structureType, cargas_loc, TLG, GDL):
     match structureType:
@@ -1086,8 +1137,10 @@ def get_cargas_global(structureType, cargas_loc, TLG, GDL):
             cargas_globales = cargas_loc
         case "Portico":
             cargas_globales = TLG.dot(cargas_loc)
-
+            
+    cargas_globales = pd.DataFrame(cargas_globales)
     cargas_globales.index = GDL
+    
     
     return cargas_globales
     
@@ -1103,14 +1156,13 @@ def consolidacion_cargasGlobal(structureType, Nnodos, results ):
             index = Nnodos * 3
             
     vector_Global = np.zeros((index), dtype="float64")
-    vector_Global = pd.DataFrame(vector_Global, columns=['Q'])
-    
+    vector_Global = pd.DataFrame(vector_Global)
     vector_Global.index += 1
 
     for elemento in results["Elementos"].keys():
-        dataf_q = results["Elementos"][elemento]["Carga local"]
+        dataf_q = results["Elementos"][elemento]["Carga Global"]
         for index in dataf_q.index:
-            vector_Global.loc[index, 'Q'] = vector_Global.loc[index, 'Q'] + dataf_q.loc[index]
+            vector_Global.loc[index] = vector_Global.loc[index] + dataf_q.loc[index]
     
     return vector_Global
             
@@ -1141,7 +1193,7 @@ def consolidación_RigidezGLobal(structureType, Nnodos, results):
       
 def calculos(elementos, nodos, materiales, secciones, cargas, units, structureType):
     print("Calculando estructura...")
-    Results = {"Elementos": dict(), "Matriz Global": [], "Vector Cargas Global": [], "Desplazamientos": [], "Reacciones":[]}
+    Results = {"Elementos": dict(), "Matriz Global": [], "Vector Cargas Global": [], "Desplazamientos": [], "Reacciones":[], "unidades_resultados": []}
     
     fac_longitud = get_conversion_longitud(units.loc[0, "Longitud"], "m")
     fac_Fuerza = get_conversion_fuerza(units.loc[0, "Fuerza"], "kN")
@@ -1186,7 +1238,7 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
         V_j = cargas.loc[ID_loads,"V_j"] * fac_Fuerza
         M_j = cargas.loc[ID_loads,"M_j"] * fac_Fuerza / fac_longitud
         
-        loads = (N_i, V_i, M_i, N_j, V_j, M_j)
+        loads = [N_i, V_i, M_i, N_j, V_j, M_j]
         cargas_locales = get_cargas_locales(loads,structureType)
                 
         cargas_Globales = get_cargas_global(structureType, cargas_locales, TLG, grados_libertad)
@@ -1202,6 +1254,8 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     nnodos = len(nodos.index)
     
     unidades_resultados = get_units_per_GDL(nodos, units, structureType)
+    Results["unidades_resultados"] = unidades_resultados
+    
     # Consolidacion vectores carga global
     
     vector_global = consolidacion_cargasGlobal(structureType, nnodos, Results)
@@ -1220,9 +1274,6 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     
     indexes = get_indexes_desplazamiento(nodos, structureType)
     
-    unidades_desplazamientos = unidades_resultados["Desplazamiento"]
-    unidades_reacciones = unidades_resultados["Reaccion"]
-    
     # Se hallan los desplazamientos
     
     K11 = np.linalg.inv(Results["Matriz Global"].loc[indexes[0],indexes[0]].values)
@@ -1232,18 +1283,15 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     desp_conocidos = pd.DataFrame(np.zeros(len(indexes[1])), index=indexes[1])
     desplazamientos = pd.concat([desp_desconocidos, desp_conocidos])
     
-    desplazamientos = pd.concat([desplazamientos,unidades_desplazamientos],axis=1)
-    desplazamientos.columns = ["Desplazamiento", ""]
-    
     Results["Desplazamientos"] = desplazamientos
 
     print("Desplazamientos [✅]")
     
     # Se hallan las reacciones
     
-    K12 = Results["Matriz Global"].loc[indexes[1],indexes[0]].values
-    desp_desconocidos = desp_desconocidos.values
-    Q12 = Results["Vector Cargas Global"].loc[indexes[1]].values
+    K12 = Results["Matriz Global"].loc[indexes[1],indexes[0]].to_numpy()
+    desp_desconocidos = desp_desconocidos.to_numpy()
+    Q12 = Results["Vector Cargas Global"].loc[indexes[1]].to_numpy()
     
     calc_reacciones = np.dot(K12,desp_desconocidos)
     calc_reacciones = np.subtract(calc_reacciones, Q12)
@@ -1251,36 +1299,38 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     
     empty_Reacciones = pd.DataFrame(np.zeros(len(indexes[0])), index=indexes[0])
     reacciones = pd.concat([empty_Reacciones, calc_reacciones])
-    
-    reacciones = pd.concat([reacciones, unidades_reacciones], axis=1)
-    reacciones.columns = ["Reacciones", ""]
 
+    Results["Reacciones"] = reacciones
+    
+    
     print("Reacciones [✅]")
     
     # Acciones de fuerzas internas
-    
+    """ 
     labels = get_AIF_Indexes(structureType)
-    AIF_units = pd.DataFrame(get_AIF_units(units, structureType))
+    AIF_units = pd.DataFrame(get_AIF_units(units, structureType)) """
     
     for elemento in Results["Elementos"].keys():
         grados_libertad = Results["Elementos"][elemento]["k rigidez local"].index
         
-        k_local = Results["Elementos"][elemento]["k rigidez local"].values
-        Q_local = Results["Elementos"][elemento]["Carga Global"].values
-        desplazamientos_locales = desplazamientos.loc[grados_libertad, "Desplazamiento"].values
-        
+        k_local = Results["Elementos"][elemento]["k rigidez local"].to_numpy()
+        Q_local = Results["Elementos"][elemento]["Carga Global"].to_numpy()
+        desplazamientos_locales = Results["Desplazamientos"].loc[grados_libertad].to_numpy()
         AIF = np.dot(k_local, desplazamientos_locales)
         AIF = np.subtract(AIF, Q_local)
-        
         AIF = pd.DataFrame(AIF)
-        AIF = pd.concat([AIF,AIF_units], axis=1)
         
-        AIF.index = labels
-        AIF.columns = ["AIF", ""]
+        Results["Elementos"][elemento]["AIF"] = AIF
       
     print("Acciones de Fuerzas internas [✅]")
-     
+    
+    print("-------------------------------")  
+    
     return Results 
+
+def print_results():
+    
+    pass
 
 if __name__ == "__main__":
     pass

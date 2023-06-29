@@ -1,0 +1,152 @@
+{
+      "Model-meta": {
+            "STRUCTURETYPE": "Portico",
+            "Date_Saved": "29-06-23",
+            "Model_Name": "Portico de prueba"
+      },
+      "UNIDADES": [
+            {
+                  "Longitud": "m",
+                  "Fuerza": "kN",
+                  "Esfuerzo": "Gpa",
+                  "Angulo": "\u00b0"
+            },
+            {
+                  "Longitud": "m",
+                  "Fuerza": "kN",
+                  "Esfuerzo": "Kpa",
+                  "Angulo": "rad"
+            }
+      ],
+      "NODOS": [
+            {
+                  "Nombre": "1",
+                  "Coordenada x": 0.0,
+                  "Coordenada y": 0.0,
+                  "U": 7,
+                  "V": 8,
+                  "Phi": 9,
+                  "Soporte": true,
+                  "Restriccion": "XYM"
+            },
+            {
+                  "Nombre": "2",
+                  "Coordenada x": 10.0,
+                  "Coordenada y": 0.0,
+                  "U": 10,
+                  "V": 11,
+                  "Phi": 12,
+                  "Soporte": true,
+                  "Restriccion": "XYM"
+            },
+            {
+                  "Nombre": "3",
+                  "Coordenada x": 0.0,
+                  "Coordenada y": 5.0,
+                  "U": 1,
+                  "V": 2,
+                  "Phi": 3,
+                  "Soporte": false,
+                  "Restriccion": ""
+            },
+            {
+                  "Nombre": "4",
+                  "Coordenada x": 10.0,
+                  "Coordenada y": 5.0,
+                  "U": 4,
+                  "V": 5,
+                  "Phi": 6,
+                  "Soporte": false,
+                  "Restriccion": ""
+            }
+      ],
+      "ELEMENTOS": [
+            {
+                  "Nombre": "1",
+                  "ID ni": 0,
+                  "Nodo i": "1",
+                  "ID nj": 2,
+                  "Nodo j": "3",
+                  "Longitud": 5.0,
+                  "Angulo": 90.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "Seccion 1",
+                  "ID_cargas": 0
+            },
+            {
+                  "Nombre": "2",
+                  "ID ni": 2,
+                  "Nodo i": "3",
+                  "ID nj": 3,
+                  "Nodo j": "4",
+                  "Longitud": 10.0,
+                  "Angulo": 0.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "Seccion 1",
+                  "ID_cargas": 1
+            },
+            {
+                  "Nombre": "3",
+                  "ID ni": 1,
+                  "Nodo i": "2",
+                  "ID nj": 3,
+                  "Nodo j": "4",
+                  "Longitud": 5.0,
+                  "Angulo": 90.0,
+                  "ID Mat": 0,
+                  "Material": "Acero",
+                  "ID Sec": 0,
+                  "Seccion": "Seccion 1",
+                  "ID_cargas": 2
+            }
+      ],
+      "MATERIALES": [
+            {
+                  "Nombre": "Acero",
+                  "Modulo Young": 200.0
+            }
+      ],
+      "SECCIONES": [
+            {
+                  "Nombre": "Seccion 1",
+                  "Area": 0.005075999999999997,
+                  "Inercia": 1.6887851999999983e-05
+            }
+      ],
+      "CARGAS": [
+            {
+                  "ID_Elem": 0,
+                  "Elemento": "1",
+                  "N_i": 0.0,
+                  "V_i": -0.864,
+                  "M_i": -0.35999999999999993,
+                  "N_j": 0.0,
+                  "V_j": 0.864,
+                  "M_j": -0.96
+            },
+            {
+                  "ID_Elem": 1,
+                  "Elemento": "2",
+                  "N_i": 0.0,
+                  "V_i": -60.0,
+                  "M_i": -100.0,
+                  "N_j": 0.0,
+                  "V_j": -60.0,
+                  "M_j": 100.0
+            },
+            {
+                  "ID_Elem": 2,
+                  "Elemento": "3",
+                  "N_i": 0.0,
+                  "V_i": 0.0,
+                  "M_i": 0.0,
+                  "N_j": 0.0,
+                  "V_j": 15.0,
+                  "M_j": 0.0
+            }
+      ]
+}

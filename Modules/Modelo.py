@@ -733,36 +733,36 @@ class model():
 
     def show_results_by_elemento(self, entry):
         print(" \nElementos del modelo.\n")
-        print(self.elementos.loc[:,~self.elementos.columns.isin(["ID ni", "ID nj", "ID Mat", "ID Sec", "ID_cargas"])])
+        #print(self.elementos.loc[:,~self.elementos.columns.isin(["ID ni", "ID nj", "ID Mat", "ID Sec", "ID_cargas"])])
         
         indexes = self.elementos.index.values.tolist()
-        index = get_index(indexes)
-        
-        elemento = self.resultados['Elementos'][str(index)]
-        unidades = self.resultados['unidades_resultados']
-        
-        os.system("cls")
-        match entry:
-            case "k rigidez local":
-                print(f"\nMatriz de rigidez de {elemento['Nombre']}:\n")
-                print(elemento['k rigidez local'])
+        #index = get_index(indexes)
+        for indx in indexes:
+            elemento = self.resultados['Elementos'][str(indx)]
+            unidades = self.resultados['unidades_resultados']
             
-            case "Carga Global":
-                print(f"\nVector de carga global de {elemento['Nombre']}:\n")
-                idxs = elemento["Carga Global"].index
-                unds = unidades.loc[idxs,"Carga"]
-                print_df = pd.concat([elemento["Carga Global"], unds], axis=1)
-                print_df.columns = ["Q", ""]
-                print(print_df)
-            
-            case "AIF":
-                print(f"\nVector de fuerzas internas de {elemento['Nombre']}:\n")
-                labels = calc.get_AIF_Indexes(self.tipo_estructura)
-                unds = pd.DataFrame(calc.get_AIF_units(self.unidades, self.tipo_estructura))
-                print_df = pd.concat([elemento["AIF"], unds], axis=1)
-                print_df.index = labels
-                print_df.columns = ["AIF", ""]
-                print(print_df)
+            #os.system("cls")
+            match entry:
+                case "k rigidez local":
+                    print(f"\nMatriz de rigidez de {elemento['Nombre']}:\n")
+                    print(elemento['k rigidez local'])
+                
+                case "Carga Global":
+                    print(f"\nVector de carga global de {elemento['Nombre']}:\n")
+                    idxs = elemento["Carga Global"].index
+                    unds = unidades.loc[idxs,"Carga"]
+                    print_df = pd.concat([elemento["Carga Global"], unds], axis=1)
+                    print_df.columns = ["Q", ""]
+                    print(print_df)
+                
+                case "AIF":
+                    print(f"\nVector de fuerzas internas de {elemento['Nombre']}:\n")
+                    labels = calc.get_AIF_Indexes(self.tipo_estructura)
+                    unds = pd.DataFrame(calc.get_AIF_units(self.unidades, self.tipo_estructura))
+                    print_df = pd.concat([elemento["AIF"], unds], axis=1)
+                    print_df.index = labels
+                    print_df.columns = ["AIF", ""]
+                    print(print_df)
         
     def set_result_units(self):
         units = {"Longitud": [], "Fuerza": [], "Esfuerzo": [], "Angulo": [], }

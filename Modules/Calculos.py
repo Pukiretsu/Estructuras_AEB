@@ -1260,7 +1260,7 @@ def get_AIF_Momento_factors(factor, structureType):
 def get_AIF_Indexes(structureType):
     match structureType:
         case "Cercha":
-            labels = ("Ni", "Vi", "Nj", "Vj")
+            labels = ("Ni", "Nj")
             return labels        
         case "Viga":
             labels = ("Vi", "Mi", "Vj", "Mj")
@@ -1275,7 +1275,7 @@ def get_AIF_units(units, structureType):
     Momento = f"{Fuerza}.{Longitud}"
     match structureType:
         case "Cercha":
-            labels = (Fuerza, Fuerza, Fuerza, Fuerza)
+            labels = (Fuerza, Fuerza)
             return labels        
         case "Viga":
             labels = (Fuerza, Momento, Fuerza, Momento)
@@ -1486,13 +1486,16 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     for elemento in Results["Elementos"].keys():
         grados_libertad = Results["Elementos"][elemento]["k rigidez local"].index
         
-        k_local = Results["Elementos"][elemento]["k rigidez local"].to_numpy()
+        k_local = Results["Elementos"][elemento]["rigidez"].to_numpy()
+        TGL = Results["Elementos"][elemento]["TGL"].to_numpy()
         Q_local = Results["Elementos"][elemento]["Carga Global"].to_numpy()
-        desplazamientos_locales = Results["Desplazamientos"].loc[grados_libertad].to_numpy()
-        AIF = np.dot(k_local, desplazamientos_locales)
-        AIF = np.subtract(AIF, Q_local)
-        AIF = pd.DataFrame(AIF)
         
+        desplazamientos_locales = Results["Desplazamientos"].loc[grados_libertad].to_numpy()
+        AIF = np.dot(k_local, TGL)
+        AIF = np.dot(AIF, desplazamientos_locales)
+        if structureType != "Cercha":
+            AIF = np.subtract(AIF, Q_local)
+        AIF = pd.DataFrame(AIF)
         Results["Elementos"][elemento]["AIF"] = AIF
       
     print("Acciones de Fuerzas internas [✅]")

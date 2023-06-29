@@ -846,13 +846,14 @@ def unit_Grados():
                 case _:
                     print("Error: No se reconoce la opcion ingresada.\n\n")
 
-def get_units():
+def get_units(secondary = False):
     print("\n¿Qué unidad desea cambiar?: ")
     while True:
         print("\n\tUnidades.\n")
         print("\t1. Longitud.")
         print("\t2. Fuerza.")
-        print("\t3. Esfuerzo.")
+        if not secondary:
+            print("\t3. Esfuerzo.")
         print("\t4. Angulo.")
         print("\n0. Volver.")
         
@@ -862,7 +863,10 @@ def get_units():
                 case "2": 
                     return ("F",unit_Fuerza())
                 case "3":
-                    return ("E",unit_Esfuerzo())
+                    if not secondary:
+                        return ("E",unit_Esfuerzo())
+                    else:
+                        print("Error: No se reconoce la opcion ingresada.\n\n")
                 case "4":
                     return ("G",unit_Grados())
                 case "0":
@@ -1033,6 +1037,162 @@ def get_indexes_desplazamiento(nodos, structureType):
     desconocidos = [*range(1,conocidos[0])]
     return (desconocidos,conocidos)
 
+def get_Desplazamiento_Factor_per_GDL(nodos, factor, structureType):
+    def set_units_GDL(unidades_gdl, idx, conf):
+        unidades = {"Factor": []} 
+        if conf == 1:
+            unidades["Factor"].append(factor)
+        else:
+            unidades["Factor"].append(1)
+            
+        un_df = pd.DataFrame(unidades,index=[idx])
+        unidades_gdl = pd.concat([unidades_gdl,un_df])
+        return unidades_gdl
+    
+    unidades_gdl = pd.DataFrame({"Factor": pd.Series(dtype="float")})
+    
+    match structureType:
+        case "Cercha":
+            for index in nodos.index:
+                idx = nodos.loc[index,"U"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+        case "Viga":
+            for index in nodos.index:
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"Phi"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,2)
+        case "Portico":
+            for index in nodos.index:
+                idx = nodos.loc[index,"U"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"Phi"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,2)
+
+    unidades_gdl.sort_index()
+    return unidades_gdl
+
+def get_giro_Factor_per_GDL(nodos, factor, structureType):
+    def set_units_GDL(unidades_gdl, idx, conf):
+        unidades = {"Factor": []} 
+        if conf == 2:
+            unidades["Factor"].append(factor)
+        else:
+            unidades["Factor"].append(1)
+            
+        un_df = pd.DataFrame(unidades,index=[idx])
+        unidades_gdl = pd.concat([unidades_gdl,un_df])
+        return unidades_gdl
+    
+    unidades_gdl = pd.DataFrame({"Factor": pd.Series(dtype="float")})
+    
+    match structureType:
+        case "Cercha":
+            for index in nodos.index:
+                idx = nodos.loc[index,"U"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+        case "Viga":
+            for index in nodos.index:
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"Phi"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,2)
+        case "Portico":
+            for index in nodos.index:
+                idx = nodos.loc[index,"U"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"Phi"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,2)
+
+    unidades_gdl.sort_index()
+    return unidades_gdl
+
+def get_Carga_Factor_per_GDL(nodos, factor, structureType):
+    def set_units_GDL(unidades_gdl, idx, conf):
+        unidades = {"Factor": []} 
+        if conf == 2:
+            unidades["Factor"].append(factor)
+        else:
+            unidades["Factor"].append(factor)
+            
+        un_df = pd.DataFrame(unidades,index=[idx])
+        unidades_gdl = pd.concat([unidades_gdl,un_df])
+        return unidades_gdl
+    
+    unidades_gdl = pd.DataFrame({"Factor": pd.Series(dtype="float")})
+    
+    match structureType:
+        case "Cercha":
+            for index in nodos.index:
+                idx = nodos.loc[index,"U"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+        case "Viga":
+            for index in nodos.index:
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"Phi"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,2)
+        case "Portico":
+            for index in nodos.index:
+                idx = nodos.loc[index,"U"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"Phi"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,2)
+
+    unidades_gdl.sort_index()
+    return unidades_gdl
+
+def get_Momento_Factor_per_GDL(nodos, factor, structureType):
+    def set_units_GDL(unidades_gdl, idx, conf):
+        unidades = {"Factor": []} 
+        if conf == 2:
+            unidades["Factor"].append(factor)
+        else:
+            unidades["Factor"].append(1)
+            
+        un_df = pd.DataFrame(unidades,index=[idx])
+        unidades_gdl = pd.concat([unidades_gdl,un_df])
+        return unidades_gdl
+    
+    unidades_gdl = pd.DataFrame({"Factor": pd.Series(dtype="float")})
+    
+    match structureType:
+        case "Cercha":
+            for index in nodos.index:
+                idx = nodos.loc[index,"U"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+        case "Viga":
+            for index in nodos.index:
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"Phi"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,2)
+        case "Portico":
+            for index in nodos.index:
+                idx = nodos.loc[index,"U"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"Phi"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,2)
+
+    unidades_gdl.sort_index()
+    return unidades_gdl
+
 def get_units_per_GDL(nodos, units, structureType):
     
     def set_units_GDL(unidades_gdl, idx, conf):
@@ -1075,6 +1235,31 @@ def get_units_per_GDL(nodos, units, structureType):
 
     unidades_gdl.sort_index()
     return unidades_gdl
+
+def get_AIF_Carga_factors(factor, structureType):
+    match structureType:
+        case "Cercha":
+            factors = (factor, factor, factor, factor)
+            return pd.DataFrame(factors)        
+        case "Viga":
+            factors = (factor, factor, factor, factor)
+            return pd.DataFrame(factors)      
+        case "Portico":
+            factors = (factor, factor, factor, factor, factor, factor)
+            return pd.DataFrame(factors)   
+
+def get_AIF_Momento_factors(factor, structureType):
+    match structureType:
+        case "Cercha":
+            factors = (1, 1, 1, 1)
+            return pd.DataFrame(factors)        
+        case "Viga":
+            factors = (1, factor, 1, factor)
+            return pd.DataFrame(factors)      
+        case "Portico":
+            factors = (1, 1, factor, 1, 1, factor)
+            return pd.DataFrame(factors)    
+
 
 def get_AIF_Indexes(structureType):
     match structureType:
@@ -1301,9 +1486,6 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     print("Reacciones [✅]")
     
     # Acciones de fuerzas internas
-    """ 
-    labels = get_AIF_Indexes(structureType)
-    AIF_units = pd.DataFrame(get_AIF_units(units, structureType)) """
     
     for elemento in Results["Elementos"].keys():
         grados_libertad = Results["Elementos"][elemento]["k rigidez local"].index

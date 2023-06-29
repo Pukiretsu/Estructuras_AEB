@@ -10,6 +10,12 @@
                   "Fuerza": "kN",
                   "Esfuerzo": "Gpa",
                   "Angulo": "\u00b0"
+            },
+            {
+                  "Longitud": "m",
+                  "Fuerza": "kN",
+                  "Esfuerzo": "Kpa",
+                  "Angulo": "rad"
             }
       ],
       "NODOS": [
@@ -136,11 +142,11 @@
                   "ID_Elem": 2,
                   "Elemento": "Elemento 3",
                   "N_i": 0.0,
-                  "V_i": 4.266666666666667,
-                  "M_i": -4.8,
+                  "V_i": -4.8,
+                  "M_i": -4.266666666666667,
                   "N_j": 0.0,
                   "V_j": -11.2,
-                  "M_j": -6.4
+                  "M_j": 6.4
             }
       ]
 }

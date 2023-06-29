@@ -9,10 +9,10 @@ pd.set_option('display.float_format', '{:.1f}'.format)
 
 # Definicion de dataframes en el contexto
 
-UNIDADES = pd.DataFrame({"Longitud": ["m"],
-                         "Fuerza": ["kN"],
-                         "Esfuerzo": ["Gpa"],
-                         "Angulo": ["°"]}) # Se añaden las unidades del SI por defecto
+UNIDADES = pd.DataFrame({"Longitud": ["m", "m"],
+                         "Fuerza": ["kN", "kN"],
+                         "Esfuerzo": ["Gpa", "Kpa"],
+                         "Angulo": ["°", "rad"]}) # Se añaden las unidades del SI por defecto
 
 NODOS = pd.DataFrame({"Nombre": pd.Series(dtype="str"),
                      "Coordenada x": pd.Series(dtype="float"),

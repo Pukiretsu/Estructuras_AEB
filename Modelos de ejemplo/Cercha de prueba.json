@@ -10,6 +10,12 @@
                   "Fuerza": "kN",
                   "Esfuerzo": "Gpa",
                   "Angulo": "\u00b0"
+            },
+            {
+                  "Longitud": "m",
+                  "Fuerza": "kN",
+                  "Esfuerzo": "Kpa",
+                  "Angulo": "rad"
             }
       ],
       "NODOS": [

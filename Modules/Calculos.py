@@ -499,10 +499,10 @@ def set_carga_Triangular(loads, longitud, nodos, id_NodoI, id_NodoJ, units):
         loads[4] = loads[4] + (3 * valor * longitud / 20)   # Vj
         loads[5] = loads[5] + ((-valor) * longitud**2 / 30) # Mj
     else:
-        loads[1] = loads[1] + ((-valor) * longitud**2 / 30) # Mi
-        loads[2] = loads[2] + (3 * valor * longitud / 20)   # Vi
+        loads[1] = loads[1] + (3 * valor * longitud / 20)   # Vi
+        loads[2] = loads[2] + (valor * longitud**2 / 30) # Mi
         loads[4] = loads[4] + (7 * valor * longitud / 20)   # Vi
-        loads[5] = loads[5] + (valor * longitud**2 / 20)    # Mj
+        loads[5] = loads[5] + ((-valor) * longitud**2 / 20)    # Mj
     
     return loads
 
@@ -956,6 +956,80 @@ def get_g_libertad_list(nodos, ID_I, ID_J, structureType):
 
             return (u_i,v_i,phi_i,u_j,v_j,phi_j)
 
+def get_indexes_desplazamiento(nodos, structureType):
+    conocidos = list()
+    for index in nodos.index:
+        if nodos.loc[index,"Soporte"]:
+            restricciones = nodos.loc[index,"Restriccion"]
+            match restricciones:
+                case "Y":
+                    idx = nodos.loc[index,"V"]
+                    conocidos.append(idx)
+                case "X":
+                    idx = nodos.loc[index,"U"]
+                    conocidos.append(idx)
+                case "XY":
+                    if structureType != "Viga":
+                        idx = nodos.loc[index,"U"]
+                        conocidos.append(idx)
+                    idx = nodos.loc[index,"V"]
+                    conocidos.append(idx)
+                case "XYM":
+                    if structureType != "Viga":
+                        idx = nodos.loc[index,"U"]
+                        conocidos.append(idx)
+                    idx = nodos.loc[index,"V"]
+                    conocidos.append(idx)
+                    idx = nodos.loc[index,"Phi"]
+                    conocidos.append(idx)
+
+    conocidos.sort()
+    desconocidos = [*range(1,conocidos[0])]
+    return (desconocidos,conocidos)
+
+def get_units_per_GDL(nodos, units, structureType):
+    
+    def set_units_GDL(unidades_gdl, idx, conf):
+        unidades = {"Desplazamiento": [], "Reaccion": []} 
+        if conf == 1:
+            unidades["Desplazamiento"].append(units.loc[1,"Longitud"])
+            unidades["Reaccion"].append(units.loc[1,"Fuerza"])
+        else:
+            unidades["Desplazamiento"].append(units.loc[1,"Angulo"])
+            unidades["Reaccion"].append(f"{units.loc[1,'Fuerza']}.{units.loc[1,'Longitud']}")
+            
+        un_df = pd.DataFrame(unidades,index=[idx])
+        unidades_gdl = pd.concat([unidades_gdl,un_df])
+        return unidades_gdl
+    
+    unidades_gdl = pd.DataFrame({"Desplazamiento": pd.Series(dtype="str"),
+                                 "Reaccion" : pd.Series(dtype="str")})
+    
+    match structureType:
+        case "Cercha":
+            for index in nodos.index:
+                idx = nodos.loc[index,"U"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+        case "Viga":
+            for index in nodos.index:
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"Phi"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,2)
+        case "Portico":
+            for index in nodos.index:
+                idx = nodos.loc[index,"U"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"V"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,1)
+                idx = nodos.loc[index,"Phi"]
+                unidades_gdl = set_units_GDL(unidades_gdl,idx,2)
+
+    unidades_gdl.sort_index()
+    return unidades_gdl
+
 # Cargas
 
 def get_cargas_locales(loads, structureType):
@@ -1040,7 +1114,7 @@ def consolidación_RigidezGLobal(structureType, Nnodos, results):
       
 def calculos(elementos, nodos, materiales, secciones, cargas, units, structureType):
     print("Calculando estructura...")
-    Results = {"Elementos": dict(), "Matriz Global": [], "Vector Cargas Global": []}
+    Results = {"Elementos": dict(), "Matriz Global": [], "Vector Cargas Global": [], "Desplazamientos": [], "Reacciones":[]}
     
     fac_longitud = get_conversion_longitud(units.loc[0, "Longitud"], "m")
     fac_Fuerza = get_conversion_fuerza(units.loc[0, "Fuerza"], "kN")
@@ -1114,13 +1188,45 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     
     print("Matriz de rigidez global [✅]")
     
+    # Encontrar indices para matriz K11 y K12 (desplazamientos conocidos y desconocidos)
     
-    # TODO: Algoritmo para buscar primer grado de libertad con desplazamiento conocido
-    # Tal vez con las restricciones
+    indexes = get_indexes_desplazamiento(nodos, structureType)
     
-    # TODO: Hallar vector de desplazamientos
+    unidades_resultados = get_units_per_GDL(nodos, units, structureType)
+    unidades_desplazamientos = unidades_resultados["Desplazamiento"]
+    unidades_reacciones = unidades_resultados["Reaccion"]
     
-    # TODO: Hallar vector de Reacciones
+    # Se hallan los desplazamientos
+    
+    K11 = np.linalg.inv(Results["Matriz Global"].loc[indexes[0],indexes[0]].values)
+    Q11 = Results["Vector Cargas Global"].loc[indexes[0]].values
+    
+    desp_desconocidos = pd.DataFrame(np.dot(K11,Q11), index=indexes[0])
+    desp_conocidos = pd.DataFrame(np.zeros(len(indexes[1])), index=indexes[1])
+    desplazamientos = pd.concat([desp_desconocidos, desp_conocidos])
+    
+    desplazamientos = pd.concat([desplazamientos,unidades_desplazamientos],axis=1)
+    desplazamientos.columns = ["Desplazamiento", ""]
+    
+    Results["Desplazamientos"] = desplazamientos
+    print(desplazamientos)
+    
+    # Se hallan las reacciones
+    
+    K12 = Results["Matriz Global"].loc[indexes[1],indexes[0]].values
+    desp_desconocidos = desp_desconocidos.values
+    Q12 = Results["Vector Cargas Global"].loc[indexes[1]].values
+    
+    calc_reacciones = np.dot(K12,desp_desconocidos)
+    calc_reacciones = np.subtract(calc_reacciones, Q12)
+    calc_reacciones = pd.DataFrame(calc_reacciones,index=indexes[1])
+    
+    empty_Reacciones = pd.DataFrame(np.zeros(len(indexes[0])), index=indexes[0])
+    reacciones = pd.concat([empty_Reacciones, calc_reacciones])
+    
+    reacciones = pd.concat([reacciones, unidades_reacciones], axis=1)
+    reacciones.columns = ["Reacciones", ""]
+    print(reacciones)
     
     # TODO: Hallar y consolidar AIF
      

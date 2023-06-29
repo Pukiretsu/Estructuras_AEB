@@ -613,8 +613,10 @@ def model_system(modelo: mod.model):
         print("\n¿Qué desea hacer?:\n")
         
         print("\t1. Configurar estructura.")
-        print("\t2. Computar estructura.")
-        print("\t3. Resultados.")
+        if not (modelo.nodos.empty and modelo.secciones.empty and modelo.elementos.empty and modelo.materiales.empty):
+            print("\t2. Computar estructura.")
+        if modelo.resultados:
+            print("\t3. Resultados.")
         print("\t4. Guardar estructura.")
         print("\n0. Volver.")
         
@@ -622,10 +624,15 @@ def model_system(modelo: mod.model):
             case "1":
                 modelo = model_settings(modelo)
             case "2": 
-                modelo = model_calculate(modelo)
+                if not (modelo.nodos.empty and modelo.secciones.empty and modelo.elementos.empty and modelo.materiales.empty):
+                    modelo = model_calculate(modelo)
+                else:
+                    print("Error: no se reconoce la opción ingresada.\n\n")
             case "3": 
-                modelo = model_results(modelo)
-                pass
+                if modelo.resultados:
+                    modelo = model_results(modelo)
+                else:
+                    print("Error: no se reconoce la opción ingresada.\n\n")
             case "4": 
                 save_model(modelo)
             case "0":

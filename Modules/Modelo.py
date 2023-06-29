@@ -134,24 +134,20 @@ class model():
         # Distancia de elementos
         for idx in self.elementos.index:
             self.elementos.loc[idx,"Longitud"] = self.elementos.loc[idx, "Longitud"] * (factor_conversion)
-        # Distancia carga puntual
-        for idx in self.cargas_Puntuales.index:
-            self.cargas_Puntuales.loc[idx,"Distancia"] = self.cargas_Puntuales.loc[idx,"Distancia"] * (factor_conversion)
-        # Distancia Cargas distribuidas
-        for idx in self.cargas_Distribuidas.index:
-            self.cargas_Distribuidas.loc[idx,"Distancia i"] = self.cargas_Distribuidas.loc[idx,"Distancia i"] * (factor_conversion)
-            self.cargas_Distribuidas.loc[idx,"Distancia f"] = self.cargas_Distribuidas.loc[idx,"Distancia f"] * (factor_conversion)
-
-    def convert_Fuerza(self, factor_conversion) -> None:
-        # cargas puntuales
-        for idx in self.cargas_Puntuales.index:
-            self.cargas_Puntuales.loc[idx,"Valor"] = self.cargas_Puntuales.loc[idx,"Valor"] * (factor_conversion)
+        # Momento en cargas
+        for idx in self.cargas.index:
+            self.cargas.loc[idx,"M_i"] = self.cargas.loc[idx,"M_i"] * (factor_conversion) 
         
-        # Cargas distribuidas
-        for idx in self.cargas_Distribuidas.index:
-            self.cargas_Distribuidas.loc[idx,"Carga i"] = self.cargas_Distribuidas.loc[idx,"Carga i"] * (factor_conversion)
-            self.cargas_Distribuidas.loc[idx,"Carga j"] = self.cargas_Distribuidas.loc[idx,"Carga j"] * (factor_conversion)
-    
+    def convert_Fuerza(self, factor_conversion) -> None:
+        # Cargas y momentos
+        for idx in self.cargas.index:
+            self.cargas.loc[idx,"N_i"] = self.cargas.loc[idx,"N_i"] * (factor_conversion)
+            self.cargas.loc[idx,"V_i"] = self.cargas.loc[idx,"V_i"] * (factor_conversion)
+            self.cargas.loc[idx,"M_i"] = self.cargas.loc[idx,"M_i"] * (factor_conversion)
+            self.cargas.loc[idx,"N_j"] = self.cargas.loc[idx,"N_j"] * (factor_conversion)
+            self.cargas.loc[idx,"V_j"] = self.cargas.loc[idx,"V_j"] * (factor_conversion)
+            self.cargas.loc[idx,"M_j"] = self.cargas.loc[idx,"M_j"] * (factor_conversion)
+     
     def convert_Esfuerzo(self, factor_conversion) -> None:
         # Modulo young
         for idx in self.materiales.index:
@@ -166,7 +162,7 @@ class model():
         units = {"Longitud": [], "Fuerza": [], "Esfuerzo": [], "Angulo": [], }
         
         print("Unidades actuales:\n")
-        print(self.unidades)
+        print(self.unidades.loc[0])
         
         units["Longitud"].append(self.unidades.loc[0,'Longitud'])
         units["Fuerza"].append(self.unidades.loc[0,'Fuerza'])
@@ -213,6 +209,7 @@ class model():
         self.unidades = self.unidades.drop([0])
         new_units = pd.DataFrame(units)
         self.unidades = pd.concat([self.unidades, new_units])
+        self.unidades = self.unidades.sort_index()
 
     # Miscelaneos
     def set_structureType(self) -> None:

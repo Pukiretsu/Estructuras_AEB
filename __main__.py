@@ -347,7 +347,7 @@ def units_settings(modelo: mod.model):
         print("Unidades.")
         divideBar()   
         print("Unidades actuales:\n")
-        print(modelo.unidades)
+        print(modelo.unidades[[0]])
         print("\n¿Qué desea hacer?.\n")
         
         print("\t1. Editar Unidades.")
@@ -540,6 +540,29 @@ def print_AIF(modelo: mod.model):
     
     return modelo
 
+def resultados_unidades_settings(modelo: mod.model):
+    os.system("cls")
+    while True:
+        divideBar()      
+        print("Unidades de resultados.")
+        divideBar()   
+        print("Unidades actuales:\n")
+        print(modelo.unidades.loc[1:,~modelo.unidades.columns.isin(["Esfuerzo"])])
+        print("\n¿Qué desea hacer?.\n")
+        
+        print("\t1. Editar Unidades.")
+        print("\t0. Volver.")
+        
+        match input("\nIngrese una opción: "):
+            case "1":
+                os.system("cls")
+                modelo.set_units()
+                os.system("cls")
+            case "0":
+                return modelo
+            case _:
+                print("Error: no se reconoce la opción ingresada.\n\n")
+
 def model_results(modelo: mod.model):
     os.system("cls")
     while True:
@@ -569,7 +592,7 @@ def model_results(modelo: mod.model):
             case "5":
                 modelo = print_AIF(modelo)
             case "6":
-                pass
+                modelo = resultados_unidades_settings(modelo)
             case "0":
                 os.system("cls")
                 break

@@ -140,8 +140,6 @@ def set_material(material, last_material = None, edit = False):
             index = get_index(index_list,f"\nSeleccione el id del material({last_material[0]}): ", True, last_material[0])
         else:        
             index = get_index(index_list,"\nSeleccione el id del material: ")
-        print(f"\nMaterial selecionado id [{index}]: ") 
-        print(material.loc[[index]])
                 
         return (index, material.loc[index, "Nombre"])
     else: 
@@ -160,9 +158,7 @@ def set_seccion(seccion, last_seccion = None, edit = False):
             index = get_index(index_list,f"\nSeleccione el id de la sección({last_seccion[0]}): ", True, last_seccion[0])
         else:        
             index= get_index(index_list,"\nSeleccione el id de la sección: ")
-        
-        print(f"\nSección selecionada id [{index}]: ") 
-        print(seccion.loc[[index]])      
+            
         return (index, seccion.loc[index, 'Nombre'])
     
     else: 
@@ -734,7 +730,6 @@ def get_conversion_fuerza(unit_in, unit_out):
                 case _:
                     return 1
                      
-    
 def get_conversion_angulo(unit_in, unit_out):
     match unit_in:
         case "°":
@@ -1327,10 +1322,6 @@ def calculos(elementos, nodos, materiales, secciones, cargas, units, structureTy
     print("-------------------------------")  
     
     return Results 
-
-def print_results():
-    
-    pass
 
 if __name__ == "__main__":
     pass

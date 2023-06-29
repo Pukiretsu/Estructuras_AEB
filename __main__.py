@@ -479,10 +479,10 @@ def print_vector_carga(modelo: mod.model):
                 print("\nCarga Global.\n")
                 
                 unidades = modelo.resultados["unidades_resultados"]["Carga"]
-                vector_print = pd.concat([modelo.resultados["Vector Cargas Global"], unidades], axis = 1)
-                vector_print.columns = ["Q", ""]
+                print_df = pd.concat([modelo.resultados["Vector Cargas Global"], unidades], axis = 1)
+                print_df.columns = ["Q", ""]
                 
-                print(vector_print)
+                print(print_df)
                 systemWait()
             case "2":
                 os.system("cls")
@@ -498,17 +498,45 @@ def print_vector_carga(modelo: mod.model):
                 
     return modelo
 
-def print_vector_desp(model: mod.model):
-    # TODO: Mostrar vector de desplazamientos
-    pass
+def print_vector_desp(modelo: mod.model):
+    os.system("cls")
+    divideBar()     
+    print("Vectores de Desplazamiento.")
+    divideBar()
+    
+    unidades = modelo.resultados["unidades_resultados"]["Desplazamiento"]
+    print_df = pd.concat([modelo.resultados["Desplazamientos"], unidades], axis = 1)
+    print_df.columns = ["Desplazamiento", ""]
+    
+    print(print_df)
+    systemWait()
+    
+    return modelo
 
-def print_vector_fuerzas(model: mod.model):
-    # TODO: Mostrar vector de desplazamientos
-    pass
+def print_vector_reaciones(modelo: mod.model):
+    os.system("cls")
+    divideBar()     
+    print("Vector de Reacciones.")
+    divideBar()
+    
+    unidades = modelo.resultados["unidades_resultados"]["Carga"]
+    print_df = pd.concat([modelo.resultados["Reacciones"], unidades], axis = 1)
+    print_df.columns = ["Reacciones", ""]
+    
+    print(print_df)
+    systemWait()
+    
+    return modelo
 
-def print_vector_desp(model: mod.model):
-    # TODO: Mostrar vector de desplazamientos
-    pass
+def print_AIF(modelo: mod.model):
+    os.system("cls")
+    divideBar()     
+    print("Acciones internas de fuerza.")
+    divideBar()
+    
+    modelo.show_results_by_elemento("AIF")
+    
+    return modelo
 
 def model_results(modelo: mod.model):
     os.system("cls")
@@ -533,11 +561,11 @@ def model_results(modelo: mod.model):
             case "2":
                 modelo = print_vector_carga(modelo)
             case "3":
-                pass
+                modelo = print_vector_desp(modelo)
             case "4":
-                pass
+                modelo = print_vector_reaciones(modelo)
             case "5":
-                pass
+                modelo = print_AIF(modelo)
             case "6":
                 pass
             case "0":
@@ -547,10 +575,7 @@ def model_results(modelo: mod.model):
                 print("Error: no se reconoce la opción ingresada.\n\n")
                 os.system("cls") 
             
-                
     return modelo
-
-
 
 # Menú del modelo
 

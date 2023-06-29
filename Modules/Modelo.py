@@ -749,8 +749,17 @@ class model():
             case "k rigidez local":
                 print(f"\nMatriz de rigidez de {elemento['Nombre']}:\n")
                 print(elemento['k rigidez local'])
+            
             case "Carga Global":
                 print(f"\nVector de carga global de {elemento['Nombre']}:\n")
+                idxs = elemento["Carga Global"].index
+                unds = unidades.loc[idxs,"Carga"]
+                print_df = pd.concat([elemento["Carga Global"], unds], axis=1)
+                print_df.columns = ["Q", ""]
+                print(print_df)
+            
+            case "AIF":
+                print(f"\nVector de fuerzas internas de {elemento['Nombre']}:\n")
                 idxs = elemento["Carga Global"].index
                 unds = unidades.loc[idxs,"Carga"]
                 print_df = pd.concat([elemento["Carga Global"], unds], axis=1)

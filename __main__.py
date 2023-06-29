@@ -347,7 +347,7 @@ def units_settings(modelo: mod.model):
         print("Unidades.")
         divideBar()   
         print("Unidades actuales:\n")
-        print(modelo.unidades[[0]])
+        print(modelo.unidades.loc[[0]])
         print("\n¿Qué desea hacer?.\n")
         
         print("\t1. Editar Unidades.")
@@ -559,6 +559,7 @@ def resultados_unidades_settings(modelo: mod.model):
                 modelo.set_units()
                 os.system("cls")
             case "0":
+                os.system("cls")
                 return modelo
             case _:
                 print("Error: no se reconoce la opción ingresada.\n\n")

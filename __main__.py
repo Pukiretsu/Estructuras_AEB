@@ -556,7 +556,7 @@ def resultados_unidades_settings(modelo: mod.model):
         match input("\nIngrese una opción: "):
             case "1":
                 os.system("cls")
-                modelo.set_units()
+                modelo.set_result_units()
                 os.system("cls")
             case "0":
                 os.system("cls")

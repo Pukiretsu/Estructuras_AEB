@@ -207,7 +207,7 @@ class model():
                     pass
         
         self.unidades = self.unidades.drop([0])
-        new_units = pd.DataFrame(units)
+        new_units = pd.DataFrame(units, index=[1])
         self.unidades = pd.concat([self.unidades, new_units])
         self.unidades = self.unidades.sort_index()
 
@@ -764,7 +764,137 @@ class model():
                 print_df.columns = ["AIF", ""]
                 print(print_df)
         
-
+    def set_result_units(self):
+        units = {"Longitud": [], "Fuerza": [], "Esfuerzo": [], "Angulo": [], }
+        
+        print("Unidades actuales:\n")
+        print(self.unidades.loc[1:,~self.unidades.columns.isin(["Esfuerzo"])])
+        
+        units["Longitud"].append(self.unidades.loc[1,'Longitud'])
+        units["Fuerza"].append(self.unidades.loc[1,'Fuerza'])
+        units["Esfuerzo"].append(self.unidades.loc[1,'Esfuerzo'])
+        units["Angulo"].append(self.unidades.loc[1,'Angulo'])
+        
+        unidades = calc.get_units(secondary=True)
+        
+        if not (unidades[1]):
+            pass
+        else:    
+            match unidades[0]:
+                case "L":
+                    units["Longitud"].pop(0)
+                    units["Longitud"].append(unidades[1])
+                    
+                    fact_conversion = calc.get_conversion_longitud(self.unidades.loc[1,'Longitud'],unidades[1])
+                    factores_momento = calc.get_Momento_Factor_per_GDL(self.nodos,fact_conversion,self.tipo_estructura)
+                    factores_desplazamiento = calc.get_Desplazamiento_Factor_per_GDL(self.nodos,fact_conversion,self.tipo_estructura)
+                    factores_AIF_momento = calc.get_AIF_Momento_factors(fact_conversion, self.tipo_estructura)
+                    
+                    # Momentos
+                    Q = self.resultados["Vector Cargas Global"]
+                    
+                    Q.columns = list(["Factor"])
+                    for idx in Q.index: # Carga global consolidada
+                        Q.loc[idx] = Q.loc[idx] * factores_momento.loc[idx]
+                    
+                    Q.columns = list([""])
+                    self.resultados["Vector Cargas Global"] = Q
+                        
+                    for elemento in self.resultados["Elementos"].keys(): 
+                        Q = self.resultados["Elementos"][elemento]["Carga Global"]
+                        AIF = self.resultados["Elementos"][elemento]["AIF"]
+                        
+                        Q.columns = list(["Factor"])
+                        for idx in Q.index: # Carga global elemento
+                            Q.loc[idx] = Q.loc[idx] * factores_momento.loc[idx]
+                        
+                        for idx in AIF.index: # Fuerza interna elemento
+                            AIF.loc[idx] =  AIF.loc[idx] * factores_AIF_momento.loc[idx]
+                            
+                        Q.columns = list([""])
+                        AIF.columns = list([""])
+                        
+                        self.resultados["Elementos"][elemento]["Carga Global"] = Q
+                        self.resultados["Elementos"][elemento]["AIF"] = AIF
+                        
+                    Q = self.resultados["Reacciones"]
+                    
+                    Q.columns = list(["Factor"])
+                    for idx in Q.index: # Reacciones
+                        Q.loc[idx] = Q.loc[idx] * factores_momento.loc[idx]
+                    
+                    Q.columns = list([""])
+                    self.resultados["Reacciones"] = Q
+                    
+                    # Desplazamientos
+                    Q = self.resultados["Desplazamientos"]
+                    
+                    Q.columns = list(["Factor"])
+                    for idx in Q.index:
+                        Q.loc[idx] = Q.loc[idx] * factores_desplazamiento.loc[idx]
+                    
+                    Q.columns = list([""])
+                    self.resultados["Desplazamientos"] = Q
+                
+                case "F":
+                    units["Fuerza"].pop(0)
+                    units["Fuerza"].append(unidades[1])
+                    
+                    fact_conversion = calc.get_conversion_fuerza(self.unidades.loc[1,'Fuerza'],unidades[1])
+                    factores_carga = calc.get_Carga_Factor_per_GDL(self.nodos,fact_conversion,self.tipo_estructura)
+                    factores_AIF_carga = calc.get_AIF_Carga_factors(fact_conversion, self.tipo_estructura)
+                    
+                    # Cargas
+                    Q = self.resultados["Vector Cargas Global"]
+                    
+                    Q.columns = list(["Factor"])
+                    for idx in Q.index: # Carga global consolidada
+                        Q.loc[idx] = Q.loc[idx] * factores_carga.loc[idx]
+                    
+                    Q.columns = list([""])
+                    self.resultados["Vector Cargas Global"] = Q
+                    
+                    for elemento in self.resultados["Elementos"].keys(): 
+                        Q = self.resultados["Elementos"][elemento]["Carga Global"]
+                        AIF = self.resultados["Elementos"][elemento]["AIF"]
+                            
+                        Q.columns = list(["Factor"])
+                        for idx in Q.index: # Carga global elemento
+                            Q.loc[idx] = Q.loc[idx] * factores_carga.loc[idx]
+                        
+                        for idx in AIF.index: # Fuerza interna elemento
+                            AIF.loc[idx] =  AIF.loc[idx] * factores_AIF_carga.loc[idx]
+                            
+                        Q.columns = list([""])
+                        AIF.columns = list([""])
+                        
+                        self.resultados["Elementos"][elemento]["Carga Global"] = Q
+                        self.resultados["Elementos"][elemento]["AIF"] = AIF
+                
+                case "G":
+                    units["Angulo"].pop(0)
+                    units["Angulo"].append(unidades[1])
+                    
+                    fact_conversion = calc.get_conversion_angulo(self.unidades.loc[1,'Angulo'],unidades[1])
+                    factor_giro = calc.get_giro_Factor_per_GDL(self.nodos,fact_conversion,self.tipo_estructura)
+                    
+                    Q = self.resultados["Desplazamientos"]
+                    Q.columns = list(["Factor"])
+                    for idx in Q.index:
+                        Q.loc[idx] = Q.loc[idx] * factor_giro.loc[idx]
+                    Q.columns = list([""])
+                    self.resultados["Desplazamientos"] = Q
+                case _:
+                    pass
+        
+        self.unidades = self.unidades.drop([1])
+        new_units = pd.DataFrame(units, index=[1])
+        self.unidades = pd.concat([self.unidades, new_units])
+        self.unidades = self.unidades.sort_index()
+        
+        unidades_resultados = calc.get_units_per_GDL(self.nodos, self.unidades, self.tipo_estructura)
+        self.resultados["unidades_resultados"] = unidades_resultados
+    
 if __name__ == "__main__": 
     pass
     

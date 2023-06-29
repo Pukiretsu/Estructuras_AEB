@@ -7,9 +7,6 @@ from os import system
 
 pd.set_option('display.float_format', '{:.2f}'.format)
 
-
-
-
 def intInput (message) -> int:
     while True:
         try:
@@ -1259,7 +1256,6 @@ def get_AIF_Momento_factors(factor, structureType):
         case "Portico":
             factors = (1, 1, factor, 1, 1, factor)
             return pd.DataFrame(factors)    
-
 
 def get_AIF_Indexes(structureType):
     match structureType:
